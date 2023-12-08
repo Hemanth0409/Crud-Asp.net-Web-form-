@@ -34,9 +34,14 @@ namespace Crud__Asp.net_Web_form_
                 EmpDetails.DataSource = dt;
                 EmpDetails.DataBind();
             }
+
         }
 
-     
+        //protected void RowEditing(object sender, GridViewEditEventArgs e)
+        //{
+        //    EmpDetails.EditIndex = e.NewEditIndex;
+        //    BindDataToGridView();
+        //}
         protected void UpdateRow(object sender, GridViewUpdateEventArgs e)
         {
             GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
