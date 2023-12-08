@@ -78,6 +78,33 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
 
         /// <summary>
+        /// RadioMale control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton RadioMale;
+
+        /// <summary>
+        /// RadioFemale control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton RadioFemale;
+
+        /// <summary>
+        /// Language control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList Language;
+
+        /// <summary>
         /// TxtAddress control.
         /// </summary>
         /// <remarks>

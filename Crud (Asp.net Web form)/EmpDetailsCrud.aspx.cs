@@ -4,9 +4,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.ModelBinding;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Xml.Linq;
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -42,35 +45,35 @@ namespace Crud__Asp.net_Web_form_
         //    EmpDetails.EditIndex = e.NewEditIndex;
         //    BindDataToGridView();
         //}
-        protected void UpdateRow(object sender, GridViewUpdateEventArgs e)
-        {
-            GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
-            HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
+        //protected void UpdateRow(object sender, GridViewUpdateEventArgs e)
+        //{
+        //    GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
+        //    HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
 
-            con.Open();
-            string sql = string.Format("Update EmployeeDetails set name=@Name,email=@Email,contact=@Contact,age=@Age,country=@Country,state=@State,address=@Address,Joined_Date=@Joined_Date where id='" + hdnId.Value + "'");
+        //    con.Open();
+        //    string sql = string.Format("Update EmployeeDetails set name=@Name,email=@Email,contact=@Contact,age=@Age,country=@Country,state=@State,address=@Address,Joined_Date=@Joined_Date where id='" + hdnId.Value + "'");
 
-            SqlCommand comm = new SqlCommand(sql, con);
-            comm.Parameters.AddWithValue("@Name", (EmpDetails.Rows[e.RowIndex].FindControl("name") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Email", (EmpDetails.Rows[e.RowIndex].FindControl("email") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Contact", (EmpDetails.Rows[e.RowIndex].FindControl("contact") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Age", (EmpDetails.Rows[e.RowIndex].FindControl("age") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Country", (EmpDetails.Rows[e.RowIndex].FindControl("country") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@State", (EmpDetails.Rows[e.RowIndex].FindControl("state") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Address", (EmpDetails.Rows[e.RowIndex].FindControl("address") as TextBox).Text.Trim());
-            comm.Parameters.AddWithValue("@Joined_Date", (EmpDetails.Rows[e.RowIndex].FindControl("Joined_Date") as TextBox).Text.Trim());
+        //    SqlCommand comm = new SqlCommand(sql, con);
+        //    comm.Parameters.AddWithValue("@Name", (EmpDetails.Rows[e.RowIndex].FindControl("name") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Email", (EmpDetails.Rows[e.RowIndex].FindControl("email") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Contact", (EmpDetails.Rows[e.RowIndex].FindControl("contact") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Age", (EmpDetails.Rows[e.RowIndex].FindControl("age") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Country", (EmpDetails.Rows[e.RowIndex].FindControl("country") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@State", (EmpDetails.Rows[e.RowIndex].FindControl("state") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Address", (EmpDetails.Rows[e.RowIndex].FindControl("address") as TextBox).Text.Trim());
+        //    comm.Parameters.AddWithValue("@Joined_Date", (EmpDetails.Rows[e.RowIndex].FindControl("Joined_Date") as TextBox).Text.Trim());
 
-            comm.ExecuteNonQuery();
-            EmpDetails.EditIndex = -1;
-            BindDataToGridView();
-            con.Close();
-        }
+        //    comm.ExecuteNonQuery();
+        //    EmpDetails.EditIndex = -1;
+        //    BindDataToGridView();
+        //    con.Close();
+        //}
 
-        protected void CancelingEditedRow(object sender, GridViewCancelEditEventArgs e)
-        {
-            EmpDetails.EditIndex--;
-            BindDataToGridView();
-        }
+        //protected void CancelingEditedRow(object sender, GridViewCancelEditEventArgs e)
+        //{
+        //    EmpDetails.EditIndex--;
+        //    BindDataToGridView();
+        //}
 
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
@@ -124,21 +127,54 @@ namespace Crud__Asp.net_Web_form_
 
         protected void Create_Click(object sender, EventArgs e)
         {
+            string gender = string.Empty;
+            string cbSelect = string.Empty;
+          
+            if (RadioMale.Checked)
+            {
+                gender = RadioMale.Text;
+            }
+            else
+            {
+                gender = RadioFemale.Text;
+            }
 
-            if (!Page.IsValid)
+
+            string s =string.Empty;
+            foreach (ListItem li in Language.Items)
+            {
+                if (li.Selected==true)
+                {
+                   s += li.Text;
+                }
+            }
+
+            if (Session["Id"] != null)
             {
                 con.Open();
-                SqlCommand comm = new SqlCommand("Insert into EmployeeDetails values('" + TxtName.Value + "','" + Txtemail.Value + "','" + int.Parse(TxtContact.Value) + "','" + int.Parse(Txtage.Value) + "','" + TxtAddress.Value + "','" + Txtcountry.SelectedItem + "','" + Txtstate.SelectedItem + "','" + Convert.ToDateTime(TxtjoinDate.Value) + "')", con);
+                SqlCommand updatecom = new SqlCommand("Update EmployeeDetails set name=('" + TxtName.Value + "'),email=('" + Txtemail.Value + "'),contact=('" + int.Parse(TxtContact.Value) + "'),age=('" + int.Parse(Txtage.Value) + "'),Address=('" + TxtAddress.Value + "'),country=('" + Txtcountry.SelectedItem + "'),state=('" + Txtstate.SelectedItem + "'),Joined_Date=('" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "'),gender=('" + gender + "') ,Language=('" + s + "') where id='" + Session["Id"] + "'", con);
+                updatecom.ExecuteNonQuery();
+                con.Close();
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
+                BindDataToGridView();
+            }
+            else
+            {
+                //(name, email, contact, age, address, country, state, joined_Date, gender)
+                con.Open();
+                SqlCommand comm = new SqlCommand("Insert into EmployeeDetails values('" + TxtName.Value + "','" + Txtemail.Value + "','" + int.Parse(TxtContact.Value) + "','" + int.Parse(Txtage.Value) + "','" + TxtAddress.Value + "','" + Txtcountry.SelectedItem + "','" + Txtstate.SelectedItem + "','" + Convert.ToDateTime(TxtjoinDate.Value) + "','" + gender + "','" + s + "')", con);
                 comm.ExecuteNonQuery();
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
                 BindDataToGridView();
+
             }
+            Reset_Click(sender,e);
 
         }
-
         protected void Search_Click(object sender, EventArgs e)
         {
+
 
             string searchQuery = "SELECT * FROM EmployeeDetails where 1=1 ";
 
@@ -164,8 +200,14 @@ namespace Crud__Asp.net_Web_form_
             TxtContact.Value = string.Empty;
             TxtAddress.Value = string.Empty;
             TxtjoinDate.Value = string.Empty;
+            RadioMale.Checked = false;
+            RadioFemale.Checked = false;    
             Txtcountry.ClearSelection();
             Txtstate.ClearSelection();
+            foreach (ListItem li in Language.Items)
+            {
+                li.Selected= false;
+            }
 
         }
         protected void EditButton_Click(object sender, EventArgs e)
@@ -173,13 +215,12 @@ namespace Crud__Asp.net_Web_form_
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-
+            Session["Id"] = hdnId.Value;
             con.Open();
             SqlCommand comm = new SqlCommand("Select * from EmployeeDetails where Id='" + hdnId.Value + "'", con);
             SqlDataReader sqlDataReader = comm.ExecuteReader();
-
             while (sqlDataReader.Read())
-            {   
+            {
                 TxtName.Value = sqlDataReader.GetValue(1).ToString();
                 Txtemail.Value = sqlDataReader.GetValue(2).ToString();
                 Txtage.Value = sqlDataReader.GetValue(4).ToString();
@@ -188,8 +229,26 @@ namespace Crud__Asp.net_Web_form_
                 Txtstate.SelectedItem.Text = sqlDataReader.GetValue(7).ToString();
                 TxtAddress.Value = sqlDataReader.GetValue(5).ToString();
                 TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
+                string gender = sqlDataReader.GetValue(9).ToString();
+                string language =sqlDataReader.GetValue(10).ToString();
+
+                if (language.Equals("English"))
+                {
+
+                }
+
+                if (gender.Equals("Male"))
+                {
+                    RadioMale.Checked = true;
+                }
+                else if (gender.Equals("Female"))
+                {
+                    RadioFemale.Checked = true;
+                }
             }
             con.Close();
         }
+
+
     }
 }
