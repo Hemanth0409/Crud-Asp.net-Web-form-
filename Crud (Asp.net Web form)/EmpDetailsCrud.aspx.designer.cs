@@ -15,6 +15,42 @@ namespace Crud__Asp.net_Web_form_
     {
 
         /// <summary>
+        /// form1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+
+        /// <summary>
+        /// script control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager script;
+
+        /// <summary>
+        /// updatepannel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updatepannel;
+
+        /// <summary>
+        /// formView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel formView;
+
+        /// <summary>
         /// TxtName control.
         /// </summary>
         /// <remarks>
@@ -30,7 +66,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Txtemail;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtemail;
 
         /// <summary>
         /// Txtage control.
@@ -39,7 +75,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Txtage;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtage;
 
         /// <summary>
         /// Txtcountry control.
@@ -75,7 +111,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtjoinDate;
 
         /// <summary>
         /// RadioMale control.
@@ -130,6 +166,15 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btn;
+
+        /// <summary>
+        /// ListView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel ListView;
 
         /// <summary>
         /// searchText control.

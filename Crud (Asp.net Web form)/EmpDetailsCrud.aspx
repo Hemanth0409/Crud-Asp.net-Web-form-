@@ -1,7 +1,14 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" %>
 
-<asp:Content ID="Content1" runat="server" ContentPlaceHolderID="MainContent">
+<html>
+<head runat="server">
+    <title>Employee Detail's</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
     <style>
         body {
             background: #fafbfb;
@@ -11,155 +18,164 @@
             color: Red
         }
     </style>
-    <div class="container my-5 d-flex flex-column justify-content-center">
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="script" runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+        <asp:UpdatePanel ID="updatepannel" runat="server">
+            <ContentTemplate>
+                <asp:Panel ID="formView" runat="server">
+                    <div class="container my-5 d-flex flex-column justify-content-center">
+                        <h1 class="mb-3 ms-5">Employee Details</h1>
+                        <div class="row">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="Name" class="form-label m-0">Name:</label>
+                                </div>
 
-        <h1 class="mb-3 ms-5">Employee Details</h1>
-        <div class="row">
-            <div class="row justify-content-center align-items-center">
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="Name" class="form-label m-0">Name:</label>
-                </div>
+                                <div class="col-md-4 mt-4">
+                                    <input type="text" class="form-control float-end" runat="server" id="TxtName">
+                                </div>
+                            </div>
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="email" class="form-label m-0">Email:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control float-end mt-4" runat="server" id="Txtemail">
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="age" class="form-label m-0">Age:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="Text" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="form-group col-md-2 mt-4  text-center">
+                                    <label for="Country">Country:</label>
+                                </div>
 
-                <div class="col-md-4 mt-4">
-                    <input type="text" class="form-control float-end" runat="server" id="TxtName">
-                    <%--<asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator2" ControlToValidate="TxtName" class="error" ErrorMessage="***Name field Required***" Display="Dynamic"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator runat="server" ID="RequiredFieldValidator1" ControlToValidate="TxtName" class="error" ValidationExpression="^[a-zA-Z]+$" Display="Dynamic" ErrorMessage="***Name Should contain only Alphabets***"></asp:RegularExpressionValidator>
-                    --%>
-                </div>
-            </div>
-            <div class="row justify-content-center align-items-center">
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="email" class="form-label m-0">Email:</label>
-                </div>
-                <div class="col-md-4">
-                    <input type="email" class="form-control float-end mt-4" runat="server" id="Txtemail">
-                    <%--     <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator3" ControlToValidate="Txtemail" ErrorMessage="***Email field Required***" class="error" Display="Dynamic"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator runat="server" ID="RegularExpressionValidator1" ControlToValidate="Txtemail" class="error" ValidationExpression="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$" Display="Dynamic" ErrorMessage="***Email Required in a correct formate***"></asp:RegularExpressionValidator>
-                    --%>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="age" class="form-label m-0">Age:</label>
-                </div>
-                <div class="col-md-4">
-                    <input type="number" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
-                    <%--<asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator4" ControlToValidate="Txtage" ErrorMessage="***Age field Required***" class="error" Display="Dynamic"></asp:RequiredFieldValidator>--%>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="form-group col-md-2 mt-4  text-center">
-                    <label for="Country">Country:</label>
-                </div>
+                                <div class="col-md-4 mt-4 ms-4">
+                                    <asp:DropDownList class="float-center ms-5" ID="Txtcountry" AutoPostBack="true" AppendDataBoundItems="true" runat="server" OnSelectedIndexChanged="country_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
 
-                <div class="col-md-4 mt-4 ms-4">
-                    <asp:DropDownList class="float-center ms-5" ID="Txtcountry" AutoPostBack="true" AppendDataBoundItems="true" runat="server" OnSelectedIndexChanged="country_SelectedIndexChanged">
-                    </asp:DropDownList>
-                </div>
-            </div>
+                            <div class="row justify-content-center">
+                                <div class="form-group col-md-2 mt-4 text-center">
+                                    <label for="state">State:</label>
+                                </div>
+                                <div class="col-md-4 mt-4 ms-4">
+                                    <asp:DropDownList class="float-center ms-5" ID="Txtstate" AutoPostBack="true" AppendDataBoundItems="true" runat="server">
+                                        <asp:ListItem>Select a country</asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mt-4">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="Contact" class="form-label">Contact:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control float-end mt-3" runat="server" id="TxtContact">
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mt-3">
 
-            <div class="row justify-content-center">
-                <div class="form-group col-md-2 mt-4 text-center">
-                    <label for="state">State:</label>
-                </div>
-                <div class="col-md-4 mt-4 ms-4">
-                    <asp:DropDownList class="float-center ms-5" ID="Txtstate" AutoPostBack="true" AppendDataBoundItems="true" runat="server">
-                        <asp:ListItem>Select a country</asp:ListItem>
-                    </asp:DropDownList>
-                </div>
-            </div>
-            <div class="row justify-content-center mt-4">
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="Contact" class="form-label">Contact:</label>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" class="form-control float-end mt-3" runat="server" id="TxtContact">
-                    <%--     <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator5" ControlToValidate="TxtContact" ErrorMessage="***Contact field Required***" class="error" Display="Dynamic"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator runat="server" ID="RegularExpressionValidator2" ControlToValidate="TxtContact" class="error" ValidationExpression="^[0-9]+$" Display="Dynamic" ErrorMessage="***Contact should contain only numbers***"></asp:RegularExpressionValidator>
-                    --%>
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="joinedDate" class="form-label">Joined Date:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
 
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="joinedDate" class="form-label">Joined Date:</label>
-                </div>
-                <div class="col-md-4">
-                    <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
-                </div>
-            </div>
-            <div class="row justify-content-center">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="Gender" class="form-label">Gender:</label>
 
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="Gender" class="form-label">Gender:</label>
+                                </div>
+                                <div class="col-md-4 mt-4 ms-4">
+                                    <div class="float-center ms-5">
+                                        <asp:RadioButton asp-for="gender" ID="RadioMale" Text="Male" runat="server" GroupName="Gender" />
+                                        <asp:RadioButton ID="RadioFemale" Text="Female" runat="server" GroupName="Gender" />
 
-                </div>
-                <div class="col-md-4 mt-4 ms-4">
-                    <div class="float-center ms-5">
-                        <asp:RadioButton asp-for="gender" ID="RadioMale" Text="Male" runat="server" GroupName="Gender" />
-                        <asp:RadioButton ID="RadioFemale" Text="Female" runat="server" GroupName="Gender" />
-         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mt-4">
+                                <div class="col-md-2 mt-4 text-center">
+                                    <label for="Language" class="form-label">Language's Known:</label>
+                                </div>
+                                <div class="col-md-4 ms-5">
+                                    <div class="ms-5">
+                                        <asp:CheckBoxList ID="Language" runat="server">
+                                            <asp:ListItem Value="Tamil" Text="Tamil">&nbsp;Tamil</asp:ListItem>
+                                            <asp:ListItem Value="English" Text="English">&nbsp;English</asp:ListItem>
+                                            <asp:ListItem Value="French" Text="French">&nbsp; French</asp:ListItem>
+                                            <asp:ListItem Value="German" Text="German">&nbsp; German</asp:ListItem>
+                                        </asp:CheckBoxList>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-5">
+
+                            <div class="col-md-2 mt-5 text-center">
+                                <label for="Address" class="form-label">Address:</label>
+                            </div>
+                            <div class="col-md-4 ">
+                                <textarea class="form-control float-end" id="TxtAddress" runat="server" rows="5"></textarea>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row justify-content-center mt-4">
-                <div class="col-md-2 mt-4 text-center">
-                    <label for="Language" class="form-label">Language's Known:</label>
-                </div>
-                <div class="col-md-4 ms-5">
-                    <div class="ms-5">
-                        <asp:CheckBoxList ID="Language" runat="server">
-                            <asp:ListItem Value="Tamil" Text="Tamil">&nbsp;Tamil</asp:ListItem>
-                            <asp:ListItem Value="English" Text="English">&nbsp;English</asp:ListItem>
-                            <asp:ListItem Value="French" Text="French">&nbsp; French</asp:ListItem>
-                            <asp:ListItem Value="German" Text="German">&nbsp; German</asp:ListItem>
-                        </asp:CheckBoxList>
+
+                    <div class="col-12 d-flex justify-content-center gap-3 mt-5">
+                        <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
+                        <asp:Button ID="btn" runat="server" Text="Clear" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
                     </div>
-                </div>
 
-            </div>
-        </div>
-        <div class="row justify-content-center mt-5">
+                </asp:Panel>
+                <asp:Panel ID="ListView" runat="server">
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-center mt-5">
+                            <div class="d-flex gap-1 align-items-center">
+                                <input type="text" runat="server" id="searchText"  autopostback="True">
+                                <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
+                            </div>
 
-            <div class="col-md-2 mt-5 text-center">
-                <label for="Address" class="form-label">Address:</label>
-            </div>
-            <div class="col-md-4 ">
-                <textarea class="form-control float-end" id="TxtAddress" runat="server" rows="5"></textarea>
-                <%--<asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator6" ControlToValidate="TxtAddress" ErrorMessage="***Address field Required***" class="error" Display="Dynamic"></asp:RequiredFieldValidator>--%>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 d-flex justify-content-center gap-3 mt-5">
-        <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
-        <asp:Button ID="btn" runat="server" Text="Clear" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
-    </div>
-
-
-
-    <div class="row">
-        <div class="col-12 d-flex justify-content-center mt-5">
-            <div class="d-flex gap-1 align-items-center">
-                <input type="text" runat="server" id="searchText" class="">
-                <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
-            </div>
-        </div>
-    </div>
-    <div class="row mt-5 ">
-
-        <div class="col-12 justify-content-end">
-
-            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" OnRowEditing="Edit"
-                Width="1217px" Style="margin-left: 63px">
-                <%--OnRowCancelingEdit="CancelingEditedRow"--%>
-                <Columns>
-                    <asp:TemplateField>
-                        <ItemTemplate>
-                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id") %>' />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Name">
+                        </div>
+                    </div>
+                    <div class="row mt-5 ">
+                        <div class="col-12 justify-content-end">
+                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" Width="1217px" Style="margin-left: 0px; margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                                <Columns>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id") %>' />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <%--<asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
                             <asp:Label Text='<%# Eval("Name") %>' runat="server"></asp:Label>
                         </ItemTemplate>
@@ -240,23 +256,42 @@
                         <EditItemTemplate>
                             <asp:TextBox ID="Joined_Date" Text='<%# Eval("Language") %>' runat="server"></asp:TextBox>
                         </EditItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField ShowHeader="False">
-                        <ItemTemplate>
-                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
-                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
-                                OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
-                        </ItemTemplate>
-                        <%--  <EditItemTemplate>
+                    </asp:TemplateField>--%>
+                                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                                    <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                                    <asp:BoundField DataField="Age" HeaderText="Age" SortExpression="Age" />
+                                    <asp:BoundField DataField="Contact" HeaderText="Contact" SortExpression="Contact" />
+                                    <asp:BoundField DataField="Country" HeaderText="Country" SortExpression="Country" />
+                                    <asp:BoundField DataField="State" HeaderText="State" SortExpression="State" />
+                                    <asp:BoundField DataField="Joined_Date" HeaderText="Joined Date" SortExpression="Joined_Date" />
+                                    <asp:BoundField DataField="Gender" HeaderText="Gender" SortExpression="Gender" />
+                                    <asp:BoundField DataField="Language" HeaderText="Language" SortExpression="Language" />
+                                    <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
+
+
+                                    <asp:TemplateField ShowHeader="False">
+                                        <ItemTemplate>
+                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
+                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
+                                                OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
+                                        </ItemTemplate>
+                                        <%--  <EditItemTemplate>
                             <asp:Button ID="Update" runat="server" Text="Update" CssClass="btn btn-danger btn-sm" CommandName="Update"></asp:Button>
                             <asp:Button ID="cancel" runat="server" Text="Cancel" CssClass="btn btn-danger btn-sm" CommandName="cancel"></asp:Button>
                         </EditItemTemplate>--%> 
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
-        </div>
-    </div>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </asp:Panel>
+            </ContentTemplate>
+        </asp:UpdatePanel>
 
-
-</asp:Content>
+    </form>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+    </asp:PlaceHolder>
+</body>
+</html>
 
