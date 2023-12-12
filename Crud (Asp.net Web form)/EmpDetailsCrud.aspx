@@ -6,9 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/bundles/modernizr") %>
-    </asp:PlaceHolder>
+
     <style>
         body {
             background: #fafbfb;
@@ -16,6 +14,11 @@
 
         .error {
             color: Red
+        }
+
+        .auto-style1 {
+            width: 490px;
+            margin-left: 141px;
         }
     </style>
 </head>
@@ -25,7 +28,7 @@
             <Scripts>
                 <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
                 <%--Framework Scripts--%>
-                <asp:ScriptReference Name="MsAjaxBundle" />
+                <%--<asp:ScriptReference Name="MsAjaxBundle" />
                 <asp:ScriptReference Name="jquery" />
                 <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
                 <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
@@ -35,7 +38,7 @@
                 <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
                 <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
                 <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
-                <asp:ScriptReference Name="WebFormsBundle" />
+                <asp:ScriptReference Name="WebFormsBundle" />--%>
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager>
@@ -43,7 +46,7 @@
             <ContentTemplate>
                 <asp:Panel ID="formView" runat="server">
                     <div class="container my-5 d-flex flex-column justify-content-center">
-                        <h1 class="mb-3 ms-5">Employee Details</h1>
+                        <h1 class="mb-3 ms-5 text-center">Employee Details</h1>
                         <div class="row">
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
@@ -160,7 +163,7 @@
                     <div class="row">
                         <div class="col-12 d-flex justify-content-center mt-5">
                             <div class="d-flex gap-1 align-items-center">
-                                <input type="text" runat="server" id="searchText"  autopostback="True">
+                                <input type="text" runat="server" id="searchText" autopostback="True">
                                 <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
                             </div>
 
@@ -287,11 +290,7 @@
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
-
     </form>
-    <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
-    </asp:PlaceHolder>
 </body>
 </html>
 
