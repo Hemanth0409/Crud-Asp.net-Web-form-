@@ -9,6 +9,7 @@ namespace Crud__Asp.net_Web_form_
     public partial class WebForm1 : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -16,6 +17,7 @@ namespace Crud__Asp.net_Web_form_
             {
                 BindCountry();
                 BindDataToGridView();
+                formViewId.Visible = false;
             }
         }
         public void BindCountry()
@@ -31,7 +33,7 @@ namespace Crud__Asp.net_Web_form_
             Txtcountry.DataBind();
             con.Close();
         }
-       
+
         public void BindState()
         {
             con.Open();
@@ -113,8 +115,7 @@ namespace Crud__Asp.net_Web_form_
             if (Session["Id"] != null)
             {
                 con.Open();
-                SqlCommand updatecom = new SqlCommand("exec UpdateData  @id='" + Session["Id"] + "', @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "'", con);
-                //SqlCommand updatecom = new SqlCommand("Update EmployeeDetails set name=('" + TxtName.Value + "'),email=('" + Txtemail.Value + "'),contact=('" + int.Parse(TxtContact.Value) + "'),age=('" + int.Parse(Txtage.Value) + "'),Address=('" + TxtAddress.Value + "'),country=('" + Txtcountry.SelectedItem + "'),state=('" + Txtstate.SelectedItem + "'),Joined_Date=('" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "'),gender=('" + gender + "') ,Language=('" + s + "') where id='" + Session["Id"] + "'", con);
+                SqlCommand updatecom = new SqlCommand("exec UpdateData  @id='" + Session["Id"] + "', @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='"+ Password.Value + "'", con);
                 updatecom.ExecuteNonQuery();
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
@@ -122,11 +123,8 @@ namespace Crud__Asp.net_Web_form_
             }
             else
             {
-                //(name, email, contact, age, address, country, state, joined_Date, gender)
                 con.Open();
-                SqlCommand comm = new SqlCommand("exec InsertData  @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@Address='" + TxtAddress.Value + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "'", con);
-
-                //SqlCommand comm = new SqlCommand("Insert into EmployeeDetails values('" + TxtName.Value + "','" + Txtemail.Value + "','" + int.Parse(TxtContact.Value) + "','" + int.Parse(Txtage.Value) + "','" + TxtAddress.Value + "','" + Txtcountry.SelectedItem + "','" + Txtstate.SelectedItem + "','" + Convert.ToDateTime(TxtjoinDate.Value) + "','" + gender + "','" + s + "')", con);
+                SqlCommand comm = new SqlCommand("exec InsertData  @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@Address='" + TxtAddress.Value + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
                 comm.ExecuteNonQuery();
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
@@ -137,7 +135,7 @@ namespace Crud__Asp.net_Web_form_
 
         }
         protected void Search_Click(object sender, EventArgs e)
-        {         
+        {
             if (searchText.Value != "")
             {
                 string searchQuery = "SELECT * FROM EmployeeDetails where Name LIKE '%" + searchText.Value + "' or email like'%" + searchText.Value + "' ";
@@ -155,8 +153,11 @@ namespace Crud__Asp.net_Web_form_
             }
 
         }
-     
-
+        protected void ResetSearch_Click(object sender, EventArgs e)
+        {
+            searchText.Value = string.Empty;
+            BindDataToGridView();
+        }
 
         protected void Reset_Click(object sender, EventArgs e)
         {
@@ -168,16 +169,26 @@ namespace Crud__Asp.net_Web_form_
             TxtjoinDate.Value = string.Empty;
             RadioMale.Checked = false;
             RadioFemale.Checked = false;
-            Txtcountry.ClearSelection();
+            UserName.Value = string.Empty;
+            Password.Value = string.Empty;
+            //Txtcountry.ClearSelection();
             Txtstate.ClearSelection();
+          
+
             foreach (ListItem li in Language.Items)
             {
                 li.Selected = false;
             }
 
+            ListView.Visible = true;
+            formViewId.Visible = false;
+
         }
         protected void EditButton_Click(object sender, EventArgs e)
         {
+            ListView.Visible = false;
+            formViewId.Visible = true;
+
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
@@ -193,10 +204,15 @@ namespace Crud__Asp.net_Web_form_
                 TxtContact.Value = sqlDataReader.GetValue(3).ToString();
                 Txtcountry.SelectedItem.Text = sqlDataReader.GetValue(6).ToString();
                 Txtstate.SelectedItem.Text = sqlDataReader.GetValue(7).ToString();
-                TxtAddress.Value = sqlDataReader.GetValue(5).ToString();
+                TxtAddress.Value = sqlDataReader.GetValue(8).ToString();
                 TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
                 string gender = sqlDataReader.GetValue(9).ToString();
                 string language = sqlDataReader.GetValue(10).ToString();
+                UserName.Value= sqlDataReader.GetValue(11).ToString();
+                Password.Attributes["type"] = "text";
+                Password.Value= sqlDataReader.GetValue(12).ToString();
+              
+
 
 
 
@@ -210,6 +226,13 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
             con.Close();
+
+        }
+        public void AddEmployee(object sender, EventArgs e)
+        {
+            Session["id"] = null;
+            ListView.Visible = false;
+            formViewId.Visible = true;
 
         }
     }

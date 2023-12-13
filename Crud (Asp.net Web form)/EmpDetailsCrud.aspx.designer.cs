@@ -42,13 +42,13 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.UpdatePanel updatepannel;
 
         /// <summary>
-        /// formView control.
+        /// formViewId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel formView;
+        protected global::System.Web.UI.WebControls.Panel formViewId;
 
         /// <summary>
         /// TxtName control.
@@ -66,7 +66,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtemail;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Txtemail;
 
         /// <summary>
         /// Txtage control.
@@ -75,7 +75,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtage;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Txtage;
 
         /// <summary>
         /// Txtcountry control.
@@ -111,7 +111,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtjoinDate;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
 
         /// <summary>
         /// RadioMale control.
@@ -148,6 +148,24 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTextArea TxtAddress;
+
+        /// <summary>
+        /// UserName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText UserName;
+
+        /// <summary>
+        /// Password control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputPassword Password;
 
         /// <summary>
         /// Button1 control.
@@ -193,6 +211,24 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button searchButton;
+
+        /// <summary>
+        /// ClearSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ClearSearch;
+
+        /// <summary>
+        /// AddEmployeeData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button AddEmployeeData;
 
         /// <summary>
         /// EmpDetails control.

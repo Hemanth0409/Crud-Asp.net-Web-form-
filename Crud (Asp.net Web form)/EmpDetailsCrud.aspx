@@ -15,36 +15,16 @@
         .error {
             color: Red
         }
-
-        .auto-style1 {
-            width: 490px;
-            margin-left: 141px;
-        }
     </style>
+
 </head>
 <body>
     <form id="form1" runat="server">
         <asp:ScriptManager ID="script" runat="server">
-            <Scripts>
-                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
-                <%--Framework Scripts--%>
-                <%--<asp:ScriptReference Name="MsAjaxBundle" />
-                <asp:ScriptReference Name="jquery" />
-                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
-                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
-                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
-                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
-                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
-                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
-                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
-                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
-                <asp:ScriptReference Name="WebFormsBundle" />--%>
-                <%--Site Scripts--%>
-            </Scripts>
         </asp:ScriptManager>
         <asp:UpdatePanel ID="updatepannel" runat="server">
             <ContentTemplate>
-                <asp:Panel ID="formView" runat="server">
+                <asp:Panel ID="formViewId" runat="server">
                     <div class="container my-5 d-flex flex-column justify-content-center">
                         <h1 class="mb-3 ms-5 text-center">Employee Details</h1>
                         <div class="row">
@@ -62,7 +42,7 @@
                                     <label for="email" class="form-label m-0">Email:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-4" runat="server" id="Txtemail">
+                                    <input type="email" class="form-control float-end mt-4" runat="server" id="Txtemail">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -70,7 +50,7 @@
                                     <label for="age" class="form-label m-0">Age:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="Text" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
+                                    <input type="number" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -103,25 +83,21 @@
                                 </div>
                             </div>
                             <div class="row justify-content-center mt-3">
-
                                 <div class="col-md-2 mt-4 text-center">
                                     <label for="joinedDate" class="form-label">Joined Date:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
+                                    <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
-
                                 <div class="col-md-2 mt-4 text-center">
                                     <label for="Gender" class="form-label">Gender:</label>
-
                                 </div>
                                 <div class="col-md-4 mt-4 ms-4">
                                     <div class="float-center ms-5">
                                         <asp:RadioButton asp-for="gender" ID="RadioMale" Text="Male" runat="server" GroupName="Gender" />
                                         <asp:RadioButton ID="RadioFemale" Text="Female" runat="server" GroupName="Gender" />
-
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +115,6 @@
                                         </asp:CheckBoxList>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="row justify-content-center mt-5">
@@ -151,27 +126,50 @@
                                 <textarea class="form-control float-end" id="TxtAddress" runat="server" rows="5"></textarea>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-12 d-flex justify-content-center gap-3 mt-5">
-                        <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
-                        <asp:Button ID="btn" runat="server" Text="Clear" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
-                    </div>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-md-2 mt-4 text-center">
+                                <label for="Name" class="form-label m-0">User Name:</label>
+                            </div>
 
+                            <div class="col-md-4 mt-4">
+                                <input type="text" class="form-control float-end" runat="server" id="UserName">
+                            </div>
+                        </div>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-md-2 mt-4 text-center">
+                                <label for="password" class="form-label m-0">Password:</label>
+                            </div>
+
+                            <div class="col-md-4 mt-4">
+                                <input type="password" class="form-control float-end" runat="server" id="Password">
+
+                            </div>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-center gap-3 mt-5">
+                            <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
+                            <asp:Button ID="btn" runat="server" Text="Clear" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
+                        </div>
                 </asp:Panel>
                 <asp:Panel ID="ListView" runat="server">
                     <div class="row">
-                        <div class="col-12 d-flex justify-content-center mt-5">
-                            <div class="d-flex gap-1 align-items-center">
-                                <input type="text" runat="server" id="searchText" autopostback="True">
+                        <div class="col-12 d-flex  mt-5">
+                            <div class="d-flex justify-content-center gap-1 mx-auto">
+                                <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
                                 <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
-                            </div>
+                                <asp:Button ID="ClearSearch" runat="server" Text="Clear" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
 
+                            </div>
+                            <div class="pe-4">
+                                <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
+
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" Width="1217px" Style="margin-left: 0px; margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" Width="1217px" Style="margin-left: 76px; margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
@@ -266,9 +264,9 @@
                                     <asp:BoundField DataField="Contact" HeaderText="Contact" SortExpression="Contact" />
                                     <asp:BoundField DataField="Country" HeaderText="Country" SortExpression="Country" />
                                     <asp:BoundField DataField="State" HeaderText="State" SortExpression="State" />
-                                    <asp:BoundField DataField="Joined_Date" HeaderText="Joined Date" SortExpression="Joined_Date" />
+                                    <%-- <asp:BoundField DataField="Joined_Date" HeaderText="Joined Date" SortExpression="Joined_Date" />
                                     <asp:BoundField DataField="Gender" HeaderText="Gender" SortExpression="Gender" />
-                                    <asp:BoundField DataField="Language" HeaderText="Language" SortExpression="Language" />
+                                    <asp:BoundField DataField="Language" HeaderText="Language" SortExpression="Language" />--%>
                                     <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
 
 
