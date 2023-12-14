@@ -11,7 +11,7 @@ namespace Crud__Asp.net_Web_form_
 {
 
 
-    public partial class Country
+    public partial class State
     {
 
         /// <summary>
@@ -24,22 +24,22 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// InsertCountry control.
+        /// Txtcountry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText InsertCountry;
+        protected global::System.Web.UI.WebControls.DropDownList Txtcountry;
 
         /// <summary>
-        /// Button1 control.
+        /// InsertState control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText InsertState;
 
         /// <summary>
         /// Button2 control.
@@ -49,23 +49,5 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button2;
-
-        /// <summary>
-        /// Button3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button3;
-
-        /// <summary>
-        /// Countrygrid control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView Countrygrid;
     }
 }

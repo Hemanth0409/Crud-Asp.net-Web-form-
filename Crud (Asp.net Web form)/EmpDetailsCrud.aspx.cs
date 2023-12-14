@@ -124,7 +124,7 @@ namespace Crud__Asp.net_Web_form_
             else
             {
                 con.Open();
-                SqlCommand comm = new SqlCommand("exec InsertData  @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@Address='" + TxtAddress.Value + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
+                SqlCommand comm = new SqlCommand("exec InsertData  @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
                 comm.ExecuteNonQuery();
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
@@ -171,9 +171,10 @@ namespace Crud__Asp.net_Web_form_
             RadioFemale.Checked = false;
             UserName.Value = string.Empty;
             Password.Value = string.Empty;
-            //Txtcountry.ClearSelection();
+            Txtcountry.ClearSelection();
             Txtstate.ClearSelection();
-          
+                
+
 
             foreach (ListItem li in Language.Items)
             {
@@ -183,6 +184,15 @@ namespace Crud__Asp.net_Web_form_
             ListView.Visible = true;
             formViewId.Visible = false;
 
+        }
+        protected void CountryLinkButton_Click(object sender, EventArgs e)  
+        {
+            this.PropertyAttributeModalPopupExtender.TargetControlID = "CountryLinkButton";
+            hdnPropertyAttributeIframe.Value = "Country.aspx";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Assign Source To IFrame", "AssignSourceToIframe()", true);
+            PropertyAttributeHeaderLabel.Text = "Country";
+            PropertyAttributeModalPopupExtender.OnCancelScript = "OnCancel('Country')";
+            PropertyAttributeModalPopupExtender.Show();
         }
         protected void EditButton_Click(object sender, EventArgs e)
         {
@@ -204,12 +214,11 @@ namespace Crud__Asp.net_Web_form_
                 TxtContact.Value = sqlDataReader.GetValue(3).ToString();
                 Txtcountry.SelectedItem.Text = sqlDataReader.GetValue(6).ToString();
                 Txtstate.SelectedItem.Text = sqlDataReader.GetValue(7).ToString();
-                TxtAddress.Value = sqlDataReader.GetValue(8).ToString();
+                TxtAddress.Value = sqlDataReader.GetValue(5).ToString();
                 TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
                 string gender = sqlDataReader.GetValue(9).ToString();
                 string language = sqlDataReader.GetValue(10).ToString();
-                UserName.Value= sqlDataReader.GetValue(11).ToString();
-                Password.Attributes["type"] = "text";
+                UserName.Value= sqlDataReader.GetValue(11).ToString();        
                 Password.Value= sqlDataReader.GetValue(12).ToString();
               
 
