@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -87,7 +88,14 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             BindDataToGridView();
         }
-        protected void UpdateCountry_Click(object sender, EventArgs e) { }
+        protected void UpdateCountry_Click(object sender, EventArgs e) {
+            con.Open();
+            SqlCommand updatecom = new SqlCommand("exec EditCountry  @CountryId='" + Session["Id"] + "', @Countryname='" + InsertCountry.Value + "'", con);
+            updatecom.ExecuteNonQuery();
+            con.Close();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
+            BindDataToGridView();
+        }
         protected void ClearCountry_Click(object sender, EventArgs e)
         {
             Button1.Visible=true;

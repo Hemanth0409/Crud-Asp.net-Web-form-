@@ -42,12 +42,12 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlInputText InsertState;
 
         /// <summary>
-        /// Button2 control.
+        /// Stategrid control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button2;
+        protected global::System.Web.UI.WebControls.GridView Stategrid;
     }
 }

@@ -28,8 +28,6 @@
                         <asp:Button ID="Button1" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="InsertCountry_Click" Text="Add Country" />
                         <asp:Button ID="Button2" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="UpdateCountry_Click" Text="Save" Visible="false" />
                         <asp:Button ID="Button3" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="ClearCountry_Click" Text="Cancel"  />
-
-
                     </div>
                 </div>
                 <hr class="border-4" />
