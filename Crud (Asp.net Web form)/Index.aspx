@@ -30,7 +30,13 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="Country.aspx" class="nav-link px-0 text-white" target="switch-frame">
-                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">Country & state</span>
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">Country </span>
+                                        </a>
+                               
+                                    </li>
+                                     <li class="nav-item">
+                                        <a href="State.aspx" class="nav-link px-0 text-white" target="switch-frame">
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">State</span>
                                         </a>
                                
                                     </li>

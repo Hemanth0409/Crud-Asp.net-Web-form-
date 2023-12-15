@@ -35,6 +35,7 @@ namespace Crud__Asp.net_Web_form_
             Txtcountry.DataValueField = "CountryId";
             Txtcountry.DataBind();
             con.Close();
+
         }
         public void InsertState_Click(object sender, EventArgs e)
         {
@@ -45,21 +46,44 @@ namespace Crud__Asp.net_Web_form_
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('State Inserted  Successfully');", true);
             InsertState.Value = string.Empty;
             BindCountry();
+            BindDataToGridView();
+        }
+        protected void CountryIndexChange(object sender, EventArgs e)
+        {
+            BindDataToGridView();
         }
         public void BindDataToGridView()
         {
-            SqlCommand comm = new SqlCommand("exec SelectCountryList @CountryId='"+Convert.ToInt32(Txtcountry.SelectedIndex)+"'", con);
-            SqlDataAdapter adapter = new SqlDataAdapter(comm);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            if (dt.Rows.Count > 0)
+            if (Txtcountry.SelectedIndex != 0)
             {
-                Stategrid.DataSource = dt;
-                Stategrid.DataBind();
+                SqlCommand comm = new SqlCommand("exec SelectCountryList @CountryId='" + Convert.ToInt32(Txtcountry.SelectedIndex) + "'", con);
+                SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    Stategrid.DataSource = dt;
+                    Stategrid.DataBind();
+                }
+                ViewState["dt"] = dt;
+                ViewState["sort"] = "ASC";
             }
-            ViewState["dt"] = dt;
-            ViewState["sort"] = "ASC";
+            else
+            {
+                SqlCommand comm = new SqlCommand("exec SelectState ", con);
+                SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    Stategrid.DataSource = dt;
+                    Stategrid.DataBind();
+                }
+                ViewState["dt"] = dt;
+                ViewState["sort"] = "ASC";
+            }
         }
+        
         protected void OnPageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             Stategrid.PageIndex = e.NewPageIndex;
@@ -67,35 +91,57 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            //GridViewRow gdRow = (GridViewRow)Countrygrid.Rows[e.RowIndex];
+            GridViewRow gdRow = (GridViewRow)Stategrid.Rows[e.RowIndex];
 
-            //HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
+            HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
 
-            //con.Open();
-            //string sql = string.Format("exec DeleteData @id='" + hdnId.Value + "'");
-            //SqlCommand comm = new SqlCommand(sql, con);
-            //comm.ExecuteNonQuery();
-            //Countrygrid.EditIndex = -1;
-            //BindDataToGridView();
-            //con.Close();
+            con.Open();
+            string sql = string.Format("exec DeleteData @id='" + hdnId.Value + "'");
+            SqlCommand comm = new SqlCommand(sql, con);
+            comm.ExecuteNonQuery();
+            Stategrid.EditIndex = -1;
+            BindDataToGridView();
+            con.Close();
         }
         protected void EditButton_Click(object sender, EventArgs e)
         {
-            //Button2.Visible = true;
-            //Button1.Visible = false;
-            //Button btn = (Button)sender;
-            //GridViewRow row = (GridViewRow)btn.NamingContainer;
-            //HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            //Session["Id"] = hdnId.Value;
-            //con.Open();
-            //SqlCommand comm = new SqlCommand("exec selectCountry @CountryId='" + hdnId.Value + "'", con);
-            //SqlDataReader sqlDataReader = comm.ExecuteReader();
-            //while (sqlDataReader.Read())
-            //{
-            //    InsertCountry.Value = sqlDataReader.GetValue(1).ToString();
-            //}
-            //con.Close();
-            //BindDataToGridView();
+            Button2.Visible = true;
+            Button1.Visible = false;
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
+            Session["Id"] = hdnId.Value;
+            con.Open();
+            SqlCommand comm = new SqlCommand("exec SelectByIdState @StateId='" + hdnId.Value + "'", con);
+            SqlDataReader sqlDataReader = comm.ExecuteReader();
+            while (sqlDataReader.Read())
+            {
+                Txtcountry.SelectedIndex = Convert.ToInt32(sqlDataReader.GetValue(2).ToString());
+                InsertState.Value = sqlDataReader.GetValue(1).ToString();
+            }
+            con.Close();
+            BindDataToGridView();
+        }
+
+        protected void UpdateState_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand updatecom = new SqlCommand("exec EditState  @StateId='" + Session["Id"] + "', @Statename='" + InsertState.Value + "'", con);
+            updatecom.ExecuteNonQuery();
+            con.Close();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
+            BindDataToGridView();
+        }
+
+        protected void ClearState_Click(object sender, EventArgs e)
+        {
+            Button1.Visible = true;
+            Button2.Visible = false;
+            Session["Id"] = null;
+            InsertState.Value = string.Empty;
+            Txtcountry.ClearSelection();
+            BindDataToGridView();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "windows.Reload();", true);
         }
     }
 }

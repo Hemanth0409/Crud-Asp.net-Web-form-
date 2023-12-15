@@ -8,13 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-     <script type="text/javascript">
+    <script type="text/javascript">
         function AssignSourceToIframe() {
-            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID%>').value;
+            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID %>').value;
             // alert(hdnvalue);
             document.getElementById("PropertyAttributeIframe").src = hdnvalue;
         }
-     </script>
+    </script>
     <style>
         body {
             background: #fafbfb;
@@ -55,7 +55,7 @@
                                     <label for="email" class="form-label m-0"><span class="RequiredField">*</span>Email:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="email" class="form-control float-end mt-4" runat="server" id="Txtemail">
+                                    <input type="text" class="form-control float-end mt-4" runat="server" id="Txtemail">
                                 </div>
                             </div>
 
@@ -89,6 +89,8 @@
                                     <asp:DropDownList class="float-center ms-5" ID="Txtstate" AutoPostBack="true" AppendDataBoundItems="true" runat="server">
                                         <asp:ListItem>Select a country</asp:ListItem>
                                     </asp:DropDownList>
+                                    <asp:LinkButton ID="StateLinkButton" CssClass="PropertyAdd" runat="server"
+                                        Text="[+]" OnClick="StateLinkButton_Click"></asp:LinkButton>
                                 </div>
                             </div>
                             <div class="row justify-content-center mt-4">
@@ -209,6 +211,11 @@
                                 <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
 
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div  class="col-12">
+                            <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LoadExcelData">Load Date </asp:LinkButton>
                         </div>
                     </div>
                     <div class="row mt-5 ">

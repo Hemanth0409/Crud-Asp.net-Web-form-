@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
@@ -185,13 +186,32 @@ namespace Crud__Asp.net_Web_form_
             formViewId.Visible = false;
 
         }
+        protected void LoadExcelData(object sender,EventArgs e)
+        {
+
+        }
+        public void LoadDateFromExcel(string fpath,string extension,string hdr)
+        {
+            string excelCon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
+        }
         protected void CountryLinkButton_Click(object sender, EventArgs e)  
         {
+            PropertyAttributePanel.Visible = true;
             this.PropertyAttributeModalPopupExtender.TargetControlID = "CountryLinkButton";
             hdnPropertyAttributeIframe.Value = "Country.aspx";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Assign Source To IFrame", "AssignSourceToIframe()", true);
             PropertyAttributeHeaderLabel.Text = "Country";
             PropertyAttributeModalPopupExtender.OnCancelScript = "OnCancel('Country')";
+            PropertyAttributeModalPopupExtender.Show();
+        }
+        protected void StateLinkButton_Click(object sender, EventArgs e)
+        {
+            PropertyAttributePanel.Visible = true;
+            this.PropertyAttributeModalPopupExtender.TargetControlID = "StateLinkButton";
+            hdnPropertyAttributeIframe.Value = "State.aspx";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Assign Source To IFrame", "AssignSourceToIframe()", true);
+            PropertyAttributeHeaderLabel.Text = "State";
+            PropertyAttributeModalPopupExtender.OnCancelScript = "OnCancel('State')";
             PropertyAttributeModalPopupExtender.Show();
         }
         protected void EditButton_Click(object sender, EventArgs e)
@@ -239,7 +259,6 @@ namespace Crud__Asp.net_Web_form_
         }
         public void AddEmployee(object sender, EventArgs e)
         {
-            Session["id"] = null;
             ListView.Visible = false;
             formViewId.Visible = true;
 
