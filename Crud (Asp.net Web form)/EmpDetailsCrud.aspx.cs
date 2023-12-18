@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -116,7 +118,7 @@ namespace Crud__Asp.net_Web_form_
             if (Session["Id"] != null)
             {
                 con.Open();
-                SqlCommand updatecom = new SqlCommand("exec UpdateData  @id='" + Session["Id"] + "', @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='"+ Password.Value + "'", con);
+                SqlCommand updatecom = new SqlCommand("exec UpdateData  @id='" + Session["Id"] + "', @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
                 updatecom.ExecuteNonQuery();
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
@@ -174,7 +176,7 @@ namespace Crud__Asp.net_Web_form_
             Password.Value = string.Empty;
             Txtcountry.ClearSelection();
             Txtstate.ClearSelection();
-                
+
 
 
             foreach (ListItem li in Language.Items)
@@ -186,15 +188,53 @@ namespace Crud__Asp.net_Web_form_
             formViewId.Visible = false;
 
         }
-        protected void LoadExcelData(object sender,EventArgs e)
+
+        protected void ExportToExcel(object sender, EventArgs e)
         {
+            Response.Clear();
+            Response.Buffer = true;
+            Response.ContentType = "application/ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=UserInfo.xls");
+            Response.Charset = "UTF-8";
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+            EmpDetails.RenderControl(htw);
+            Response.Output.Write(sw.ToString());
+            Response.End();
+        }
+        //public override void VerifyRenderingInServerForm(Control control)
+        //{
+        //}
+        protected void LoadExcelData(object sender, EventArgs e)
+        {
+            //if (UploadedFile.HasFile)
+            //{
+                //string fileName = Path.GetFileName(UploadedFile.PostedFile.FileName);
+                string filePath = Server.MapPath("~/Files/Untitled spreadsheet.xlsx");
+                //UploadedFile.SaveAs(filePath);
+                LoadDataFromExcel(filePath, ".xlsx", "yes");
+            //}
+        }
+        public void LoadDataFromExcel(string fpath, string extension, string hdr)
+        {
+            string con = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
+            con = string.Format(con, fpath, hdr);
+            OleDbConnection excelcon = new OleDbConnection(con);
+            excelcon.Open();
+            DataTable dt = excelcon.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+            string excelsheetname = dt.Rows[0]["TABLE_NAME"].ToString();
+            OleDbCommand cmd = new OleDbCommand("select * from [" + excelsheetname + "]", excelcon);
+            OleDbDataAdapter Da = new OleDbDataAdapter(cmd);
+            DataTable dtnew = new DataTable();
+            Da.Fill(dtnew);
+            excelcon.Close();
+
+            EmpDetails.Caption=Path.GetFileName(fpath);
+            EmpDetails.DataSource = dtnew;
+            EmpDetails.DataBind();
 
         }
-        public void LoadDateFromExcel(string fpath,string extension,string hdr)
-        {
-            string excelCon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
-        }
-        protected void CountryLinkButton_Click(object sender, EventArgs e)  
+        protected void CountryLinkButton_Click(object sender, EventArgs e)
         {
             PropertyAttributePanel.Visible = true;
             this.PropertyAttributeModalPopupExtender.TargetControlID = "CountryLinkButton";
@@ -238,13 +278,8 @@ namespace Crud__Asp.net_Web_form_
                 TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
                 string gender = sqlDataReader.GetValue(9).ToString();
                 string language = sqlDataReader.GetValue(10).ToString();
-                UserName.Value= sqlDataReader.GetValue(11).ToString();        
-                Password.Value= sqlDataReader.GetValue(12).ToString();
-              
-
-
-
-
+                UserName.Value = sqlDataReader.GetValue(11).ToString();
+                Password.Value = sqlDataReader.GetValue(12).ToString();
                 if (gender.Equals("Male"))
                 {
                     RadioMale.Checked = true;
@@ -255,7 +290,6 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
             con.Close();
-
         }
         public void AddEmployee(object sender, EventArgs e)
         {

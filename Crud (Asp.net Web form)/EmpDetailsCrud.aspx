@@ -215,7 +215,9 @@
                     </div>
                     <div class="row">
                         <div  class="col-12">
-                            <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LoadExcelData">Load Date </asp:LinkButton>
+                            <asp:FileUpload ID="UploadedFile" runat="server" />
+                            <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LoadExcelData">Load Excel Data</asp:LinkButton>
+                             <asp:LinkButton ID="LinkButton3" runat="server" OnClick="ExportToExcel">Export Data To Excel</asp:LinkButton>
                         </div>
                     </div>
                     <div class="row mt-5 ">
