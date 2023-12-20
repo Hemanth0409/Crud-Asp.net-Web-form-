@@ -160,7 +160,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="EmpDetailsCrud.aspx" />
-    <Content Include="Files\Untitled spreadsheet.xlsx" />
+    <None Include="Files\Export\UserInfo.xls" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -289,6 +289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Files\Import\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

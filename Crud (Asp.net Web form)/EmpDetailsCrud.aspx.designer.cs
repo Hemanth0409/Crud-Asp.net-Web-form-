@@ -75,7 +75,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Txtage;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtage;
 
         /// <summary>
         /// Txtcountry control.
@@ -129,7 +129,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtjoinDate;
 
         /// <summary>
         /// RadioMale control.
@@ -183,7 +183,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputPassword Password;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText Password;
 
         /// <summary>
         /// Button1 control.
@@ -267,15 +267,6 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.HiddenField hdnPropertyAttributeIframe;
 
         /// <summary>
-        /// ListView control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ListView;
-
-        /// <summary>
         /// searchText control.
         /// </summary>
         /// <remarks>
@@ -312,13 +303,31 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.Button AddEmployeeData;
 
         /// <summary>
-        /// UploadedFile control.
+        /// ListView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload UploadedFile;
+        protected global::System.Web.UI.WebControls.Panel ListView;
+
+        /// <summary>
+        /// EmpDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView EmpDetails;
+
+        /// <summary>
+        /// UploadedFile1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload UploadedFile1;
 
         /// <summary>
         /// LinkButton2 control.
@@ -337,14 +346,5 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton3;
-
-        /// <summary>
-        /// EmpDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView EmpDetails;
     }
 }

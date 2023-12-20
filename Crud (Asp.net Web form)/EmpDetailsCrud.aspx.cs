@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.IO;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace Crud__Asp.net_Web_form_
@@ -111,7 +114,7 @@ namespace Crud__Asp.net_Web_form_
             {
                 if (li.Selected == true)
                 {
-                    s += li.Text;
+                    s += li.Text + ",";
                 }
             }
 
@@ -188,52 +191,74 @@ namespace Crud__Asp.net_Web_form_
             formViewId.Visible = false;
 
         }
-
         protected void ExportToExcel(object sender, EventArgs e)
         {
-            Response.Clear();
-            Response.Buffer = true;
-            Response.ContentType = "application/ms-excel";
-            Response.AddHeader("content-disposition", "attachment;filename=UserInfo.xls");
-            Response.Charset = "UTF-8";
-            StringWriter sw = new StringWriter();
-            HtmlTextWriter htw = new HtmlTextWriter(sw);
-            EmpDetails.RenderControl(htw);
-            Response.Output.Write(sw.ToString());
-            Response.End();
+            ExportGridView("UserInfo.xls");
         }
+
+        private void ExportGridView(string fileName)
+        {
+            string exportedFile = Server.MapPath(@"~\Files\Export\UserInfo.xls");
+
+            if (File.Exists(exportedFile))
+            {
+                Response.ClearContent();
+                Response.ClearHeaders();
+                Response.AddHeader("content-disposition", "attachment; filename=UserInfo.xls");
+                Response.ContentType = "application/ms-excel";
+                Response.WriteFile(exportedFile);
+                Response.Flush();
+                Response.Close();
+            }
+        }
+
         //public override void VerifyRenderingInServerForm(Control control)
         //{
+
         //}
+
+
         protected void LoadExcelData(object sender, EventArgs e)
         {
-            //if (UploadedFile.HasFile)
-            //{
-                //string fileName = Path.GetFileName(UploadedFile.PostedFile.FileName);
-                string filePath = Server.MapPath("~/Files/Untitled spreadsheet.xlsx");
-                //UploadedFile.SaveAs(filePath);
+            if (UploadedFile1.HasFile)
+            {
+                string fileName = Path.GetFileName(UploadedFile1.FileName);
+                string filePath = Server.MapPath("~/Files/Import/" + fileName);
+                UploadedFile1.SaveAs(filePath);
                 LoadDataFromExcel(filePath, ".xlsx", "yes");
-            //}
+            }
         }
+
         public void LoadDataFromExcel(string fpath, string extension, string hdr)
         {
-            string con = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
-            con = string.Format(con, fpath, hdr);
-            OleDbConnection excelcon = new OleDbConnection(con);
-            excelcon.Open();
-            DataTable dt = excelcon.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-            string excelsheetname = dt.Rows[0]["TABLE_NAME"].ToString();
-            OleDbCommand cmd = new OleDbCommand("select * from [" + excelsheetname + "]", excelcon);
-            OleDbDataAdapter Da = new OleDbDataAdapter(cmd);
-            DataTable dtnew = new DataTable();
-            Da.Fill(dtnew);
-            excelcon.Close();
 
-            EmpDetails.Caption=Path.GetFileName(fpath);
-            EmpDetails.DataSource = dtnew;
-            EmpDetails.DataBind();
+            string excelon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
+            excelon = string.Format(excelon, fpath, hdr);
+            OleDbConnection excelcon2 = new OleDbConnection(excelon);
 
+            OleDbCommand cmd = new OleDbCommand("select [Name],[Email],[Contact],[Age],[Address],[Country],[State],[Joined_Date],[gender],[Language],[UserName],[Password] FROM [Sheet1$] where name is not null and email is not null and UserName is not null and Password is not null", excelcon2);
+            OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            adapter.Fill(ds);
+
+            excelcon2.Open();
+            DbDataReader dr = cmd.ExecuteReader();
+            con.Open();
+            SqlBulkCopy bulkInsert = new SqlBulkCopy(con);
+           
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    bulkInsert.ColumnMappings.Add(dr.GetName(i), dr.GetName(i));
+                }
+            
+            bulkInsert.DestinationTableName = "EmployeeDetails";
+            bulkInsert.WriteToServer(dr);
+            con.Close();
+            excelcon2.Close();
+            BindDataToGridView();
         }
+
+
         protected void CountryLinkButton_Click(object sender, EventArgs e)
         {
             PropertyAttributePanel.Visible = true;
@@ -277,7 +302,7 @@ namespace Crud__Asp.net_Web_form_
                 TxtAddress.Value = sqlDataReader.GetValue(5).ToString();
                 TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
                 string gender = sqlDataReader.GetValue(9).ToString();
-                string language = sqlDataReader.GetValue(10).ToString();
+                string selectedItems = sqlDataReader.GetValue(10).ToString();
                 UserName.Value = sqlDataReader.GetValue(11).ToString();
                 Password.Value = sqlDataReader.GetValue(12).ToString();
                 if (gender.Equals("Male"))
@@ -288,6 +313,18 @@ namespace Crud__Asp.net_Web_form_
                 {
                     RadioFemale.Checked = true;
                 }
+
+
+                for (int i = 0; i < Language.Items.Count; i++)
+                {
+                    if (selectedItems.Contains(Language.Items[i].Value))
+                    {
+                        Language.Items[i].Selected = true;
+                    }
+                }
+
+                selectedItems = selectedItems.TrimEnd(',');
+
             }
             con.Close();
         }
@@ -299,39 +336,3 @@ namespace Crud__Asp.net_Web_form_
         }
     }
 }
-
-
-//protected void RowEditing(object sender, GridViewEditEventArgs e)
-//{
-//    EmpDetails.EditIndex = e.NewEditIndex;
-//    BindDataToGridView();
-//}
-//protected void UpdateRow(object sender, GridViewUpdateEventArgs e)
-//{
-//    GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
-//    HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
-
-//    con.Open();
-//    string sql = string.Format("Update EmployeeDetails set name=@Name,email=@Email,contact=@Contact,age=@Age,country=@Country,state=@State,address=@Address,Joined_Date=@Joined_Date where id='" + hdnId.Value + "'");
-
-//    SqlCommand comm = new SqlCommand(sql, con);
-//    comm.Parameters.AddWithValue("@Name", (EmpDetails.Rows[e.RowIndex].FindControl("name") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Email", (EmpDetails.Rows[e.RowIndex].FindControl("email") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Contact", (EmpDetails.Rows[e.RowIndex].FindControl("contact") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Age", (EmpDetails.Rows[e.RowIndex].FindControl("age") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Country", (EmpDetails.Rows[e.RowIndex].FindControl("country") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@State", (EmpDetails.Rows[e.RowIndex].FindControl("state") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Address", (EmpDetails.Rows[e.RowIndex].FindControl("address") as TextBox).Text.Trim());
-//    comm.Parameters.AddWithValue("@Joined_Date", (EmpDetails.Rows[e.RowIndex].FindControl("Joined_Date") as TextBox).Text.Trim());
-
-//    comm.ExecuteNonQuery();
-//    EmpDetails.EditIndex = -1;
-//    BindDataToGridView();
-//    con.Close();
-//}
-
-//protected void CancelingEditedRow(object sender, GridViewCancelEditEventArgs e)
-//{
-//    EmpDetails.EditIndex--;
-//    BindDataToGridView();
-//}

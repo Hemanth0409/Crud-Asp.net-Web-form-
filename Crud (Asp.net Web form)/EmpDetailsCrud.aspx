@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
@@ -31,7 +31,7 @@
 
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" enctype="multipart/form-data">
         <asp:ScriptManager ID="script" runat="server">
         </asp:ScriptManager>
         <asp:UpdatePanel ID="updatepannel" runat="server">
@@ -64,7 +64,7 @@
                                     <label for="age" class="form-label m-0">Age:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="number" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
+                                    <input type="text" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -106,7 +106,7 @@
                                     <label for="joinedDate" class="form-label">Joined Date:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
+                                    <input type="text" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -160,14 +160,14 @@
                             </div>
 
                             <div class="col-md-4 mt-4">
-                                <input type="password" class="form-control float-end" runat="server" id="Password">
+                                <input type="text" class="form-control float-end" runat="server" id="Password">
                             </div>
                         </div>
 
 
                         <div class="col-12 d-flex justify-content-center gap-3 mt-5">
                             <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
-                            <asp:Button ID="btn" runat="server" Text="Clear" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
+                            <asp:Button ID="btn" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
                         </div>
                 </asp:Panel>
                 <asp:Panel ID="PropertyAttributePanel" runat="server" Width="550" Height="385" CssClass="PopUpPanel">
@@ -198,31 +198,26 @@
                     CancelControlID="PropertyAttributeCancelButton" runat="server">
                 </cc1:ModalPopupExtender>
                 <asp:HiddenField ID="hdnPropertyAttributeIframe" runat="server"></asp:HiddenField>
+                <div class="row">
+                    <div class="col-12 d-flex  mt-5">
+                        <div class="d-flex justify-content-center gap-1 mx-auto">
+                            <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
+                            <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
+                            <asp:Button ID="ClearSearch" runat="server" Text="Cancel" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
+
+                        </div>
+                        <div class="pe-4">
+                            <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
+
+                        </div>
+                    </div>
+                </div>
+
                 <asp:Panel ID="ListView" runat="server">
-                    <div class="row">
-                        <div class="col-12 d-flex  mt-5">
-                            <div class="d-flex justify-content-center gap-1 mx-auto">
-                                <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
-                                <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
-                                <asp:Button ID="ClearSearch" runat="server" Text="Clear" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
 
-                            </div>
-                            <div class="pe-4">
-                                <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div  class="col-12">
-                            <asp:FileUpload ID="UploadedFile" runat="server" />
-                            <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LoadExcelData">Load Excel Data</asp:LinkButton>
-                             <asp:LinkButton ID="LinkButton3" runat="server" OnClick="ExportToExcel">Export Data To Excel</asp:LinkButton>
-                        </div>
-                    </div>
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" Width="1217px" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
@@ -235,7 +230,6 @@
                                     <asp:BoundField DataField="Contact" HeaderText="Contact" SortExpression="Contact" />
                                     <asp:BoundField DataField="Country" HeaderText="Country" SortExpression="Country" />
                                     <asp:BoundField DataField="State" HeaderText="State" SortExpression="State" />
-
                                     <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
 
 
@@ -253,6 +247,13 @@
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
+        <div class="row">
+            <div class="col-12">
+                <asp:FileUpload ID="UploadedFile1" runat="server" />
+                <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LoadExcelData" Text="Load Excel Data"></asp:LinkButton>
+                <asp:LinkButton ID="LinkButton3" runat="server" OnClick="ExportToExcel">Download Template</asp:LinkButton>
+            </div>
+        </div>
     </form>
 </body>
 </html>
