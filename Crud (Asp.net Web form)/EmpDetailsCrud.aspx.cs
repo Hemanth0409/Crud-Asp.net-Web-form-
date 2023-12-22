@@ -1,10 +1,12 @@
-﻿using Microsoft.Ajax.Utilities;
+﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -82,22 +84,7 @@ namespace Crud__Asp.net_Web_form_
 
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
-
-            HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
-
-            con.Open();
-            string sql = string.Format("exec DeleteData @id='" + hdnId.Value + "'");
-            SqlCommand comm = new SqlCommand(sql, con);
-            comm.ExecuteNonQuery();
-            EmpDetails.EditIndex = -1;
-            BindDataToGridView();
-            con.Close();
-        }
-        protected void Create_Click(object sender, EventArgs e)
-        {
-            string gender = string.Empty;
-            string cbSelect = string.Empty;
+            string gender;
 
             if (RadioMale.Checked)
             {
@@ -109,20 +96,53 @@ namespace Crud__Asp.net_Web_form_
             }
 
 
-            string s = string.Empty;
+            string language = string.Empty;
             foreach (ListItem li in Language.Items)
             {
                 if (li.Selected == true)
                 {
-                    s += li.Text + ",";
+                    language += li.Text + ",";
+                }
+            }
+            GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
+
+            HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
+
+            con.Open();
+            EmployeeDetails(Convert.ToInt32(hdnId.Value), "", "",0,0, "", "","","","","","", "", true, "DELETE");
+            EmpDetails.EditIndex = -1;
+            BindDataToGridView();
+            con.Close();
+        }
+        protected void Create_Click(object sender, EventArgs e)
+        {
+            string gender;
+            string cbSelect;
+
+            if (RadioMale.Checked)
+            {
+                gender = RadioMale.Text;
+            }
+            else
+            {
+                gender = RadioFemale.Text;
+            }
+
+
+            string language = string.Empty;
+            foreach (ListItem li in Language.Items)
+            {
+                if (li.Selected == true)
+                {
+                    language += li.Text + ",";
                 }
             }
 
             if (Session["Id"] != null)
             {
                 con.Open();
-                SqlCommand updatecom = new SqlCommand("exec UpdateData  @id='" + Session["Id"] + "', @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
-                updatecom.ExecuteNonQuery();
+             
+                EmployeeDetails(Convert.ToInt32(Session["Id"]), TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "UPDATE");
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
                 BindDataToGridView();
@@ -130,8 +150,7 @@ namespace Crud__Asp.net_Web_form_
             else
             {
                 con.Open();
-                SqlCommand comm = new SqlCommand("exec InsertData  @name='" + TxtName.Value + "',@email='" + Txtemail.Value + "',@contact='" + int.Parse(TxtContact.Value) + "',@age='" + int.Parse(Txtage.Value) + "',@country='" + Txtcountry.SelectedItem + "',@state='" + Txtstate.SelectedItem + "',@Address='" + TxtAddress.Value + "',@Joined_Date='" + Convert.ToDateTime(TxtjoinDate.Value).ToString() + "',@gender='" + gender + "',@Language='" + s + "',@Username='" + UserName.Value + "',@password='" + Password.Value + "'", con);
-                comm.ExecuteNonQuery();
+                EmployeeDetails(0, TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "INSERT");
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
                 BindDataToGridView();
@@ -139,6 +158,56 @@ namespace Crud__Asp.net_Web_form_
             }
             Reset_Click(sender, e);
 
+        }
+        public string EmployeeDetails(int Id, string Name, string Email, int Contact, int Age,
+            string Address, string Country, string State, string Joined_Date, string Gender,
+            string Language, string UserName, string Password, bool IsActive, string StatementType)
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            if (StatementType == "DELETE")
+            {
+                com.CommandType = CommandType.StoredProcedure;
+                com.CommandText = "Sp_EmployeeDetails";
+                com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
+                com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value ="";
+                com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("Contact", SqlDbType.Int).Value = 0;
+                com.Parameters.Add("Age", SqlDbType.Int).Value = 0;
+                com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = "";
+                com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = "";
+                com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
+                com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
+            }
+            else 
+            {               
+                com.CommandType = CommandType.StoredProcedure;
+                com.CommandText = "Sp_EmployeeDetails";
+                com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
+                com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value = Name;
+                com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = Email;
+                com.Parameters.Add("Contact", SqlDbType.Int).Value = Contact;
+                com.Parameters.Add("Age", SqlDbType.Int).Value = Age;
+                com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = Address;
+                com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = Country;
+                com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = State;
+                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = Joined_Date;
+                com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
+                com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
+                com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
+                com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
+                com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
+                com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;               
+            }
+            com.CommandTimeout = 0;
+            com.ExecuteNonQuery();
+            return com.ToString();
         }
         protected void Search_Click(object sender, EventArgs e)
         {
@@ -151,7 +220,6 @@ namespace Crud__Asp.net_Web_form_
                 adapter.Fill(dt);
                 EmpDetails.DataSource = dt;
                 EmpDetails.DataBind();
-
             }
             else
             {
@@ -198,7 +266,7 @@ namespace Crud__Asp.net_Web_form_
 
         private void ExportGridView(string fileName)
         {
-            string exportedFile = Server.MapPath(@"~\Files\Export\UserInfo.xls");
+            string exportedFile = Server.MapPath(@"~\Files\Export\" + fileName);
 
             if (File.Exists(exportedFile))
             {
@@ -211,12 +279,6 @@ namespace Crud__Asp.net_Web_form_
                 Response.Close();
             }
         }
-
-        //public override void VerifyRenderingInServerForm(Control control)
-        //{
-
-        //}
-
 
         protected void LoadExcelData(object sender, EventArgs e)
         {
@@ -232,6 +294,7 @@ namespace Crud__Asp.net_Web_form_
         public void LoadDataFromExcel(string fpath, string extension, string hdr)
         {
 
+
             string excelon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
             excelon = string.Format(excelon, fpath, hdr);
             OleDbConnection excelcon2 = new OleDbConnection(excelon);
@@ -245,12 +308,12 @@ namespace Crud__Asp.net_Web_form_
             DbDataReader dr = cmd.ExecuteReader();
             con.Open();
             SqlBulkCopy bulkInsert = new SqlBulkCopy(con);
-           
-                for (int i = 0; i < dr.FieldCount; i++)
-                {
-                    bulkInsert.ColumnMappings.Add(dr.GetName(i), dr.GetName(i));
-                }
-            
+
+            for (int i = 0; i < dr.FieldCount; i++)
+            {
+                bulkInsert.ColumnMappings.Add(dr.GetName(i), dr.GetName(i));
+            }
+
             bulkInsert.DestinationTableName = "EmployeeDetails";
             bulkInsert.WriteToServer(dr);
             con.Close();

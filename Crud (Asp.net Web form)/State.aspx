@@ -41,7 +41,7 @@
             <hr class="border-4" />
             <div class="row mt-5 ">
                 <div class="col-12 justify-content-end">
-                    <asp:GridView ID="Stategrid" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" Width="496px" Style="margin-top: 0px; margin-left: 264px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                    <asp:GridView ID="Stategrid" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting"  autoFit="true" Style="margin-top: 0px; margin-left: 264px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True"  PageSize="5">
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>

@@ -158,13 +158,10 @@
                             <div class="col-md-2 mt-4 text-center">
                                 <label for="password" class="form-label m-0"><span class="RequiredField">*</span>Password:</label>
                             </div>
-
                             <div class="col-md-4 mt-4">
                                 <input type="text" class="form-control float-end" runat="server" id="Password">
                             </div>
                         </div>
-
-
                         <div class="col-12 d-flex justify-content-center gap-3 mt-5">
                             <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
                             <asp:Button ID="btn" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
@@ -191,7 +188,6 @@
                     </table>
                 </asp:Panel>
                 <asp:LinkButton ID="PropertyAttributeButton" runat="server"></asp:LinkButton>
-
                 <asp:LinkButton ID="LinkButton1" runat="server"></asp:LinkButton>
                 <cc1:ModalPopupExtender ID="PropertyAttributeModalPopupExtender" BackgroundCssClass="modal"
                     TargetControlID="PropertyAttributeButton" PopupControlID="PropertyAttributePanel"
@@ -204,24 +200,20 @@
                             <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
                             <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
                             <asp:Button ID="ClearSearch" runat="server" Text="Cancel" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
-
                         </div>
                         <div class="pe-4">
                             <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
-
                         </div>
                     </div>
                 </div>
-
                 <asp:Panel ID="ListView" runat="server">
-
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
                             <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
-                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id") %>' />
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id")%>' />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
@@ -231,8 +223,6 @@
                                     <asp:BoundField DataField="Country" HeaderText="Country" SortExpression="Country" />
                                     <asp:BoundField DataField="State" HeaderText="State" SortExpression="State" />
                                     <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
-
-
                                     <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
                                             <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>

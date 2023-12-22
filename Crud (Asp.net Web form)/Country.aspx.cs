@@ -63,7 +63,7 @@ namespace Crud__Asp.net_Web_form_
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
 
             con.Open();
-            string sql = string.Format("exec DeleteData @id='" + hdnId.Value + "'");
+            string sql = string.Format("exec [deleteCountry] @Countryid='" + hdnId.Value + "'");
             SqlCommand comm = new SqlCommand(sql, con);
             comm.ExecuteNonQuery();
             Countrygrid.EditIndex = -1;
@@ -98,11 +98,36 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void ClearCountry_Click(object sender, EventArgs e)
         {
-            Button1.Visible=true;
-            Button2.Visible=false;
+            Button1.Visible = true;
+            Button2.Visible = false;
             Session["Id"] = null;
             InsertCountry.Value = string.Empty;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "windows.Reload();", true);
         }
+        protected void Search_Click(object sender, EventArgs e)
+        {
+            if (searchText.Value != "")
+            {
+                string searchQuery = "SELECT * FROM Country where CountryName LIKE '%" + searchText.Value + "'";
+                SqlCommand comm = new SqlCommand(searchQuery, con);
+                SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                Countrygrid.DataSource = dt;
+                Countrygrid.DataBind();
+
+            }
+            else
+            {
+                BindDataToGridView();
+            }
+
+        }
+        protected void ResetSearch_Click(object sender, EventArgs e)
+        {
+            searchText.Value = string.Empty;
+            BindDataToGridView();
+        }
+
     }
 }
