@@ -33,15 +33,26 @@
 
                 </div>
                 <div class="text-center mt-3">
-                       <asp:Button ID="Button1" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="InsertState_Click" Text="Add State" />
+                    <asp:Button ID="Button1" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="InsertState_Click" Text="Add State" />
                     <asp:Button ID="Button2" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="UpdateState_Click" Text="Save" Visible="false" />
                     <asp:Button ID="Button3" CssClass="mt-4 btn btn-dark fw-bold mb-4" runat="server" OnClick="ClearState_Click" Text="Cancel" />
                 </div>
             </div>
+
             <hr class="border-4" />
+            <div class="row">
+                <div class="col-12 d-flex  mt-5">
+                    <div class="d-flex justify-content-center gap-1 mx-auto">
+                        <input type="text" runat="server" id="searchText" class="text-center" autopostback="True" />
+                        <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
+                        <asp:Button ID="ClearSearch" runat="server" Text="Cancel" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
+                    </div>
+
+                </div>
+            </div>
             <div class="row mt-5 ">
                 <div class="col-12 justify-content-end">
-                    <asp:GridView ID="Stategrid" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting"  autoFit="true" Style="margin-top: 0px; margin-left: 264px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True"  PageSize="5">
+                    <asp:GridView ID="Stategrid" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" PageSize="5">
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>

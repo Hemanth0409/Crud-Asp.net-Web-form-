@@ -54,22 +54,22 @@ namespace Crud__Asp.net_Web_form_
         }
         public void BindDataToGridView()
         {
-            if (Txtcountry.SelectedIndex != 0)
-            {
-                SqlCommand comm = new SqlCommand("exec SelectCountryList @CountryId='" + Convert.ToInt32(Txtcountry.SelectedIndex) + "'", con);
-                SqlDataAdapter adapter = new SqlDataAdapter(comm);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                if (dt.Rows.Count > 0)
-                {
-                    Stategrid.DataSource = dt;
-                    Stategrid.DataBind();
-                }
-                ViewState["dt"] = dt;
-                ViewState["sort"] = "ASC";
-            }
-            else
-            {
+            //if (Txtcountry.SelectedIndex != 0)
+            //{
+            //    SqlCommand comm = new SqlCommand("exec SelectCountryList @CountryId='" + Convert.ToInt32(Txtcountry.SelectedIndex) + "'", con);
+            //    SqlDataAdapter adapter = new SqlDataAdapter(comm);
+            //    DataTable dt = new DataTable();
+            //    adapter.Fill(dt);
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        Stategrid.DataSource = dt;
+            //        Stategrid.DataBind();
+            //    }
+            //    ViewState["dt"] = dt;
+            //    ViewState["sort"] = "ASC";
+            //}
+            //else
+            //{
                 SqlCommand comm = new SqlCommand("exec SelectState ", con);
                 SqlDataAdapter adapter = new SqlDataAdapter(comm);
                 DataTable dt = new DataTable();
@@ -81,7 +81,7 @@ namespace Crud__Asp.net_Web_form_
                 }
                 ViewState["dt"] = dt;
                 ViewState["sort"] = "ASC";
-            }
+            //}
         }
         
         protected void OnPageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -142,6 +142,30 @@ namespace Crud__Asp.net_Web_form_
             Txtcountry.ClearSelection();
             BindDataToGridView();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "windows.Reload();", true);
+        }
+        protected void Search_Click(object sender, EventArgs e)
+        {
+            if (searchText.Value != "")
+            {
+                string searchQuery = "SELECT * FROM state where stateName LIKE '%" + searchText.Value + "'";
+                SqlCommand comm = new SqlCommand(searchQuery, con);
+                SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                Stategrid.DataSource = dt;
+                Stategrid.DataBind();
+
+            }
+            else
+            {
+                BindDataToGridView();
+            }
+
+        }
+        protected void ResetSearch_Click(object sender, EventArgs e)
+        {
+            searchText.Value = string.Empty;
+            BindDataToGridView();
         }
     }
 }

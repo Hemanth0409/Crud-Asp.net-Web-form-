@@ -165,28 +165,28 @@ namespace Crud__Asp.net_Web_form_
         {
             SqlCommand com = new SqlCommand();
             com.Connection = con;
-            if (StatementType == "DELETE")
-            {
-                com.CommandType = CommandType.StoredProcedure;
-                com.CommandText = "Sp_EmployeeDetails";
-                com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
-                com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value ="";
-                com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("Contact", SqlDbType.Int).Value = 0;
-                com.Parameters.Add("Age", SqlDbType.Int).Value = 0;
-                com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = "";
-                com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = "";
-                com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
-                com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
-            }
-            else 
-            {               
+            //if (StatementType == "DELETE")
+            //{
+            //    com.CommandType = CommandType.StoredProcedure;
+            //    com.CommandText = "Sp_EmployeeDetails";
+            //    com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
+            //    com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value =StatementType.ToLower()=="insert"?:;
+            //    com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("Contact", SqlDbType.Int).Value = 0;
+            //    com.Parameters.Add("Age", SqlDbType.Int).Value = 0;
+            //    com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = "";
+            //    com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //    com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = "";
+            //    com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
+            //    com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
+            //}
+            //else 
+            //{               
                 com.CommandType = CommandType.StoredProcedure;
                 com.CommandText = "Sp_EmployeeDetails";
                 com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
@@ -197,14 +197,14 @@ namespace Crud__Asp.net_Web_form_
                 com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = Address;
                 com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = Country;
                 com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = State;
-                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = Joined_Date;
+                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = StatementType=="DELETE"? DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString():Joined_Date;
                 com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
                 com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
                 com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
                 com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
                 com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
                 com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;               
-            }
+            //}
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
             return com.ToString();
@@ -395,7 +395,13 @@ namespace Crud__Asp.net_Web_form_
         {
             ListView.Visible = false;
             formViewId.Visible = true;
-
+            searchText.Visible = false;
+            searchButton.Visible = false;
+            ClearSearch.Visible = false;
+            AddEmployeeData.Visible = false;
+            UploadedFile1.Visible = false;
+            LinkButton2.Visible = false;
+            LinkButton3.Visible = false;
         }
     }
 }

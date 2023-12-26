@@ -194,14 +194,14 @@
                     CancelControlID="PropertyAttributeCancelButton" runat="server">
                 </cc1:ModalPopupExtender>
                 <asp:HiddenField ID="hdnPropertyAttributeIframe" runat="server"></asp:HiddenField>
-                <div class="row">
+                <div class="row" id="searchFilter"  runat="server">
                     <div class="col-12 d-flex  mt-5">
                         <div class="d-flex justify-content-center gap-1 mx-auto">
                             <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
                             <asp:Button ID="searchButton" OnClick="Search_Click" runat="server" Text="Search" class="btn btn-dark fw-bold" />
                             <asp:Button ID="ClearSearch" runat="server" Text="Cancel" OnClick="ResetSearch_Click" class="btn btn-dark fw-bold" />
                         </div>
-                        <div class="pe-4">
+                        <div class="pe-4" id="AddEmpButton" runat="server">
                             <asp:Button ID="AddEmployeeData" OnClick="AddEmployee" runat="server" Text="Add Employee" class="btn btn-dark fw-bold ms-auto float-end" />
                         </div>
                     </div>
