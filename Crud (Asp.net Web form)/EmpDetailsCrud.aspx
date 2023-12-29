@@ -106,7 +106,7 @@
                                     <label for="joinedDate" class="form-label">Joined Date:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
+                                    <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -194,7 +194,7 @@
                     CancelControlID="PropertyAttributeCancelButton" runat="server">
                 </cc1:ModalPopupExtender>
                 <asp:HiddenField ID="hdnPropertyAttributeIframe" runat="server"></asp:HiddenField>
-                <div class="row" id="searchFilter"  runat="server">
+                <div class="row" id="searchFilter" runat="server">
                     <div class="col-12 d-flex  mt-5">
                         <div class="d-flex justify-content-center gap-1 mx-auto">
                             <input type="text" runat="server" id="searchText" class="text-center" autopostback="True">
@@ -235,7 +235,9 @@
                         </div>
                     </div>
                 </asp:Panel>
+
             </ContentTemplate>
+
         </asp:UpdatePanel>
         <div class="row">
             <div class="col-12">
@@ -245,6 +247,7 @@
             </div>
         </div>
     </form>
+
 </body>
 </html>
 

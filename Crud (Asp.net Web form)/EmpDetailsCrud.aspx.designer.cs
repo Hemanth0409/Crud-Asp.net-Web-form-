@@ -129,7 +129,7 @@ namespace Crud__Asp.net_Web_form_
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtjoinDate;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
 
         /// <summary>
         /// RadioMale control.
@@ -267,6 +267,15 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.HiddenField hdnPropertyAttributeIframe;
 
         /// <summary>
+        /// searchFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl searchFilter;
+
+        /// <summary>
         /// searchText control.
         /// </summary>
         /// <remarks>
@@ -292,6 +301,15 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button ClearSearch;
+
+        /// <summary>
+        /// AddEmpButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AddEmpButton;
 
         /// <summary>
         /// AddEmployeeData control.

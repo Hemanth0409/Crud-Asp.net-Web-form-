@@ -1,6 +1,7 @@
 ﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
 using Microsoft.Ajax.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
@@ -17,6 +18,7 @@ namespace Crud__Asp.net_Web_form_
     public partial class WebForm1 : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
+        string excelon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -109,7 +111,7 @@ namespace Crud__Asp.net_Web_form_
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
 
             con.Open();
-            EmployeeDetails(Convert.ToInt32(hdnId.Value), "", "",0,0, "", "","","","","","", "", true, "DELETE");
+            EmployeeDetails(Convert.ToInt32(hdnId.Value), "", "", 0, 0, "", "", "", "", "", "", "", "", true, "DELETE");
             EmpDetails.EditIndex = -1;
             BindDataToGridView();
             con.Close();
@@ -141,7 +143,7 @@ namespace Crud__Asp.net_Web_form_
             if (Session["Id"] != null)
             {
                 con.Open();
-             
+
                 EmployeeDetails(Convert.ToInt32(Session["Id"]), TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "UPDATE");
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
@@ -164,46 +166,25 @@ namespace Crud__Asp.net_Web_form_
             string Language, string UserName, string Password, bool IsActive, string StatementType)
         {
             SqlCommand com = new SqlCommand();
+        
             com.Connection = con;
-            //if (StatementType == "DELETE")
-            //{
-            //    com.CommandType = CommandType.StoredProcedure;
-            //    com.CommandText = "Sp_EmployeeDetails";
-            //    com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
-            //    com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value =StatementType.ToLower()=="insert"?:;
-            //    com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("Contact", SqlDbType.Int).Value = 0;
-            //    com.Parameters.Add("Age", SqlDbType.Int).Value = 0;
-            //    com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = "";
-            //    com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            //    com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = "";
-            //    com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
-            //    com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
-            //}
-            //else 
-            //{               
-                com.CommandType = CommandType.StoredProcedure;
-                com.CommandText = "Sp_EmployeeDetails";
-                com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
-                com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value = Name;
-                com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = Email;
-                com.Parameters.Add("Contact", SqlDbType.Int).Value = Contact;
-                com.Parameters.Add("Age", SqlDbType.Int).Value = Age;
-                com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = Address;
-                com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = Country;
-                com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = State;
-                com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = StatementType=="DELETE"? DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString():Joined_Date;
-                com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
-                com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
-                com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
-                com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
-                com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
-                com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;               
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_EmployeeDetails";
+            com.Parameters.Add("Id", SqlDbType.Int).Value = Id;
+            com.Parameters.Add("Name", SqlDbType.VarChar, 25).Value = Name;
+            com.Parameters.Add("Email", SqlDbType.VarChar, 25).Value = Email;
+            com.Parameters.Add("Contact", SqlDbType.Int).Value = Contact;
+            com.Parameters.Add("Age", SqlDbType.Int).Value = Age;
+            com.Parameters.Add("Address", SqlDbType.VarChar, 50).Value = Address;
+            com.Parameters.Add("Country", SqlDbType.VarChar, 25).Value = Country;
+            com.Parameters.Add("State", SqlDbType.VarChar, 25).Value = State;
+            com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = StatementType == "DELETE" ? DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString() : Joined_Date;
+            com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
+            com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
+            com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
+            com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
+            com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
+            com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             //}
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
@@ -213,7 +194,7 @@ namespace Crud__Asp.net_Web_form_
         {
             if (searchText.Value != "")
             {
-                string searchQuery = "SELECT * FROM EmployeeDetails where Name LIKE '%" + searchText.Value + "' or email like'%" + searchText.Value + "' ";
+                string searchQuery = "SELECT * FROM EmployeeDetails where Name LIKE '%" + searchText.Value + "' or email like'%" + searchText.Value + "' or Country like'%" + searchText.Value + "' or state like'%" + searchText.Value + "' or Address like'%" + searchText.Value + "' ";
                 SqlCommand comm = new SqlCommand(searchQuery, con);
                 SqlDataAdapter adapter = new SqlDataAdapter(comm);
                 DataTable dt = new DataTable();
@@ -229,8 +210,10 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void ResetSearch_Click(object sender, EventArgs e)
         {
-            searchText.Value = string.Empty;
+            searchText.Value = string.Empty;            
             BindDataToGridView();
+            Page_Load(sender, e);
+
         }
 
         protected void Reset_Click(object sender, EventArgs e)
@@ -287,19 +270,255 @@ namespace Crud__Asp.net_Web_form_
                 string fileName = Path.GetFileName(UploadedFile1.FileName);
                 string filePath = Server.MapPath("~/Files/Import/" + fileName);
                 UploadedFile1.SaveAs(filePath);
-                LoadDataFromExcel(filePath, ".xlsx", "yes");
+                ReadDataFromExcel(filePath);
+                //LoadDataFromExcel(filePath, ".xlsx", "yes");
             }
+        }
+        public Boolean ReadDataFromExcel(string filepath)
+        {
+            if (filepath.Trim().Length == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Please Insert a file with xls or xlsx format');", true);
+                return false;
+            }
+            string fileName = Path.GetFileName(UploadedFile1.FileName);
+            string filePath = Server.MapPath("~/Files/Import/" + fileName);
+            UploadedFile1.SaveAs(filePath);
+            DataTable dtValue = GetData(1,filePath,".xlsx","yes");
+            DataTable dtNew = new DataTable();
+            dtNew = dtValue.Clone();
+            DeleteFile(filepath);
+            if (dtValue.Rows.Count > 0)
+            {
+                if (dtValue.Columns.Count == 12 & dtValue.Columns.Contains("Name") & dtValue.Columns.Contains("Email") & dtValue.Columns.Contains("Contact") & dtValue.Columns.Contains("Age")
+                    & dtValue.Columns.Contains("Address") & dtValue.Columns.Contains("Country") & dtValue.Columns.Contains("State") & dtValue.Columns.Contains("Joined_Date") & dtValue.Columns.Contains("Gender")
+                    & dtValue.Columns.Contains("Language") & dtValue.Columns.Contains("UserName") & dtValue.Columns.Contains("Password"))
+                {
+                    for (int i = 0; i < dtValue.Rows.Count; i++)
+                    {
+                        bool UserExist = GetUserExist(dtValue.Rows[i]["UserName"].ToString(), dtValue.Rows[i]["Password"].ToString(), dtValue.Rows[i]["Email"].ToString());
+
+                        if (!UserExist)
+                        {
+                            bool CountryExist = GetCountry(dtValue.Rows[i]["Country"].ToString());
+                            if (CountryExist)
+                            {
+                                bool StateExist = GetState(dtValue.Rows[i]["State"].ToString());
+                                if (StateExist)
+                                {
+                                    if (dtValue.Rows[i]["Name"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Email"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Contact"].ToString().Trim() != string.Empty
+                                        && dtValue.Rows[i]["Age"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Address"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Country"].ToString().Trim() != string.Empty
+                                            && dtValue.Rows[i]["State"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Joined_Date"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Gender"].ToString().Trim() != string.Empty
+                                                 && dtValue.Rows[i]["Language"].ToString().Trim() != string.Empty && dtValue.Rows[i]["UserName"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Password"].ToString().Trim() != string.Empty)
+                                    {
+                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Enter all the filed');", true);
+
+                                        return false;
+
+                                    }
+                                    dtNew.Rows.Add(dtValue.Rows[i].ItemArray);
+                                }
+                                else
+                                {
+                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('State Does not exist for the Country ');", true);
+
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Country Does not exist');", true);
+
+                                return false;
+                            }
+
+                        }
+                        else
+                        {
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('UserName already Exist');", true);
+
+                            return false;
+                        }
+                    }                    
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Please Fill all the fields in the Excel Sheet');", true);
+
+                    return false;
+                }
+                if(dtNew.Rows.Count>0& IsValid == true)
+                {
+                    for(int i = 0;i < dtNew.Rows.Count; i++)
+                    {
+                        con.Open();
+                        EmployeeDetails(0, dtNew.Rows[i]["Name"].ToString(), dtNew.Rows[i]["Email"].ToString(), Convert.ToInt32(dtNew.Rows[i]["Contact"]), Convert.ToInt32(dtNew.Rows[i]["Age"]),
+                            dtNew.Rows[i]["Address"].ToString(), dtNew.Rows[i]["Country"].ToString(), dtNew.Rows[i]["State"].ToString(), dtNew.Rows[i]["Joined_Date"].ToString(), dtNew.Rows[i]["Gender"].ToString(),
+                            dtNew.Rows[i]["Language"].ToString(), dtNew.Rows[i]["UserName"].ToString(), dtNew.Rows[i]["Password"].ToString(), true, "INSERT");
+                         con.Close();
+                        BindDataToGridView();
+                    }
+                }
+            }
+            return true;
+        }
+
+       
+        public bool GetUserExist(string UserName, string Password, string Email)
+        {
+            DataTable objUserName = GetUserInfo(UserName);
+            if (objUserName.Select("UserName='" + UserName.Trim() + "'").Length == 0 & objUserName.Select("Email='" + Email.Trim() + "'").Length == 0 & objUserName.Select("Password='" + Password.Trim() + "'").Length == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public DataTable GetDataTable(SqlCommand objSqlCommand)
+        {
+            con.Open();
+            objSqlCommand.Connection = con;
+            SqlDataAdapter objSqlDataAdapter = new SqlDataAdapter();
+            objSqlDataAdapter.SelectCommand = objSqlCommand;
+            DataTable objDataTable = new DataTable();
+            objSqlDataAdapter.Fill(objDataTable);
+            con.Close();
+            return objDataTable;
+        }
+
+        public DataTable GetUserInfo(string  UserName)
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_GetUserInfo";
+            com.Parameters.Add("@UserName", SqlDbType.VarChar,25).Value = UserName;
+            return GetDataTable(com);
+        }
+        public List<int> StateICodeList = new List<int>();
+        public List<int> CountryICodeList = new List<int>();
+        int CountryCode;
+        public bool GetCountry(string CountryName)
+        {
+            DataTable countryTable = GetAllCountry();
+            if (countryTable.Select("CountryName='" + CountryName.Trim() + "'").Length == 0)
+            {
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < countryTable.Rows.Count; i++)
+                {
+                    if (Convert.ToString(countryTable.Rows[i]["CountryName"]).ToLower().Trim() == CountryName.ToLower().Trim())
+                    {
+                         CountryCode = Convert.ToInt32(countryTable.Rows[i]["CountryId"]);
+                        CountryICodeList.Add(CountryCode);
+                        return true;
+                    }
+                }
+                return true;
+            }
+        }
+        public DataTable GetAllCountry()
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "[DisplayCountry]";
+            return GetDataTable(com);
+        }
+
+        public bool GetState(string StateName)
+        {
+
+            DataTable StateTable = GetAllState(CountryCode);
+            if (StateTable.Select("StateName='" + StateName.Trim() + "'").Length == 0)
+            {
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < StateTable.Rows.Count; i++)
+                {
+                    if (Convert.ToString(StateTable.Rows[i]["StateName"]).ToLower().Trim() == StateName.ToLower().Trim())
+                    {
+                        int StateCode = Convert.ToInt32(StateTable.Rows[i]["StateId"]);
+                        CountryICodeList.Add(StateCode);
+                        return true;
+                    }
+                }
+                return true;
+            }
+        }
+        public DataTable GetAllState(int CountryId)
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "[DisplayState]";
+            com.Parameters.Add("Id", SqlDbType.Int).Value = CountryId;
+            return GetDataTable(com);
+        }
+        public void DeleteFile(string fileName)
+        {
+            FileInfo objFile;
+            if (File.Exists(fileName))
+            {
+                objFile = new FileInfo(fileName);
+                objFile.IsReadOnly = false;
+                File.Delete(fileName);
+            }
+        }
+        public DataTable GetData(int RowToDelete, string fpath, string extension, string hdr)
+        {
+            DataTable dtValue = new DataTable();
+            excelon = string.Format(excelon, fpath, hdr);
+            OleDbConnection excelcon2 = new OleDbConnection(excelon);
+
+            OleDbCommand cmd = new OleDbCommand("SELECT * FROM [Sheet1$]   ", excelcon2);
+
+            OleDbDataAdapter excelAdapter = new OleDbDataAdapter(cmd);
+            excelAdapter.Fill(dtValue);
+            if (dtValue.Rows.Count > 0)
+            {
+                for (int i = 1; i <= RowToDelete; i++)
+                    dtValue.Rows.RemoveAt(dtValue.Rows.Count - 1);
+                DeleteEmptyRows(dtValue);
+            }
+            return dtValue;
+        }
+        private DataTable DeleteEmptyRows(DataTable dtValue)
+        {
+            int columnCount = dtValue.Columns.Count;
+
+            for (int rowIndex = dtValue.Rows.Count - 1; rowIndex >= 0; rowIndex--)
+            {
+                bool isNull = true;
+
+                for (int colIndex = 0; colIndex < columnCount; colIndex++)
+                {
+                    if (!(dtValue.Rows[rowIndex][colIndex] == DBNull.Value))
+                    {
+                        isNull = false;
+                        break;
+                    }
+                }
+
+                if (isNull)
+                    dtValue.Rows.RemoveAt(rowIndex);
+            }
+
+            return dtValue;
         }
 
         public void LoadDataFromExcel(string fpath, string extension, string hdr)
         {
-
-
-            string excelon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
             excelon = string.Format(excelon, fpath, hdr);
             OleDbConnection excelcon2 = new OleDbConnection(excelon);
 
-            OleDbCommand cmd = new OleDbCommand("select [Name],[Email],[Contact],[Age],[Address],[Country],[State],[Joined_Date],[gender],[Language],[UserName],[Password] FROM [Sheet1$] where name is not null and email is not null and UserName is not null and Password is not null", excelcon2);
+            OleDbCommand cmd = new OleDbCommand("select [Name],[Email],[Contact],[Age],[Address],[Country],[State],[Joined_Date],[gender],[Language],[UserName],[Password] FROM [Sheet1$]", excelcon2);
             OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
             DataSet ds = new DataSet();
             adapter.Fill(ds);
@@ -393,15 +612,16 @@ namespace Crud__Asp.net_Web_form_
         }
         public void AddEmployee(object sender, EventArgs e)
         {
+            UploadedFile1.Visible = false;
+            LinkButton2.Visible = false;
+            LinkButton3.Visible = false;
             ListView.Visible = false;
             formViewId.Visible = true;
             searchText.Visible = false;
             searchButton.Visible = false;
             ClearSearch.Visible = false;
             AddEmployeeData.Visible = false;
-            UploadedFile1.Visible = false;
-            LinkButton2.Visible = false;
-            LinkButton3.Visible = false;
+        
         }
     }
 }
