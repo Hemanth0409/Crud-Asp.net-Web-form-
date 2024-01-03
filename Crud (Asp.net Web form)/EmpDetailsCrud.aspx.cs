@@ -42,6 +42,7 @@ namespace Crud__Asp.net_Web_form_
             Txtcountry.DataValueField = "CountryId";
             Txtcountry.DataBind();
             con.Close();
+         
         }
 
         public void BindState()
@@ -206,7 +207,6 @@ namespace Crud__Asp.net_Web_form_
             {
                 BindDataToGridView();
             }
-
         }
         protected void ResetSearch_Click(object sender, EventArgs e)
         {
@@ -306,16 +306,7 @@ namespace Crud__Asp.net_Web_form_
                                 bool StateExist = GetState(dtValue.Rows[i]["State"].ToString());
                                 if (StateExist)
                                 {
-                                    if (dtValue.Rows[i]["Name"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Email"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Contact"].ToString().Trim() != string.Empty
-                                        && dtValue.Rows[i]["Age"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Address"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Country"].ToString().Trim() != string.Empty
-                                            && dtValue.Rows[i]["State"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Joined_Date"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Gender"].ToString().Trim() != string.Empty
-                                                 && dtValue.Rows[i]["Language"].ToString().Trim() != string.Empty && dtValue.Rows[i]["UserName"].ToString().Trim() != string.Empty && dtValue.Rows[i]["Password"].ToString().Trim() != string.Empty)
-                                    {
-                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Enter all the filed');", true);
-
-                                        return false;
-
-                                    }
+                                   
                                     dtNew.Rows.Add(dtValue.Rows[i].ItemArray);
                                 }
                                 else

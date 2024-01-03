@@ -127,6 +127,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Country.aspx" />
     <Content Include="Default.aspx" />
+    <Content Include="DynamicModule.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Index.aspx" />
@@ -232,6 +233,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DynamicModule.aspx.cs">
+      <DependentUpon>DynamicModule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DynamicModule.aspx.designer.cs">
+      <DependentUpon>DynamicModule.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
