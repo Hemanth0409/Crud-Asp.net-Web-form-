@@ -1,6 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Dynamic Module.aspx.cs" Inherits="Crud__Asp.net_Web_form_.Dynamic_Module" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DynamicModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.Dynamic_Module" %>
 
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <html>
 <head runat="server">
@@ -45,7 +44,7 @@
                             </div>
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
-                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Is Active:</label>
+                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Add for Clients:</label>
                                 </div>
 
                                 <div class="col-md-4 mt-4">
