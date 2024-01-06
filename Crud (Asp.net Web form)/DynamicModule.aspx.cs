@@ -20,10 +20,58 @@ namespace Crud__Asp.net_Web_form_
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            ListView.Visible = true;
+            formViewId.Visible = false;
+            BindDataToGridView();
+        }
+        public void BindDataToGridView()
+        {
 
+            ModuleDetails(0, "", true, "");
+        }
+        protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+
+            GridViewRow gdRow = (GridViewRow)ModuleData.Rows[e.RowIndex];
+
+            HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
+
+            con.Open();
+            ModuleDetails(Convert.ToInt32(hdnId.Value),"", true, "DELETE");
+            ModuleData.EditIndex = -1;
+            BindDataToGridView();
+            con.Close();
+        }
+        protected void EditButton_Click(object sender, EventArgs e)
+        {
+            ListView.Visible = false;
+            formViewId.Visible = true;
+
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
+            Session["ModuleId"] = hdnId.Value;
+            con.Open();
+            SqlCommand comm = new SqlCommand("exec Sp_selectById @ModuleId='" + hdnId.Value + "'", con);
+            SqlDataReader sqlDataReader = comm.ExecuteReader();
+            while (sqlDataReader.Read())
+            {
+                TxtModule.Value = sqlDataReader.GetValue(1).ToString();
+                string IsActiveCheck = sqlDataReader.GetValue(2).ToString();
+              var check=IsActiveCheck == "True" ?CheckBox1.Checked = true:CheckBox1.Checked = false;
+             
+
+            }
+            con.Close();
+        }
+        protected void OnPageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            ModuleData.PageIndex = e.NewPageIndex;
+            BindDataToGridView();
         }
         public string ModuleDetails(int ModuleId, string ModuleName, bool IsActive, string StatementType)
         {
+            con.Open();
             SqlCommand com = new SqlCommand();
 
             com.Connection = con;
@@ -35,38 +83,51 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
+            SqlDataAdapter adapter = new SqlDataAdapter(com);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+
+            if (dt.Rows.Count > 0)
+            {
+                ModuleData.DataSource = dt;
+                ModuleData.DataBind();
+            }
+            ViewState["dt"] = dt;
+            ViewState["sort"] = "ASC";
+            con.Close();
             return com.ToString();
         }
         protected void Create_Click(object sender, EventArgs e)
-        {
-            if (Session["Id"] != null)
+         {
+            if (Session["ModuleId"] != null)
             {
-                con.Open();
+     
                 if (CheckBox1.Checked == true)
                 {
-                    ModuleDetails(Convert.ToInt32(Session["Id"]), TxtModule.Value, true, "UPDATE");
+                    ModuleDetails(Convert.ToInt32(Session["ModuleId"]), TxtModule.Value, true, "UPDATE");
                 }
                 else
                 {
-                    ModuleDetails(Convert.ToInt32(Session["Id"]), TxtModule.Value, false, "UPDATE");
+                    ModuleDetails(Convert.ToInt32(Session["ModuleId"]), TxtModule.Value, false, "UPDATE");
 
                 }
-                con.Close();
+                BindDataToGridView();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
               
             }
             else
             {
-                con.Open();
+             
                 if (CheckBox1.Checked == true)
                 {
-                    ModuleDetails(0, TxtModule.Value, true, "INSERTE");
+                    ModuleDetails(0, TxtModule.Value, true, "INSERT");
                 }
                 else
                 {
                     ModuleDetails(0, TxtModule.Value, false, "INSERT");
 
                 }
+                BindDataToGridView();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
             }
         }

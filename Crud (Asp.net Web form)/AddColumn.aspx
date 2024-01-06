@@ -31,7 +31,7 @@
             <ContentTemplate>
                 <asp:Panel ID="formViewId" runat="server">
                     <div class="container my-5 d-flex flex-column justify-content-center">
-                        <h1 class="mb-3 ms-5 text-center">Dynamic Module</h1>
+                        <h3 class="mb-3 ms-5 text-center">Dynamic Module</h3>
                         <div class="row">
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">

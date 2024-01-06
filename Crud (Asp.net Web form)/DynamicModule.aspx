@@ -44,7 +44,7 @@
                             </div>
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
-                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Add for Clients:</label>
+                                    <label for="Name" class="form-label m-0">Add for Clients:</label>
                                 </div>
 
                                 <div class="col-md-4 mt-4">
@@ -56,6 +56,56 @@
                                 <asp:Button ID="btn" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
                             </div>
                         </div>
+                </asp:Panel>
+                <%--<asp:Panel ID="ListView" runat="server">
+                    <div class="row mt-5 ">
+                        <div class="col-12 justify-content-end">
+                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeletingModule" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                                <Columns>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ModuleId")%>' />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="ModuleName" HeaderText="Module Name" SortExpression="ModuleName" />
+                                    <asp:BoundField DataField="IsActive" HeaderText="IsActive" SortExpression="IsActive" />
+
+                                   <asp:TemplateField ShowHeader="False">
+                                        <ItemTemplate>
+                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
+                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete" 
+                                                OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </asp:Panel>--%>
+                  <asp:Panel ID="ListView" runat="server">
+                    <div class="row mt-5 ">
+                        <div class="col-12 justify-content-end">
+                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                                <Columns>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ModuleId")%>' />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="ModuleName" HeaderText="Module Name" SortExpression="ModuleName" />
+                                    <asp:BoundField DataField="IsActive" HeaderText="IsActive" SortExpression="IsActive" />
+                             
+                                    <asp:TemplateField ShowHeader="False">
+                                        <ItemTemplate>
+                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
+                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
+                                                ></asp:Button>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
