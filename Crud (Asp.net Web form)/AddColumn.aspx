@@ -121,10 +121,10 @@
                                     <label for="Characters" class="form-label m-0">Minimum and Maximum Value:</label>
                                 </div>
                                 <div class="col-md-2 mt-4">
-                                    <input type="number" id="txtMax" value="1" min="1" runat="server" class="form-control" />
+                                    <input type="number" id="txtMin"   runat="server" class="form-control" />
                                 </div>
                                 <div class="col-md-2 mt-4">
-                                    <input type="number" id="txtMin" value="100" runat="server" class="form-control" />
+                                    <input type="number" id="txtMax"  runat="server" class="form-control" />
                                 </div>
                             </div>
                             <div class="row justify-content-center align-items-center" runat="server" id="DataView" visible="false">
@@ -157,8 +157,9 @@
                                 </div>
                                 <div class="col-md-2 mt-4">
                                     <asp:DropDownList ID="DefaultValue" runat="server" CssClass="form-control">
+                                              <asp:ListItem Value="No">No</asp:ListItem>
                                         <asp:ListItem Value="Yes">Yes</asp:ListItem>
-                                        <asp:ListItem Value="No">No</asp:ListItem>
+                                  
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -168,7 +169,7 @@
                             </div>
                         </div>
                 </asp:Panel>
-              <%--  <asp:Panel ID="ListView" runat="server">
+                <asp:Panel ID="ListView" runat="server">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
                             <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
@@ -191,7 +192,7 @@
                             </asp:GridView>
                         </div>
                     </div>
-                </asp:Panel>--%>
+                </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
     </form>

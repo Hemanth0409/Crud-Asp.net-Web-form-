@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Antlr.Runtime.Misc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 
 namespace Crud__Asp.net_Web_form_
@@ -14,7 +16,7 @@ namespace Crud__Asp.net_Web_form_
         int currentModuleId;
         protected void Page_Load(object sender, EventArgs e)
         {
-            //ListView.Visible = true;
+            // ListView.Visible = true;
             formViewId.Visible = true;
             currentModuleId = Convert.ToInt32(Session["ModuleId"]);
 
@@ -86,14 +88,32 @@ namespace Crud__Asp.net_Web_form_
             com.ExecuteNonQuery();
             return com.ToString();
         }
+        protected void Reset_Click(object sender, EventArgs e)
+        {
+            TxtColumnName.Value = string.Empty;
+            YesButton.Checked = false;
+            NoButton.Checked = false;
+            Characters.Value = string.Empty;
+            LinesToDisplay.Value = string.Empty;
+            DataForChoiceTxt.Value = string.Empty;
+            RadioButton1.Checked = false;
+            RadioButton2.Checked = false;
+            RadioButton3.Checked = false;
+            DefaultTxt.Value = string.Empty;
+            txtMin.Value = string.Empty;
+            txtMax.Value = string.Empty;
+            RadioForDisplayDate.ClearSelection();
+            IsActive.Checked = false;
+            DefaultValue.ClearSelection();
+        }
         protected void Create_Click(object sender, EventArgs e)
         {
             int lineToDisplayValue;
-    if (!int.TryParse(LinesToDisplay.Value, out lineToDisplayValue))
-    {
+            if (!int.TryParse(LinesToDisplay.Value, out lineToDisplayValue))
+            {
 
-        lineToDisplayValue = 0;
-    }
+                lineToDisplayValue = 0;
+            }
             int ColumnControlIdValue = Session["ColumnControlId"] != null ? Convert.ToInt32(Session["ColumnControlId"]) : 0;
 
             int ColumnIdValue = int.Parse(RadioBtnIdForDisplay.SelectedItem.Value ?? "0");
@@ -102,17 +122,29 @@ namespace Crud__Asp.net_Web_form_
 
             bool requiredField = YesButton.Checked;
 
-            int charSize = int.Parse(Characters.Value ?? "0");
 
             string dataForChoiceValue = DataForChoiceTxt.Value ?? string.Empty;
 
-            char choiceTypeValue = (RadioButton1.Checked) ? 'D' : (RadioButton2.Checked) ? 'R' : (RadioButton3.Checked) ? 'C' : 'N' ;
+            char choiceTypeValue = (RadioButton1.Checked) ? 'D' : (RadioButton2.Checked) ? 'R' : (RadioButton3.Checked) ? 'C' : 'N';
 
             string defaultValueTxt = DefaultTxt.Value ?? string.Empty;
+            int charSize;
+            if (!int.TryParse(Characters.Value, out charSize))
+            {
+                charSize = 0;
+            }
+            int minValue;
+            if (!int.TryParse(txtMin.Value, out minValue))
+            {
+                minValue = 0;
+            }
 
-            int minValue = int.Parse(txtMin.Value ?? "0");
+            int maxValue;
+            if (!int.TryParse(txtMax.Value, out maxValue))
+            {
+                maxValue = 0;
+            }
 
-            int maxValue = int.Parse(txtMax.Value ?? "0");
 
             string dateTimeFormatValue = "N";
 
@@ -120,11 +152,11 @@ namespace Crud__Asp.net_Web_form_
             {
                 dateTimeFormatValue = (RadioForDisplayDate.SelectedItem.Text == "None") ? "N" :
                                       (RadioForDisplayDate.SelectedItem.Text == "CurrentDate") ? "C" :
-                                      (RadioForDisplayDate.SelectedItem.Text == "Enter Date")? "E":null;
-            }       
+                                      (RadioForDisplayDate.SelectedItem.Text == "Enter Date") ? "E" : null;
+            }
             bool displayColumn = IsActive.Checked;
 
-            bool defaultCheckBox = DefaultValue.SelectedItem.Value == "Yes";
+            bool defaultCheckBox = DefaultValue.SelectedItem.Value == "No" ? defaultCheckBox = false : defaultCheckBox = true;
 
             con.Open();
             ColumnControlDetails(ColumnControlIdValue, 1, ColumnIdValue, ColumnName, requiredField, charSize,
@@ -132,9 +164,26 @@ namespace Crud__Asp.net_Web_form_
                 dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
             con.Close();
+            Reset_Click(sender, e);
         }
-        protected void Reset_Click(object sender, EventArgs e)
+        protected void EditButton_Click(object sender, EventArgs e)
         {
+            ListView.Visible = false;
+            formViewId.Visible = true;
+
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
+            Session["ColumnControlId"] = hdnId;
+            con.Open();
+            SqlCommand comm = new SqlCommand("exec Sp_SelectColumnById @ColumnControlId='" + hdnId.Value + "'", con);
+            SqlDataReader sqlDataReader = comm.ExecuteReader();
+            while (sqlDataReader.Read())
+            {
+              
+
+            }
+            con.Close();
         }
         public void DisplayView(object sender, EventArgs e)
         {
@@ -159,7 +208,6 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = true;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
