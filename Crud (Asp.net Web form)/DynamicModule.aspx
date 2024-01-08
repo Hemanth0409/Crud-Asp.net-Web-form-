@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DynamicModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.Dynamic_Module" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" EnableSessionState="True"  CodeBehind="DynamicModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.Dynamic_Module" %>
 
 
 <html>
@@ -57,10 +57,10 @@
                             </div>
                         </div>
                 </asp:Panel>
-                <%--<asp:Panel ID="ListView" runat="server">
+                <asp:Panel ID="ListView" runat="server">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeletingModule" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false"   OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
@@ -69,11 +69,16 @@
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="ModuleName" HeaderText="Module Name" SortExpression="ModuleName" />
                                     <asp:BoundField DataField="IsActive" HeaderText="IsActive" SortExpression="IsActive" />
-
-                                   <asp:TemplateField ShowHeader="False">
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Button ID="AddColumn" runat="server" Text="Add" CssClass="btn btn-primary btn-sm" OnClick="ModuleGridView_RowCommand"/>
+                                        </ItemTemplate>
+                                        <ItemStyle Width="45px" HorizontalAlign="Center" />
+                                    </asp:TemplateField>
+                                    <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
                                             <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
-                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete" 
+                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
                                                 OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -81,32 +86,8 @@
                             </asp:GridView>
                         </div>
                     </div>
-                </asp:Panel>--%>
-                  <asp:Panel ID="ListView" runat="server">
-                    <div class="row mt-5 ">
-                        <div class="col-12 justify-content-end">
-                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
-                                <Columns>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ModuleId")%>' />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:BoundField DataField="ModuleName" HeaderText="Module Name" SortExpression="ModuleName" />
-                                    <asp:BoundField DataField="IsActive" HeaderText="IsActive" SortExpression="IsActive" />
-                             
-                                    <asp:TemplateField ShowHeader="False">
-                                        <ItemTemplate>
-                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
-                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
-                                                ></asp:Button>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                </Columns>
-                            </asp:GridView>
-                        </div>
-                    </div>
                 </asp:Panel>
+
             </ContentTemplate>
         </asp:UpdatePanel>
     </form>

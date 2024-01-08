@@ -60,13 +60,13 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlInputText TxtColumnName;
 
         /// <summary>
-        /// RadioForDisplay control.
+        /// RadioBtnIdForDisplay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioForDisplay;
+        protected global::System.Web.UI.WebControls.RadioButtonList RadioBtnIdForDisplay;
 
         /// <summary>
         /// RadioSingleLine control.
@@ -130,6 +130,15 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem RadioUploadFile;
+
+        /// <summary>
+        /// IsActive control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox IsActive;
 
         /// <summary>
         /// RequiredfieldView control.
@@ -249,24 +258,6 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.RadioButton RadioButton3;
 
         /// <summary>
-        /// ChoiceLineView control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ChoiceLineView;
-
-        /// <summary>
-        /// Textarea1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTextArea Textarea1;
-
-        /// <summary>
         /// MinMaxValueView control.
         /// </summary>
         /// <remarks>
@@ -276,22 +267,22 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl MinMaxValueView;
 
         /// <summary>
-        /// Number1 control.
+        /// txtMax control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Number1;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl txtMax;
 
         /// <summary>
-        /// Number2 control.
+        /// txtMin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl Number2;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl txtMin;
 
         /// <summary>
         /// DataView control.
@@ -357,13 +348,13 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl YesNoView;
 
         /// <summary>
-        /// DropDownList1 control.
+        /// DefaultValue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
+        protected global::System.Web.UI.WebControls.DropDownList DefaultValue;
 
         /// <summary>
         /// Button1 control.

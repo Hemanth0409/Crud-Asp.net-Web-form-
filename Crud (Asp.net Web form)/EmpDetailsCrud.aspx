@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript">
         function AssignSourceToIframe() {
-            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID %>').value;
-            // alert(hdnvalue);
+            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID %>').value;   
             document.getElementById("PropertyAttributeIframe").src = hdnvalue;
         }
     </script>
@@ -46,7 +45,7 @@
                                 </div>
 
                                 <div class="col-md-4 mt-4">
-                                    <input type="text" class="form-control float-end" runat="server" id="TxtName">
+                                    <input type="text" class="form-control float-end" runat="server" id="txtName">
                                 </div>
                             </div>
 
@@ -55,7 +54,7 @@
                                     <label for="email" class="form-label m-0"><span class="RequiredField">*</span>Email:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-4" runat="server" id="Txtemail">
+                                    <input type="text" class="form-control float-end mt-4" runat="server" id="txtEmail">
                                 </div>
                             </div>
 
@@ -64,7 +63,7 @@
                                     <label for="age" class="form-label m-0">Age:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-4" runat="server" min="0" id="Txtage">
+                                    <input type="text" class="form-control float-end mt-4" runat="server" min="0" id="txtAge">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -74,7 +73,7 @@
                                 </div>
 
                                 <div class="col-md-4 mt-4 ms-4">
-                                    <asp:DropDownList class="float-center ms-5" ID="Txtcountry" AutoPostBack="true" AppendDataBoundItems="true" runat="server" OnSelectedIndexChanged="country_SelectedIndexChanged">
+                                    <asp:DropDownList class="float-center ms-5" ID="txtCountry" AutoPostBack="true" AppendDataBoundItems="true" runat="server" OnSelectedIndexChanged="country_SelectedIndexChanged">
                                     </asp:DropDownList>
                                     <asp:LinkButton ID="CountryLinkButton" CssClass="PropertyAdd" runat="server"
                                         Text="[+]" OnClick="CountryLinkButton_Click"></asp:LinkButton>
@@ -86,7 +85,7 @@
                                     <label for="state">State:</label>
                                 </div>
                                 <div class="col-md-4 mt-4 ms-4">
-                                    <asp:DropDownList class="float-center ms-5" ID="Txtstate" AutoPostBack="true" AppendDataBoundItems="true" runat="server">
+                                    <asp:DropDownList class="float-center ms-5" ID="txtState" AutoPostBack="true" AppendDataBoundItems="true" runat="server">
                                         <asp:ListItem>Select a country</asp:ListItem>
                                     </asp:DropDownList>
                                     <asp:LinkButton ID="StateLinkButton" CssClass="PropertyAdd" runat="server"
@@ -98,7 +97,7 @@
                                     <label for="Contact" class="form-label">Contact:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control float-end mt-3" runat="server" id="TxtContact">
+                                    <input type="text" class="form-control float-end mt-3" runat="server" id="txtContact">
                                 </div>
                             </div>
                             <div class="row justify-content-center mt-3">
@@ -106,7 +105,7 @@
                                     <label for="joinedDate" class="form-label">Joined Date:</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
+                                    <input type="date" class="form-control float-end mt-3" id="txtJoinDate" runat="server">
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -115,8 +114,8 @@
                                 </div>
                                 <div class="col-md-4 mt-4 ms-4">
                                     <div class="float-center ms-5">
-                                        <asp:RadioButton asp-for="gender" ID="RadioMale" Text="Male" runat="server" GroupName="Gender" />
-                                        <asp:RadioButton ID="RadioFemale" Text="Female" runat="server" GroupName="Gender" />
+                                        <asp:RadioButton asp-for="gender" ID="rdoMale" Text="Male" runat="server" GroupName="Gender" />
+                                        <asp:RadioButton ID="rdoFemale" Text="Female" runat="server" GroupName="Gender" />
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +141,7 @@
                                 <label for="Address" class="form-label">Address:</label>
                             </div>
                             <div class="col-md-4 ">
-                                <textarea class="form-control float-end" id="TxtAddress" runat="server" rows="5"></textarea>
+                                <textarea class="form-control float-end" id="txtAddress" runat="server" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="row justify-content-center align-items-center">
@@ -151,7 +150,7 @@
                             </div>
 
                             <div class="col-md-4 mt-4">
-                                <input type="text" class="form-control float-end" runat="server" id="UserName">
+                                <input type="text" class="form-control float-end" runat="server" id="txtUserName">
                             </div>
                         </div>
                         <div class="row justify-content-center align-items-center">
@@ -159,12 +158,12 @@
                                 <label for="password" class="form-label m-0"><span class="RequiredField">*</span>Password:</label>
                             </div>
                             <div class="col-md-4 mt-4">
-                                <input type="text" class="form-control float-end" runat="server" id="Password">
+                                <input type="text" class="form-control float-end" runat="server" id="txtPassword">
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-center gap-3 mt-5">
-                            <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
-                            <asp:Button ID="btn" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
+                            <asp:Button ID="btnSave" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
+                            <asp:Button ID="btnResetClick" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
                         </div>
                 </asp:Panel>
                 <asp:Panel ID="PropertyAttributePanel" runat="server" Width="550" Height="385" CssClass="PopUpPanel">

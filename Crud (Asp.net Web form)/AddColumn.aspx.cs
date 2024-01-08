@@ -1,18 +1,9 @@
-﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Xml.Linq;
+
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -20,17 +11,40 @@ namespace Crud__Asp.net_Web_form_
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
 
-        //string ModuleId = Session["MemberId"] as string;
-
+        int currentModuleId;
         protected void Page_Load(object sender, EventArgs e)
         {
+            //ListView.Visible = true;
+            formViewId.Visible = true;
+            currentModuleId = Convert.ToInt32(Session["ModuleId"]);
+
+            BindDataToGridView();
 
         }
-       
+
+        public void BindDataToGridView()
+        {
+            GetColumnById(currentModuleId);
+        }
+
+        public string GetColumnById(int ModuleId)
+        {
+            SqlCommand com = new SqlCommand();
+            con.Open();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_GetAllColumnDataById";
+            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.CommandTimeout = 0;
+
+            com.ExecuteNonQuery();
+            con.Close();
+            return com.ToString();
+        }
         public string ColumnControlDetails(
             int ColumnControlId,
         int ModuleId,
-        int ControlId,
+        int ColumnId,
         string ColumnName,
         bool RequiredField,
         int MaximumCharacters,
@@ -43,7 +57,6 @@ namespace Crud__Asp.net_Web_form_
         string DateTimeFormat,
         bool IsActive,
         bool DefaultCheckBoxValue,
-        string Fieldname,
         string StatementType)
         {
             SqlCommand com = new SqlCommand();
@@ -51,9 +64,9 @@ namespace Crud__Asp.net_Web_form_
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_ColumnControl";
-            com.Parameters.Add("ColumnControlId", SqlDbType.Int).Value = ColumnControlId;
+            com.Parameters.Add("ColumnCountrolId", SqlDbType.Int).Value = ColumnControlId;
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
-            com.Parameters.Add("ControlId", SqlDbType.Int).Value = ControlId;
+            com.Parameters.Add("ControlId", SqlDbType.Int).Value = ColumnId;
             com.Parameters.Add("ColumnName", SqlDbType.VarChar, 25).Value = ColumnName;
             com.Parameters.Add("RequiredField", SqlDbType.Bit).Value = RequiredField;
             com.Parameters.Add("MaximumCharacters", SqlDbType.Int).Value = MaximumCharacters;
@@ -66,7 +79,7 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("DateTimeFormat", SqlDbType.Char, 1).Value = DateTimeFormat;
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("DefaultCheckBoxValue", SqlDbType.Bit).Value = DefaultCheckBoxValue;
-            com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = Fieldname;
+            com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = "";
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
 
@@ -75,18 +88,58 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void Create_Click(object sender, EventArgs e)
         {
+            int lineToDisplayValue;
+    if (!int.TryParse(LinesToDisplay.Value, out lineToDisplayValue))
+    {
+
+        lineToDisplayValue = 0;
+    }
+            int ColumnControlIdValue = Session["ColumnControlId"] != null ? Convert.ToInt32(Session["ColumnControlId"]) : 0;
+
+            int ColumnIdValue = int.Parse(RadioBtnIdForDisplay.SelectedItem.Value ?? "0");
+
+            string ColumnName = TxtColumnName.Value ?? string.Empty;
+
+            bool requiredField = YesButton.Checked;
+
+            int charSize = int.Parse(Characters.Value ?? "0");
+
+            string dataForChoiceValue = DataForChoiceTxt.Value ?? string.Empty;
+
+            char choiceTypeValue = (RadioButton1.Checked) ? 'D' : (RadioButton2.Checked) ? 'R' : (RadioButton3.Checked) ? 'C' : 'N' ;
+
+            string defaultValueTxt = DefaultTxt.Value ?? string.Empty;
+
+            int minValue = int.Parse(txtMin.Value ?? "0");
+
+            int maxValue = int.Parse(txtMax.Value ?? "0");
+
+            string dateTimeFormatValue = "N";
+
+            if (RadioForDisplayDate.SelectedItem != null)
+            {
+                dateTimeFormatValue = (RadioForDisplayDate.SelectedItem.Text == "None") ? "N" :
+                                      (RadioForDisplayDate.SelectedItem.Text == "CurrentDate") ? "C" :
+                                      (RadioForDisplayDate.SelectedItem.Text == "Enter Date")? "E":null;
+            }       
+            bool displayColumn = IsActive.Checked;
+
+            bool defaultCheckBox = DefaultValue.SelectedItem.Value == "Yes";
+
             con.Open();
-            //ColumnControlDetails(Convert.ToInt32(Session["ModuleId"]), TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "UPDATE");
+            ColumnControlDetails(ColumnControlIdValue, 1, ColumnIdValue, ColumnName, requiredField, charSize,
+                lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
+                dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
             con.Close();
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
         }
         protected void Reset_Click(object sender, EventArgs e)
         {
         }
         public void DisplayView(object sender, EventArgs e)
         {
-           
-            if (RadioForDisplay.SelectedItem.Text == "Single Line Txt")
+
+            if (RadioBtnIdForDisplay.SelectedItem.Text == "Single Line Txt")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = true;
@@ -94,12 +147,11 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioForDisplay.SelectedItem.Text == "Multi Line Txt")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Multi Line Txt")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -107,26 +159,26 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = true;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
+
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioForDisplay.SelectedItem.Text == "Choice (menu)")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Choice (menu)")
             {
-               
+
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
                 DefaultTxtView.Visible = true;
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = true;
                 ChoiceSelectView.Visible = true;
-                ChoiceLineView.Visible = false;
+
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioForDisplay.SelectedItem.Text == "Number")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Number")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -134,12 +186,12 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
+
                 MinMaxValueView.Visible = true;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioForDisplay.SelectedItem.Text == "Date and time")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Date and time")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -147,25 +199,12 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
+
                 MinMaxValueView.Visible = false;
                 DataView.Visible = true;
                 YesNoView.Visible = false;
             }
-            else if (RadioForDisplay.SelectedItem.Text == "Check box (Y/N)")
-            {
-                RequiredfieldView.Visible = false;
-                CharactersView.Visible = false;
-                DefaultTxtView.Visible = false;
-                LinesToDisplayView.Visible = false;
-                SperateDataView.Visible = false;
-                ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
-                MinMaxValueView.Visible = false;
-                DataView.Visible = false;
-                YesNoView.Visible = true;
-            }
-            else if (RadioForDisplay.SelectedItem.Text == "File Upload")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Check box (Y/N)")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -173,7 +212,19 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-                ChoiceLineView.Visible = false;
+                MinMaxValueView.Visible = false;
+                DataView.Visible = false;
+                YesNoView.Visible = true;
+            }
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "File Upload")
+            {
+                RequiredfieldView.Visible = true;
+                CharactersView.Visible = false;
+                DefaultTxtView.Visible = false;
+                LinesToDisplayView.Visible = false;
+                SperateDataView.Visible = false;
+                ChoiceSelectView.Visible = false;
+
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
@@ -188,7 +239,6 @@ namespace Crud__Asp.net_Web_form_
             else if (RadioForDisplayDate.SelectedItem.Text != "Enter Date")
             {
                 DateField.Visible = false;
-
             }
         }
 

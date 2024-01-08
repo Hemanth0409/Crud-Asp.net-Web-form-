@@ -37,11 +37,23 @@ namespace Crud__Asp.net_Web_form_
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
 
             con.Open();
-            ModuleDetails(Convert.ToInt32(hdnId.Value),"", true, "DELETE");
+            ModuleDetails(Convert.ToInt32(hdnId.Value), "", true, "DELETE");
             ModuleData.EditIndex = -1;
             BindDataToGridView();
             con.Close();
         }
+        protected void ModuleGridView_RowCommand(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
+            Session["ModuleId"] = hdnId.Value;
+            Response.Redirect("~/AddColumn.aspx", false);
+
+        }
+
+
+
         protected void EditButton_Click(object sender, EventArgs e)
         {
             ListView.Visible = false;
@@ -50,7 +62,7 @@ namespace Crud__Asp.net_Web_form_
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            Session["ModuleId"] = hdnId.Value;
+            Session["ModuleId"] = hdnId;
             con.Open();
             SqlCommand comm = new SqlCommand("exec Sp_selectById @ModuleId='" + hdnId.Value + "'", con);
             SqlDataReader sqlDataReader = comm.ExecuteReader();
@@ -58,8 +70,8 @@ namespace Crud__Asp.net_Web_form_
             {
                 TxtModule.Value = sqlDataReader.GetValue(1).ToString();
                 string IsActiveCheck = sqlDataReader.GetValue(2).ToString();
-              var check=IsActiveCheck == "True" ?CheckBox1.Checked = true:CheckBox1.Checked = false;
-             
+                var check = IsActiveCheck == "True" ? CheckBox1.Checked = true : CheckBox1.Checked = false;
+
 
             }
             con.Close();
@@ -78,7 +90,7 @@ namespace Crud__Asp.net_Web_form_
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_Module_Data";
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
-            com.Parameters.Add("ModuleName", SqlDbType.VarChar, 25).Value = ModuleName;            
+            com.Parameters.Add("ModuleName", SqlDbType.VarChar, 25).Value = ModuleName;
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
@@ -98,10 +110,10 @@ namespace Crud__Asp.net_Web_form_
             return com.ToString();
         }
         protected void Create_Click(object sender, EventArgs e)
-         {
+        {
             if (Session["ModuleId"] != null)
             {
-     
+
                 if (CheckBox1.Checked == true)
                 {
                     ModuleDetails(Convert.ToInt32(Session["ModuleId"]), TxtModule.Value, true, "UPDATE");
@@ -113,11 +125,11 @@ namespace Crud__Asp.net_Web_form_
                 }
                 BindDataToGridView();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
-              
+
             }
             else
             {
-             
+
                 if (CheckBox1.Checked == true)
                 {
                     ModuleDetails(0, TxtModule.Value, true, "INSERT");

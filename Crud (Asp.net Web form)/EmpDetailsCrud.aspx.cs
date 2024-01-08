@@ -1,6 +1,4 @@
-﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
-using Microsoft.Ajax.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -10,7 +8,6 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace Crud__Asp.net_Web_form_
@@ -35,27 +32,27 @@ namespace Crud__Asp.net_Web_form_
             con.Open();
             SqlCommand cmd = new SqlCommand("exec DisplayCountry", con);
             SqlDataReader reader = cmd.ExecuteReader();
-            Txtcountry.DataSource = reader;
-            Txtcountry.Items.Clear();
-            Txtcountry.Items.Add("Select a Country");
-            Txtcountry.DataTextField = "CountryName";
-            Txtcountry.DataValueField = "CountryId";
-            Txtcountry.DataBind();
+            txtCountry.DataSource = reader;
+            txtCountry.Items.Clear();
+            txtCountry.Items.Add("Select a Country");
+            txtCountry.DataTextField = "CountryName";
+            txtCountry.DataValueField = "CountryId";
+            txtCountry.DataBind();
             con.Close();
-         
+
         }
 
         public void BindState()
         {
             con.Open();
-            SqlCommand cmd = new SqlCommand("exec DisplayState @id='" + Txtcountry.SelectedValue + "'", con);
+            SqlCommand cmd = new SqlCommand("exec DisplayState @id='" + txtCountry.SelectedValue + "'", con);
             SqlDataReader reader = cmd.ExecuteReader();
-            Txtstate.DataSource = reader;
-            Txtstate.Items.Clear();
-            Txtstate.Items.Add("Select a State");
-            Txtstate.DataTextField = "StateName";
-            Txtstate.DataValueField = "StateId";
-            Txtstate.DataBind();
+            txtState.DataSource = reader;
+            txtState.Items.Clear();
+            txtState.Items.Add("Select a State");
+            txtState.DataTextField = "StateName";
+            txtState.DataValueField = "StateId";
+            txtState.DataBind();
             con.Close();
         }
         protected void country_SelectedIndexChanged(object sender, EventArgs e)
@@ -65,7 +62,7 @@ namespace Crud__Asp.net_Web_form_
         public void BindDataToGridView()
         {
 
-            SqlCommand comm = new SqlCommand("exec SelectData ", con);
+            SqlCommand comm = new SqlCommand("EXEC SelectData ", con);
             SqlDataAdapter adapter = new SqlDataAdapter(comm);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
@@ -89,13 +86,13 @@ namespace Crud__Asp.net_Web_form_
         {
             string gender;
 
-            if (RadioMale.Checked)
+            if (rdoMale.Checked)
             {
-                gender = RadioMale.Text;
+                gender = rdoMale.Text;
             }
             else
             {
-                gender = RadioFemale.Text;
+                gender = rdoFemale.Text;
             }
 
 
@@ -122,13 +119,13 @@ namespace Crud__Asp.net_Web_form_
             string gender;
             string cbSelect;
 
-            if (RadioMale.Checked)
+            if (rdoMale.Checked)
             {
-                gender = RadioMale.Text;
+                gender = rdoMale.Text;
             }
             else
             {
-                gender = RadioFemale.Text;
+                gender = rdoFemale.Text;
             }
 
 
@@ -145,7 +142,7 @@ namespace Crud__Asp.net_Web_form_
             {
                 con.Open();
 
-                EmployeeDetails(Convert.ToInt32(Session["Id"]), TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "UPDATE");
+                EmployeeDetails(Convert.ToInt32(Session["Id"]), txtName.Value, txtEmail.Value, int.Parse(txtContact.Value), int.Parse(txtAge.Value), txtAddress.Value, txtCountry.SelectedItem.ToString(), txtState.SelectedItem.ToString(), Convert.ToDateTime(txtJoinDate.Value).ToString(), gender, language, txtUserName.Value, txtPassword.Value, true, "UPDATE");
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
                 BindDataToGridView();
@@ -153,7 +150,7 @@ namespace Crud__Asp.net_Web_form_
             else
             {
                 con.Open();
-                EmployeeDetails(0, TxtName.Value, Txtemail.Value, int.Parse(TxtContact.Value), int.Parse(Txtage.Value), TxtAddress.Value, Txtcountry.SelectedItem.ToString(), Txtstate.SelectedItem.ToString(), Convert.ToDateTime(TxtjoinDate.Value).ToString(), gender, language, UserName.Value, Password.Value, true, "INSERT");
+                EmployeeDetails(0, txtName.Value, txtEmail.Value, int.Parse(txtContact.Value), int.Parse(txtAge.Value), txtAddress.Value, txtCountry.SelectedItem.ToString(), txtState.SelectedItem.ToString(), Convert.ToDateTime(txtJoinDate.Value).ToString(), gender, language, txtUserName.Value, txtPassword.Value, true, "INSERT");
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
                 BindDataToGridView();
@@ -164,10 +161,10 @@ namespace Crud__Asp.net_Web_form_
         }
         public string EmployeeDetails(int Id, string Name, string Email, int Contact, int Age,
             string Address, string Country, string State, string Joined_Date, string Gender,
-            string Language, string UserName, string Password, bool IsActive, string StatementType)
+            string Language, string txtUserName, string txtPassword, bool IsActive, string StatementType)
         {
             SqlCommand com = new SqlCommand();
-        
+
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_EmployeeDetails";
@@ -182,11 +179,10 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = StatementType == "DELETE" ? DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString() : Joined_Date;
             com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
             com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
-            com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
-            com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
+            com.Parameters.Add("txtUserName", SqlDbType.VarChar, 25).Value = txtUserName;
+            com.Parameters.Add("txtPassword", SqlDbType.VarChar, 25).Value = txtPassword;
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
-            //}
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
             return com.ToString();
@@ -195,7 +191,7 @@ namespace Crud__Asp.net_Web_form_
         {
             if (searchText.Value != "")
             {
-                string searchQuery = "SELECT * FROM EmployeeDetails where Name LIKE '%" + searchText.Value + "' or email like'%" + searchText.Value + "' or Country like'%" + searchText.Value + "' or state like'%" + searchText.Value + "' or Address like'%" + searchText.Value + "' ";
+                string searchQuery = "SELECT * FROM EmployeeDetails WHERE Name LIKE '%" + searchText.Value + "' OR email LIKE'%" + searchText.Value + "' OR Country LIKE'%" + searchText.Value + "' OR State LIKE'%" + searchText.Value + "' OR Address LIKE'%" + searchText.Value + "' ";
                 SqlCommand comm = new SqlCommand(searchQuery, con);
                 SqlDataAdapter adapter = new SqlDataAdapter(comm);
                 DataTable dt = new DataTable();
@@ -210,7 +206,7 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void ResetSearch_Click(object sender, EventArgs e)
         {
-            searchText.Value = string.Empty;            
+            searchText.Value = string.Empty;
             BindDataToGridView();
             Page_Load(sender, e);
 
@@ -218,18 +214,18 @@ namespace Crud__Asp.net_Web_form_
 
         protected void Reset_Click(object sender, EventArgs e)
         {
-            TxtName.Value = string.Empty;
-            Txtemail.Value = string.Empty;
-            Txtage.Value = string.Empty;
-            TxtContact.Value = string.Empty;
-            TxtAddress.Value = string.Empty;
-            TxtjoinDate.Value = string.Empty;
-            RadioMale.Checked = false;
-            RadioFemale.Checked = false;
-            UserName.Value = string.Empty;
-            Password.Value = string.Empty;
-            Txtcountry.ClearSelection();
-            Txtstate.ClearSelection();
+            txtName.Value = string.Empty;
+            txtEmail.Value = string.Empty;
+            txtAge.Value = string.Empty;
+            txtContact.Value = string.Empty;
+            txtAddress.Value = string.Empty;
+            txtJoinDate.Value = string.Empty;
+            rdoMale.Checked = false;
+            rdoFemale.Checked = false;
+            txtUserName.Value = string.Empty;
+            txtPassword.Value = string.Empty;
+            txtCountry.ClearSelection();
+            txtState.ClearSelection();
 
 
 
@@ -271,7 +267,6 @@ namespace Crud__Asp.net_Web_form_
                 string filePath = Server.MapPath("~/Files/Import/" + fileName);
                 UploadedFile1.SaveAs(filePath);
                 ReadDataFromExcel(filePath);
-                //LoadDataFromExcel(filePath, ".xlsx", "yes");
             }
         }
         public Boolean ReadDataFromExcel(string filepath)
@@ -284,7 +279,7 @@ namespace Crud__Asp.net_Web_form_
             string fileName = Path.GetFileName(UploadedFile1.FileName);
             string filePath = Server.MapPath("~/Files/Import/" + fileName);
             UploadedFile1.SaveAs(filePath);
-            DataTable dtValue = GetData(1,filePath,".xlsx","yes");
+            DataTable dtValue = GetData(1, filePath, ".xlsx", "yes");
             DataTable dtNew = new DataTable();
             dtNew = dtValue.Clone();
             DeleteFile(filepath);
@@ -292,11 +287,11 @@ namespace Crud__Asp.net_Web_form_
             {
                 if (dtValue.Columns.Count == 12 & dtValue.Columns.Contains("Name") & dtValue.Columns.Contains("Email") & dtValue.Columns.Contains("Contact") & dtValue.Columns.Contains("Age")
                     & dtValue.Columns.Contains("Address") & dtValue.Columns.Contains("Country") & dtValue.Columns.Contains("State") & dtValue.Columns.Contains("Joined_Date") & dtValue.Columns.Contains("Gender")
-                    & dtValue.Columns.Contains("Language") & dtValue.Columns.Contains("UserName") & dtValue.Columns.Contains("Password"))
+                    & dtValue.Columns.Contains("Language") & dtValue.Columns.Contains("txtUserName") & dtValue.Columns.Contains("txtPassword"))
                 {
                     for (int i = 0; i < dtValue.Rows.Count; i++)
                     {
-                        bool UserExist = GetUserExist(dtValue.Rows[i]["UserName"].ToString(), dtValue.Rows[i]["Password"].ToString(), dtValue.Rows[i]["Email"].ToString());
+                        bool UserExist = GetUserExist(dtValue.Rows[i]["txtUserName"].ToString(), dtValue.Rows[i]["txtPassword"].ToString(), dtValue.Rows[i]["Email"].ToString());
 
                         if (!UserExist)
                         {
@@ -306,7 +301,7 @@ namespace Crud__Asp.net_Web_form_
                                 bool StateExist = GetState(dtValue.Rows[i]["State"].ToString());
                                 if (StateExist)
                                 {
-                                   
+
                                     dtNew.Rows.Add(dtValue.Rows[i].ItemArray);
                                 }
                                 else
@@ -326,11 +321,11 @@ namespace Crud__Asp.net_Web_form_
                         }
                         else
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('UserName already Exist');", true);
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('txtUserName already Exist');", true);
 
                             return false;
                         }
-                    }                    
+                    }
                 }
                 else
                 {
@@ -338,15 +333,15 @@ namespace Crud__Asp.net_Web_form_
 
                     return false;
                 }
-                if(dtNew.Rows.Count>0& IsValid == true)
+                if (dtNew.Rows.Count > 0 & IsValid == true)
                 {
-                    for(int i = 0;i < dtNew.Rows.Count; i++)
+                    for (int i = 0; i < dtNew.Rows.Count; i++)
                     {
                         con.Open();
                         EmployeeDetails(0, dtNew.Rows[i]["Name"].ToString(), dtNew.Rows[i]["Email"].ToString(), Convert.ToInt32(dtNew.Rows[i]["Contact"]), Convert.ToInt32(dtNew.Rows[i]["Age"]),
                             dtNew.Rows[i]["Address"].ToString(), dtNew.Rows[i]["Country"].ToString(), dtNew.Rows[i]["State"].ToString(), dtNew.Rows[i]["Joined_Date"].ToString(), dtNew.Rows[i]["Gender"].ToString(),
-                            dtNew.Rows[i]["Language"].ToString(), dtNew.Rows[i]["UserName"].ToString(), dtNew.Rows[i]["Password"].ToString(), true, "INSERT");
-                         con.Close();
+                            dtNew.Rows[i]["Language"].ToString(), dtNew.Rows[i]["txtUserName"].ToString(), dtNew.Rows[i]["txtPassword"].ToString(), true, "INSERT");
+                        con.Close();
                         BindDataToGridView();
                     }
                 }
@@ -354,11 +349,11 @@ namespace Crud__Asp.net_Web_form_
             return true;
         }
 
-       
-        public bool GetUserExist(string UserName, string Password, string Email)
+
+        public bool GetUserExist(string txtUserName, string txtPassword, string Email)
         {
-            DataTable objUserName = GetUserInfo(UserName);
-            if (objUserName.Select("UserName='" + UserName.Trim() + "'").Length == 0 & objUserName.Select("Email='" + Email.Trim() + "'").Length == 0 & objUserName.Select("Password='" + Password.Trim() + "'").Length == 0)
+            DataTable objtxtUserName = GetUserInfo(txtUserName);
+            if (objtxtUserName.Select("txtUserName='" + txtUserName.Trim() + "'").Length == 0 & objtxtUserName.Select("Email='" + Email.Trim() + "'").Length == 0 & objtxtUserName.Select("txtPassword='" + txtPassword.Trim() + "'").Length == 0)
             {
                 return false;
             }
@@ -379,13 +374,13 @@ namespace Crud__Asp.net_Web_form_
             return objDataTable;
         }
 
-        public DataTable GetUserInfo(string  UserName)
+        public DataTable GetUserInfo(string txtUserName)
         {
             SqlCommand com = new SqlCommand();
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_GetUserInfo";
-            com.Parameters.Add("@UserName", SqlDbType.VarChar,25).Value = UserName;
+            com.Parameters.Add("@txtUserName", SqlDbType.VarChar, 25).Value = txtUserName;
             return GetDataTable(com);
         }
         public List<int> StateICodeList = new List<int>();
@@ -404,7 +399,7 @@ namespace Crud__Asp.net_Web_form_
                 {
                     if (Convert.ToString(countryTable.Rows[i]["CountryName"]).ToLower().Trim() == CountryName.ToLower().Trim())
                     {
-                         CountryCode = Convert.ToInt32(countryTable.Rows[i]["CountryId"]);
+                        CountryCode = Convert.ToInt32(countryTable.Rows[i]["CountryId"]);
                         CountryICodeList.Add(CountryCode);
                         return true;
                     }
@@ -509,7 +504,7 @@ namespace Crud__Asp.net_Web_form_
             excelon = string.Format(excelon, fpath, hdr);
             OleDbConnection excelcon2 = new OleDbConnection(excelon);
 
-            OleDbCommand cmd = new OleDbCommand("select [Name],[Email],[Contact],[Age],[Address],[Country],[State],[Joined_Date],[gender],[Language],[UserName],[Password] FROM [Sheet1$]", excelcon2);
+            OleDbCommand cmd = new OleDbCommand("SELECT [Name],[Email],[Contact],[Age],[Address],[Country],[State],[Joined_Date],[gender],[Language],[txtUserName],[txtPassword] FROM [Sheet1$]", excelcon2);
             OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
             DataSet ds = new DataSet();
             adapter.Fill(ds);
@@ -562,29 +557,29 @@ namespace Crud__Asp.net_Web_form_
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
             Session["Id"] = hdnId.Value;
             con.Open();
-            SqlCommand comm = new SqlCommand("exec selectDeleteById @Id='" + hdnId.Value + "',@StatementType='select'", con);
+            SqlCommand comm = new SqlCommand("EXEC selectDeleteById @Id='" + hdnId.Value + "',@StatementType='select'", con);
             SqlDataReader sqlDataReader = comm.ExecuteReader();
             while (sqlDataReader.Read())
             {
-                TxtName.Value = sqlDataReader.GetValue(1).ToString();
-                Txtemail.Value = sqlDataReader.GetValue(2).ToString();
-                Txtage.Value = sqlDataReader.GetValue(4).ToString();
-                TxtContact.Value = sqlDataReader.GetValue(3).ToString();
-                Txtcountry.SelectedItem.Text = sqlDataReader.GetValue(6).ToString();
-                Txtstate.SelectedItem.Text = sqlDataReader.GetValue(7).ToString();
-                TxtAddress.Value = sqlDataReader.GetValue(5).ToString();
-                TxtjoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
+                txtName.Value = sqlDataReader.GetValue(1).ToString();
+                txtEmail.Value = sqlDataReader.GetValue(2).ToString();
+                txtAge.Value = sqlDataReader.GetValue(4).ToString();
+                txtContact.Value = sqlDataReader.GetValue(3).ToString();
+                txtCountry.SelectedItem.Text = sqlDataReader.GetValue(6).ToString();
+                txtState.SelectedItem.Text = sqlDataReader.GetValue(7).ToString();
+                txtAddress.Value = sqlDataReader.GetValue(5).ToString();
+                txtJoinDate.Value = Convert.ToDateTime(sqlDataReader.GetValue(8)).Date.ToString("yyyy-MM-dd");
                 string gender = sqlDataReader.GetValue(9).ToString();
                 string selectedItems = sqlDataReader.GetValue(10).ToString();
-                UserName.Value = sqlDataReader.GetValue(11).ToString();
-                Password.Value = sqlDataReader.GetValue(12).ToString();
+                txtUserName.Value = sqlDataReader.GetValue(11).ToString();
+                txtPassword.Value = sqlDataReader.GetValue(12).ToString();
                 if (gender.Equals("Male"))
                 {
-                    RadioMale.Checked = true;
+                    rdoMale.Checked = true;
                 }
                 else if (gender.Equals("Female"))
                 {
-                    RadioFemale.Checked = true;
+                    rdoFemale.Checked = true;
                 }
 
 
@@ -595,9 +590,7 @@ namespace Crud__Asp.net_Web_form_
                         Language.Items[i].Selected = true;
                     }
                 }
-
                 selectedItems = selectedItems.TrimEnd(',');
-
             }
             con.Close();
         }
@@ -612,7 +605,6 @@ namespace Crud__Asp.net_Web_form_
             searchButton.Visible = false;
             ClearSearch.Visible = false;
             AddEmployeeData.Visible = false;
-        
         }
     }
 }

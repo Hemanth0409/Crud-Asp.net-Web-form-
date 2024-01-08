@@ -51,40 +51,40 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.Panel formViewId;
 
         /// <summary>
-        /// TxtName control.
+        /// txtName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtName;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtName;
 
         /// <summary>
-        /// Txtemail control.
+        /// txtEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtemail;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtEmail;
 
         /// <summary>
-        /// Txtage control.
+        /// txtAge control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText Txtage;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtAge;
 
         /// <summary>
-        /// Txtcountry control.
+        /// txtCountry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Txtcountry;
+        protected global::System.Web.UI.WebControls.DropDownList txtCountry;
 
         /// <summary>
         /// CountryLinkButton control.
@@ -96,13 +96,13 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.LinkButton CountryLinkButton;
 
         /// <summary>
-        /// Txtstate control.
+        /// txtState control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Txtstate;
+        protected global::System.Web.UI.WebControls.DropDownList txtState;
 
         /// <summary>
         /// StateLinkButton control.
@@ -114,40 +114,40 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.LinkButton StateLinkButton;
 
         /// <summary>
-        /// TxtContact control.
+        /// txtContact control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtContact;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtContact;
 
         /// <summary>
-        /// TxtjoinDate control.
+        /// txtJoinDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl TxtjoinDate;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl txtJoinDate;
 
         /// <summary>
-        /// RadioMale control.
+        /// rdoMale control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton RadioMale;
+        protected global::System.Web.UI.WebControls.RadioButton rdoMale;
 
         /// <summary>
-        /// RadioFemale control.
+        /// rdoFemale control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton RadioFemale;
+        protected global::System.Web.UI.WebControls.RadioButton rdoFemale;
 
         /// <summary>
         /// Language control.
@@ -159,49 +159,49 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.CheckBoxList Language;
 
         /// <summary>
-        /// TxtAddress control.
+        /// txtAddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTextArea TxtAddress;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea txtAddress;
 
         /// <summary>
-        /// UserName control.
+        /// txtUserName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText UserName;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtUserName;
 
         /// <summary>
-        /// Password control.
+        /// txtPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText Password;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtPassword;
 
         /// <summary>
-        /// Button1 control.
+        /// btnSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button btnSave;
 
         /// <summary>
-        /// btn control.
+        /// btnResetClick control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn;
+        protected global::System.Web.UI.WebControls.Button btnResetClick;
 
         /// <summary>
         /// PropertyAttributePanel control.
