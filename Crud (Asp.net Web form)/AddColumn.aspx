@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <style>
         body {
             background: #fafbfb;
@@ -19,8 +18,8 @@
         .error {
             color: Red
         }
+         
     </style>
-
 </head>
 <body>
     <form id="form1" runat="server">
@@ -28,15 +27,14 @@
         </asp:ScriptManager>
         <asp:UpdatePanel ID="updatepannel" runat="server">
             <ContentTemplate>
-                <asp:Panel ID="formViewId" runat="server" Visible="false">
+                <asp:Panel ID="formViewId" runat="server" Visible="true">
                     <div class="container my-5 d-flex flex-column justify-content-center">
-                        <h3 class="mb-3 ms-5 text-center">Dynamic Module</h3>
+                        <h3 class="mb-3 ms-5 text-center">Dynamic Module(Column)</h3>
                         <div class="row">
                             <div class="row justify-content-center align-items-center" runat="server" visible="true">
                                 <div class="col-md-2 mt-4 text-center">
                                     <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Column Name:</label>
                                 </div>
-
                                 <div class="col-md-4 mt-4">
                                     <input type="text" class="form-control float-end" runat="server" id="TxtColumnName" />
                                 </div>
@@ -48,18 +46,18 @@
                                 <div class="col-md-4 mt-4 ms-4">
                                     <div class="row float-center ms-5">
                                         <asp:RadioButtonList runat="server" ID="RadioBtnIdForDisplay" OnSelectedIndexChanged="DisplayView" AutoPostBack="true">
-                                            <asp:ListItem ID="RadioSingleLine" Value="1" Selected="True" Text="Single Line Txt" />
-                                            <asp:ListItem ID="RadioMultiLine" Value="2" Text="Multi Line Txt" />
-                                            <asp:ListItem ID="RadioChoice" Value="3" Text="Choice (menu)" />
-                                            <asp:ListItem ID="RadioNumber" Value="4" Text="Number" />
-                                            <asp:ListItem ID="RadioDateTime" Value="5" Text="Date and time" />
-                                            <asp:ListItem ID="RadioCheckBox" Value="6" Text="Check box (Y/N)" />
-                                            <asp:ListItem ID="RadioUploadFile" Value="7" Text="File Upload" />
+                                            <asp:ListItem ID="RadioSingleLine" Value="0" Selected="True" Text="Single Line Txt" />
+                                            <asp:ListItem ID="RadioMultiLine" Value="1" Text="Multi Line Txt" />
+                                            <asp:ListItem ID="RadioChoice" Value="2" Text="Choice (menu)" />
+                                            <asp:ListItem ID="RadioNumber" Value="3" Text="Number" />
+                                            <asp:ListItem ID="RadioDateTime" Value="4" Text="Date and time" />
+                                            <asp:ListItem ID="RadioCheckBox" Value="5" Text="Check box (Y/N)" />
+                                            <asp:ListItem ID="RadioUploadFile" Value="6" Text="File Upload" />
                                         </asp:RadioButtonList>
                                     </div>
                                 </div>
                             </div>
-                             <div class="row justify-content-center align-items-center">
+                            <div class="row justify-content-center align-items-center">
                                 <div class="col-md-4 mt-4 text-center">
                                     <label for="Name" class="form-label m-0">Display the Column :</label>
                                 </div>
@@ -84,7 +82,7 @@
                                 </div>
 
                                 <div class="col-md-4 mt-4">
-                                    <input type="number" id="Characters"  min="1" max="50" runat="server" class="form-control" />
+                                    <input type="number" id="Characters" min="1" max="50" runat="server" class="form-control" />
                                 </div>
                             </div>
                             <div class="row justify-content-center align-items-center" runat="server" id="LinesToDisplayView" visible="false">
@@ -115,16 +113,15 @@
                                     <asp:RadioButton asp-for="RequiredField" ID="RadioButton3" Text="Check Box(multiple Select)" runat="server" GroupName="DisplayChoice" />
                                 </div>
                             </div>
-
                             <div class="row justify-content-center align-items-center" runat="server" id="MinMaxValueView" visible="false">
                                 <div class="col-md-4 mt-4 text-center">
                                     <label for="Characters" class="form-label m-0">Minimum and Maximum Value:</label>
                                 </div>
                                 <div class="col-md-2 mt-4">
-                                    <input type="number" id="txtMin"   runat="server" class="form-control" />
+                                    <input type="number" id="txtMin" runat="server" class="form-control" />
                                 </div>
                                 <div class="col-md-2 mt-4">
-                                    <input type="number" id="txtMax"  runat="server" class="form-control" />
+                                    <input type="number" id="txtMax" runat="server" class="form-control" />
                                 </div>
                             </div>
                             <div class="row justify-content-center align-items-center" runat="server" id="DataView" visible="false">
@@ -133,10 +130,9 @@
                                 </div>
                                 <div class="row col-md-4 mt-4">
                                     <asp:RadioButtonList ID="RadioForDisplayDate" OnSelectedIndexChanged="DisplayDate" runat="server" AutoPostBack="true">
-                                        <asp:ListItem Text="None" />
-                                        <asp:ListItem Text="CurrentDate" />
-                                        <asp:ListItem Text="Enter Date" />
-
+                                        <asp:ListItem Text="None" Value="0" />
+                                        <asp:ListItem Text="CurrentDate" Value="1" />
+                                        <asp:ListItem Text="Enter Date" Value="2" />
                                     </asp:RadioButtonList>
                                     <div class="col-md-10" runat="server" id="DateField" visible="false">
                                         <input type="date" class="form-control float-end mt-3" id="TxtjoinDate" runat="server">
@@ -157,35 +153,36 @@
                                 </div>
                                 <div class="col-md-2 mt-4">
                                     <asp:DropDownList ID="DefaultValue" runat="server" CssClass="form-control">
-                                              <asp:ListItem Value="No">No</asp:ListItem>
-                                        <asp:ListItem Value="Yes">Yes</asp:ListItem>
-                                  
+                                        <asp:ListItem Value="Yes" Text="Yes">Yes</asp:ListItem>
+                                        <asp:ListItem Value="No" Text="No">No</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center gap-3 mt-5">
-                                <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
-                                <asp:Button ID="btn" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
+                                <asp:Button ID="btnSave" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" Visible="true" />
+                                <asp:Button ID="btnCancel" runat="server" Text="Cancel" OnClick="Reset_Click" class="btn btn-dark fw-bold" />
                             </div>
                         </div>
-                </asp:Panel>
-                <asp:Panel ID="ListView" runat="server">
+
+                </asp:Panel>          
+                <asp:Panel ID="ListView" runat="server" Visible="true">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                            <asp:GridView ID="ColumnControlData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" 
+                                autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging"  AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
-                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ColumnControlId")%>' />
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ColumnCountrolId")%>' />
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:BoundField DataField="ColumnName " HeaderText="Column Name" SortExpression="ColumnName" />
+                                    <asp:BoundField DataField="ColumnName" HeaderText="Column Name" SortExpression="ColumnName" />
                                     <asp:BoundField DataField="RequiredField" HeaderText="Display" SortExpression="RequiredField" />
                                     <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
                                             <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
-                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
-                                                OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
+                                            <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete" 
+                                                OnClientClick="return confirm('Are you sure you want to delete this record?');" OnClick="DeleteRecord"></asp:Button>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>

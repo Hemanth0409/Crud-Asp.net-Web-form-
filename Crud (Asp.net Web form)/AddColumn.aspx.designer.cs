@@ -357,22 +357,22 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.DropDownList DefaultValue;
 
         /// <summary>
-        /// Button1 control.
+        /// btnSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button btnSave;
 
         /// <summary>
-        /// btn control.
+        /// btnCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn;
+        protected global::System.Web.UI.WebControls.Button btnCancel;
 
         /// <summary>
         /// ListView control.
@@ -384,12 +384,12 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.Panel ListView;
 
         /// <summary>
-        /// ModuleData control.
+        /// ColumnControlData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView ModuleData;
+        protected global::System.Web.UI.WebControls.GridView ColumnControlData;
     }
 }

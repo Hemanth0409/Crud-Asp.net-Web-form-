@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -16,17 +17,17 @@ namespace Crud__Asp.net_Web_form_
         int currentModuleId;
         protected void Page_Load(object sender, EventArgs e)
         {
-            // ListView.Visible = true;
-            formViewId.Visible = true;
+            //ListView.Visible = true;
+            //formViewId.Visible = false;
             currentModuleId = Convert.ToInt32(Session["ModuleId"]);
-
             BindDataToGridView();
 
         }
 
-        public void BindDataToGridView()
+    public void BindDataToGridView()
         {
             GetColumnById(currentModuleId);
+
         }
 
         public string GetColumnById(int ModuleId)
@@ -38,13 +39,36 @@ namespace Crud__Asp.net_Web_form_
             com.CommandText = "Sp_GetAllColumnDataById";
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
             com.CommandTimeout = 0;
+            SqlDataAdapter adapter = new SqlDataAdapter(com);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
 
+            if (dt.Rows.Count > 0)
+            {
+                ColumnControlData.DataSource = dt;
+                ColumnControlData.DataBind();
+            }
+            ViewState["dt"] = dt;
+            ViewState["sort"] = "ASC";
             com.ExecuteNonQuery();
             con.Close();
             return com.ToString();
         }
+        protected void DeleteRecord(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
+            con.Open();
+            ColumnControlDetails(Convert.ToInt32(hdnId.Value), 0, 0, "", true, 0, 0, "", "", "", 0, 0, "", true, true, "DELETE");
+            ColumnControlData.EditIndex = -1;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted');", true);
+            BindDataToGridView();
+            con.Close();
+        }
+       
         public string ColumnControlDetails(
-            int ColumnControlId,
+        int ColumnControlId,
         int ModuleId,
         int ColumnId,
         string ColumnName,
@@ -66,7 +90,7 @@ namespace Crud__Asp.net_Web_form_
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_ColumnControl";
-            com.Parameters.Add("ColumnCountrolId", SqlDbType.Int).Value = ColumnControlId;
+            com.Parameters.Add("ColumnControlId", SqlDbType.Int).Value = ColumnControlId;
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
             com.Parameters.Add("ControlId", SqlDbType.Int).Value = ColumnId;
             com.Parameters.Add("ColumnName", SqlDbType.VarChar, 25).Value = ColumnName;
@@ -84,7 +108,17 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = "";
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
+            SqlDataAdapter adapter = new SqlDataAdapter(com);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
 
+            if (dt.Rows.Count > 0)
+            {
+                ColumnControlData.DataSource = dt;
+                ColumnControlData.DataBind();
+            }
+            ViewState["dt"] = dt;
+            ViewState["sort"] = "ASC";
             com.ExecuteNonQuery();
             return com.ToString();
         }
@@ -105,18 +139,21 @@ namespace Crud__Asp.net_Web_form_
             RadioForDisplayDate.ClearSelection();
             IsActive.Checked = false;
             DefaultValue.ClearSelection();
+            Response.Redirect("DynamicModule.aspx", false);
+
         }
+
         protected void Create_Click(object sender, EventArgs e)
         {
+            //ListView.Visible = false;
+            //formViewId.Visible = true;
             int lineToDisplayValue;
             if (!int.TryParse(LinesToDisplay.Value, out lineToDisplayValue))
             {
 
                 lineToDisplayValue = 0;
             }
-            int ColumnControlIdValue = Session["ColumnControlId"] != null ? Convert.ToInt32(Session["ColumnControlId"]) : 0;
 
-            int ColumnIdValue = int.Parse(RadioBtnIdForDisplay.SelectedItem.Value ?? "0");
 
             string ColumnName = TxtColumnName.Value ?? string.Empty;
 
@@ -158,37 +195,117 @@ namespace Crud__Asp.net_Web_form_
 
             bool defaultCheckBox = DefaultValue.SelectedItem.Value == "No" ? defaultCheckBox = false : defaultCheckBox = true;
 
-            con.Open();
-            ColumnControlDetails(ColumnControlIdValue, 1, ColumnIdValue, ColumnName, requiredField, charSize,
-                lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
-                dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
-            con.Close();
+
+            if (Session["ColumnControlId"] != null)
+            {
+                con.Open();
+                ColumnControlDetails(Convert.ToInt32(Session["ColumnControlId"]), currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
+                    lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
+                    dateTimeFormatValue, displayColumn, defaultCheckBox, "UPDATE");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
+                con.Close();
+                BindDataToGridView();
+            }
+            else
+            {
+                con.Open();
+                ColumnControlDetails(0, currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
+                    lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
+                    dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
+                con.Close();
+                BindDataToGridView();
+            }
             Reset_Click(sender, e);
         }
+    
         protected void EditButton_Click(object sender, EventArgs e)
         {
-            ListView.Visible = false;
-            formViewId.Visible = true;
-
+            //ListView.Visible = false;
+            //formViewId.Visible = true;
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            Session["ColumnControlId"] = hdnId;
+            Session["ColumnControlId"] = hdnId.Value;
             con.Open();
             SqlCommand comm = new SqlCommand("exec Sp_SelectColumnById @ColumnControlId='" + hdnId.Value + "'", con);
             SqlDataReader sqlDataReader = comm.ExecuteReader();
             while (sqlDataReader.Read())
             {
-              
+                string requiredField;
+                string isActive;
+                string ChoiceTypeData;
+                RadioBtnIdForDisplay.SelectedIndex = Convert.ToInt32(sqlDataReader.GetValue(2).ToString());
+                DisplayView(sender, e);
+                RadioBtnIdForDisplay.Enabled = false;
+                TxtColumnName.Value = sqlDataReader.GetValue(3).ToString();
+                requiredField = sqlDataReader.GetValue(4).ToString();
+                Characters.Value = sqlDataReader.GetValue(5).ToString();
+                LinesToDisplay.Value = sqlDataReader.GetValue(6).ToString();
+                DataForChoiceTxt.Value = sqlDataReader.GetValue(7).ToString();
+                ChoiceTypeData = sqlDataReader.GetValue(8).ToString();
+                DefaultTxt.Value = sqlDataReader.GetValue(9).ToString();
+                txtMax.Value = sqlDataReader.GetValue(10).ToString();
+                txtMin.Value = sqlDataReader.GetValue(11).ToString();
+                isActive = sqlDataReader.GetValue(13).ToString();
+                string DefaultCheckBoxValue = sqlDataReader.GetValue(14).ToString();
 
+                if (DefaultCheckBoxValue.Equals("True"))
+                {
+                    DefaultValue.SelectedIndex = 0;
+                }
+                else
+                {
+                    DefaultValue.SelectedIndex = 1;
+                }
+
+                if (ChoiceTypeData.Equals("D"))
+                {
+                    RadioButton1.Checked = true;
+                }
+                else if (ChoiceTypeData.Equals("C"))
+                {
+                    RadioButton2.Checked = true;
+
+                }
+                else if (ChoiceTypeData.Equals("R"))
+                {
+                    RadioButton3.Checked = true;
+
+                }
+                if (isActive.Equals("True"))
+                {
+                    IsActive.Checked = true;
+                }
+                else
+                {
+                    IsActive.Checked = false;
+                }
+                if (requiredField.Equals("True"))
+                {
+                    YesButton.Checked = true;
+                }
+                else if (requiredField.Equals("False"))
+                {
+                    NoButton.Checked = true;
+                }
             }
             con.Close();
         }
+
+        protected void OnPageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            ColumnControlData.PageIndex = e.NewPageIndex;
+            BindDataToGridView();
+        }
+        public void AddColumnFields(object sender,EventArgs e)
+        {
+            ListView.Visible = false;
+            formViewId.Visible = true;
+        }
         public void DisplayView(object sender, EventArgs e)
         {
-
-            if (RadioBtnIdForDisplay.SelectedItem.Text == "Single Line Txt")
+            if (RadioBtnIdForDisplay.SelectedItem.Text == "Single Line Txt" || RadioBtnIdForDisplay.SelectedItem.Value == "0")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = true;
@@ -200,7 +317,7 @@ namespace Crud__Asp.net_Web_form_
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Multi Line Txt")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Multi Line Txt" || RadioBtnIdForDisplay.SelectedItem.Value == "1")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -212,7 +329,7 @@ namespace Crud__Asp.net_Web_form_
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Choice (menu)")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Choice (menu)" || RadioBtnIdForDisplay.SelectedItem.Value == "2")
             {
 
                 RequiredfieldView.Visible = true;
@@ -221,12 +338,11 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = true;
                 ChoiceSelectView.Visible = true;
-
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Number")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Number" || RadioBtnIdForDisplay.SelectedItem.Value == "3")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -234,12 +350,11 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-
                 MinMaxValueView.Visible = true;
                 DataView.Visible = false;
                 YesNoView.Visible = false;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Date and time")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Date and time" || RadioBtnIdForDisplay.SelectedItem.Value == "4")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -247,12 +362,11 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-
                 MinMaxValueView.Visible = false;
                 DataView.Visible = true;
                 YesNoView.Visible = false;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Check box (Y/N)")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "Check box (Y/N)" || RadioBtnIdForDisplay.SelectedItem.Value == "5")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -264,7 +378,7 @@ namespace Crud__Asp.net_Web_form_
                 DataView.Visible = false;
                 YesNoView.Visible = true;
             }
-            else if (RadioBtnIdForDisplay.SelectedItem.Text == "File Upload")
+            else if (RadioBtnIdForDisplay.SelectedItem.Text == "File Upload" || RadioBtnIdForDisplay.SelectedItem.Value == "6")
             {
                 RequiredfieldView.Visible = true;
                 CharactersView.Visible = false;
@@ -272,7 +386,6 @@ namespace Crud__Asp.net_Web_form_
                 LinesToDisplayView.Visible = false;
                 SperateDataView.Visible = false;
                 ChoiceSelectView.Visible = false;
-
                 MinMaxValueView.Visible = false;
                 DataView.Visible = false;
                 YesNoView.Visible = false;

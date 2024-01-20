@@ -40,6 +40,19 @@
                                         </a>
                                
                                     </li>
+                                      <li class="nav-item">
+                                        <a href="DynamicModule.aspx" class="nav-link px-0 text-white" target="switch-frame">
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">DynamicModule </span>
+                                        </a>
+                               
+                                    </li>
+                                       </li>
+                                      <li class="nav-item">
+                                        <a href="ModuleRights.aspx" class="nav-link px-0 text-white" target="switch-frame">
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">ModuleRights </span>
+                                        </a>
+                               
+                                    </li>
                                     <%--  <li>
                                         <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
                                             <i class="fs-4 bi-grid"></i><span class="ms-1 d-none d-sm-inline">Country & state </span></a>
@@ -115,7 +128,7 @@
                             switchIframeSrc();
                         </script>
                         <div class="col">
-                            <iframe id="ContentIFrame" frameborder="0" name="switch-frame" style="height: 700px; width: 100%" class="switch-target" src="BlankPage.aspx"></iframe>
+                            <iframe id="ContentIFrame" frameborder="0" name="switch-frame" style="height: 1000px; width: 98%" class="switch-target" src="BlankPage.aspx"></iframe>
                         </div>
                     </div>
 

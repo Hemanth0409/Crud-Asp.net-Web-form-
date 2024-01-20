@@ -20,8 +20,7 @@ namespace Crud__Asp.net_Web_form_
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ListView.Visible = true;
-            formViewId.Visible = false;
+
             BindDataToGridView();
         }
         public void BindDataToGridView()
@@ -56,13 +55,11 @@ namespace Crud__Asp.net_Web_form_
 
         protected void EditButton_Click(object sender, EventArgs e)
         {
-            ListView.Visible = false;
-            formViewId.Visible = true;
 
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            Session["ModuleId"] = hdnId;
+            Session["ModuleId"] = hdnId.Value;
             con.Open();
             SqlCommand comm = new SqlCommand("exec Sp_selectById @ModuleId='" + hdnId.Value + "'", con);
             SqlDataReader sqlDataReader = comm.ExecuteReader();
@@ -81,7 +78,10 @@ namespace Crud__Asp.net_Web_form_
             ModuleData.PageIndex = e.NewPageIndex;
             BindDataToGridView();
         }
-        public string ModuleDetails(int ModuleId, string ModuleName, bool IsActive, string StatementType)
+        public string ModuleDetails(int ModuleId, 
+            string ModuleName, 
+            bool IsActive,
+            string StatementType)
         {
             con.Open();
             SqlCommand com = new SqlCommand();
