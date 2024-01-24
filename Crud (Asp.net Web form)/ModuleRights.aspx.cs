@@ -40,8 +40,12 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void Page_Load(object sender, EventArgs e)
         {
-            //LoadClients();
-            //LoadModuleRights();
+            if (!Page.IsPostBack)
+            {
+                LoadClients();
+                LoadModuleRights();
+            }
+
         }
 
         public void CreateGridViewColumns()
@@ -54,18 +58,19 @@ namespace Crud__Asp.net_Web_form_
                 else
                     ModuleRightsGridView.Columns.RemoveAt(i);
             }
-            ModuleDataTable = GetModuleModule();
+            ModuleDataTable = GetAllModule();
 
-            int iWidth=(ModuleDataTable.Rows.Count * 100);
-            ModuleRightsGridView.Width= iWidth;
+            int iWidth = (ModuleDataTable.Rows.Count * 100);
+            ModuleRightsGridView.Width = iWidth;
 
             if (iWidth < 600)
             {
                 ModuleRightsGridView.Width = 600;
+                ModuleRightsGridView.CssClass = "table table-striped";
             }
-            for(int i = 0; i < ModuleDataTable.Rows.Count; i++)
+            for (int i = 0; i < ModuleDataTable.Rows.Count; i++)
             {
-                TemplateField objTemplateField=new TemplateField();
+                TemplateField objTemplateField = new TemplateField();
                 objTemplateField.HeaderText = Convert.ToString(ModuleDataTable.Rows[i]["ModuleName"]);
                 objTemplateField.FooterText = Convert.ToString(ModuleDataTable.Rows[i]["ModuleId"]);
                 objTemplateField.ItemTemplate = new GridViewCheckBoxClass(i.ToString());
@@ -76,31 +81,127 @@ namespace Crud__Asp.net_Web_form_
             ModuleCount.Value = ModuleDataTable.Rows.Count.ToString();
 
         }
+        private void LoadClients()
+        {
+            DataTable EmployeeDetailsDt;
+            EmployeeDetailsDt = GetEmployeeDetail();
+            ModuleRightsGridView.DataSource = EmployeeDetailsDt;
+            ModuleRightsGridView.DataBind();
+            EmpCount.Value = EmployeeDetailsDt.Rows.Count.ToString();
+        }
 
-        public DataTable GetModuleModule()
+        public DataTable GetEmployeeDetail()
+        {
+            SqlCommand cmd = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            cmd.Connection = con;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Sp_SelectEmployeeDetails";
+            adapter.SelectCommand = cmd;
+            adapter.Fill(dt);
+            return dt;
+        }
+        private void LoadModuleRights()
+        {
+            DataTable ModuleRightsDataTable;
+            DataTable objDataTable;
+
+            ModuleRightsDataTable = GetModuleRights();
+
+            for (int i = 1; i < ModuleRightsGridView.Columns.Count; i++)
+            {
+                int iModuleCode = Convert.ToInt32(ModuleRightsGridView.Columns[i].FooterText);
+                for (int j = 0; j < ModuleRightsGridView.Rows.Count; j++)
+                {
+                    string employeeCode = ((HiddenField)ModuleRightsGridView.Rows[j].FindControl("hndEmpId")).Value;
+                    DataView RightsView = new DataView(ModuleRightsDataTable);
+                    RightsView.RowFilter = "EmployeeId=" + employeeCode.ToString() + "AND ModuleId=" + iModuleCode;
+
+                    if (RightsView.Count > 0)
+                    {
+                        Boolean boolRight = Convert.ToBoolean(RightsView[0]["ModuleRight"]);
+                        CheckBox ModuleRightsCheckBox = (CheckBox)ModuleRightsGridView.Rows[j].FindControl("ModuleCheckBox" + (i - 1));
+                        if (ModuleRightsCheckBox != null)
+                        {
+                            ModuleRightsCheckBox.Checked = boolRight;
+                        }
+                    }
+                }
+            }
+            //int EmployeeUserCode;
+            for (int iModule = 1; iModule > 0; iModule--)
+            {
+                for (int j = 0; j < ModuleRightsGridView.Rows.Count; j++)
+                {
+                    int iEmployeeCode = Convert.ToInt32(((HiddenField)ModuleRightsGridView.Rows[j].FindControl("hndEmpId")).Value);
+                    CheckBox ModuleRightsCheckBox = (CheckBox)ModuleRightsGridView.Rows[j].FindControl("ModuleCheckBox" + (ModuleRightsGridView.Columns.Count - 1));
+                    if (ModuleRightsCheckBox != null)
+                    {
+                        ModuleRightsCheckBox.Checked = false;
+                    }
+                    objDataTable = GetEmployeeDetailById(iEmployeeCode);
+                    if (objDataTable.Rows.Count > 0)
+                    {
+                        ModuleRightsDataTable = new DataTable();
+                        if (ModuleRightsDataTable.Rows.Count > 0)
+                        {
+                            ModuleRightsCheckBox = (CheckBox)ModuleRightsGridView.Rows[j].FindControl("ModuleCheckBox" + (ModuleRightsGridView.Columns.Count - iModule));
+                            if (ModuleRightsDataTable != null)
+                            {
+                                ModuleRightsCheckBox.Checked = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public DataTable GetEmployeeDetailById(int EmployeeId)
+        {
+            SqlCommand com = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "SelectEmployeeById";
+            com.Parameters.Add("@id", SqlDbType.Int).Value = EmployeeId;
+            DataTable dataTable = new DataTable();
+            adapter.SelectCommand = com;
+            adapter.Fill(dataTable);
+            return dataTable;
+        }
+        public DataTable GetAllModule()
         {
             con.Open();
             SqlCommand com = new SqlCommand();
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
-            com.CommandText = "Sp_GetModuleModule";
+            com.CommandText = "Sp_GetAllModuleData";
+            com.CommandTimeout = 0;
+            com.ExecuteNonQuery();
+            return GetDataTable(com);
+        }
+        public DataTable GetModuleRights()
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_GetModuleRights";
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
             return GetDataTable(com);
         }
         public DataTable GetDataTable(SqlCommand objCom)
         {
-          
             objCom.Connection = con;
             SqlDataAdapter adapter = new SqlDataAdapter();
             adapter.SelectCommand = objCom;
             DataTable dataTable = new DataTable();
             adapter.Fill(dataTable);
-        
+
             return dataTable;
         }
         public string ModuleRightsSql(int moduleRightsId,
-            int moduleId ,
+            int moduleId,
             bool rights,
             int createById,
             string createdDate,
@@ -119,9 +220,9 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = moduleId;
             com.Parameters.Add("Rights", SqlDbType.Bit).Value = rights;
             com.Parameters.Add("CreatedById", SqlDbType.Int).Value = createById;
-            com.Parameters.Add("CreatedDate",SqlDbType.Date).Value=createdDate;
+            com.Parameters.Add("CreateDate", SqlDbType.Date).Value = createdDate;
             com.Parameters.Add("UpdateById", SqlDbType.Int).Value = updateById;
-            com.Parameters.Add("UpdateDate",SqlDbType.Date).Value = updateDate;
+            com.Parameters.Add("UpdateDate", SqlDbType.Date).Value = updateDate;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = statementType;
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
@@ -139,15 +240,58 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             return com.ToString();
         }
-        protected void ModuleRightsGridView_RowDataBound(object sender,GridViewRowEventArgs e)
+        //protected void ModuleRightsGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+        //{
+        //    if (e.Row.RowType == DataControlRowType.DataRow)
+        //    {
+        //        e.Row.Attributes.Add("onmouseover", "this.className=GirdRow RowHighLightColor'");
+        //        if (e.Row.RowIndex % 2 == 0)
+        //            e.Row.Attributes.Add("onmouseout", "this.className='GridRow'");
+        //        else
+        //            e.Row.Attributes.Add("onmouseout", "this.className='AlternateGridRow'");
+        //    }
+        //}
+
+        public bool ModuleRightsCheck(int ModuleId,int EmployeeId)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
+            con.Open();
+            SqlCommand com = new SqlCommand();
+
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_CheckModuleRightsForEmployee";
+            com.Parameters.Add("ModuleId", SqlDbType.Int).Value=ModuleId;
+            com.Parameters.Add("EmployeeId",SqlDbType.Int).Value = EmployeeId;
+            com.Parameters.Add("RightsCheck",SqlDbType.Bit).Direction=ParameterDirection.Output;
+            com.ExecuteNonQuery();
+            return Convert.ToBoolean(com.Parameters["RightsCheck"].Value);
+        } 
+        private void SaveModuleRights()
+        {
+            DataTable ModuleRightsDataTable;
+            ModuleRightsDataTable = GetModuleRights();
+            for(int i = 1; i < ModuleRightsGridView.Columns.Count; i++)
             {
-                e.Row.Attributes.Add("onmouseover", "this.className=GirdRow RowHighLightColor'");
-                if(e.Row.RowIndex% 2 == 0)
-                    e.Row.Attributes.Add("onmouseout", "this.className='GridRow'");
-                else
-                    e.Row.Attributes.Add("onmouseout", "this.className='AlternateGridRow'");
+                int EmployeeIdCode = Convert.ToInt32(ModuleRightsGridView.Columns[i].FooterText);
+                for (int j = 1;j<ModuleRightsGridView.Rows.Count;j++)
+                {
+                    int EmployeeCode = Convert.ToInt32(((HiddenField)ModuleRightsGridView.Rows[j].FindControl("hndEmpId")).Value);
+
+                    DataView RightsView=new DataView(ModuleRightsDataTable);
+                    RightsView.RowFilter = "EmployeeId=" + EmployeeCode + "AND ModuleId=" + EmployeeIdCode;
+                    CheckBox ModuleRightsCheckBox = (CheckBox)ModuleRightsGridView.Rows[j].FindControl("ModuleCheckBox" + (i - 1));
+                    if (RightsView.Count> 0)
+                    {
+                        Boolean boolRights = Convert.ToBoolean(RightsView[0]["ModuleRight"]);
+                        if (ModuleRightsCheckBox!=null)
+                        {
+                            if (ModuleRightsCheckBox.Checked != boolRights)
+                            {
+
+                            }
+                        }
+                    }
+                }
             }
         }
     }

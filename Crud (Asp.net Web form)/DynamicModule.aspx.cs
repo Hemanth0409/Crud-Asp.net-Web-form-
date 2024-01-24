@@ -109,6 +109,20 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             return com.ToString();
         }
+        public string ModuleRights(int ModuleId,int EmployeeId,string StatementType)
+        {
+            SqlCommand com = new SqlCommand();
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_ModuleRights";
+            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.Parameters.Add("Rights", SqlDbType.Bit).Value = false;
+            com.Parameters.Add("CreatedById",SqlDbType.Int).Value= EmployeeId;
+            com.Parameters.Add("CreatedDate",SqlDbType.Date).Value=DateTime.UtcNow.Date;
+            com.Parameters.Add("UpdateById", SqlDbType.Int).Value = 0;
+            com.Parameters.Add("CreatedDate", SqlDbType.Date).Value = null;
+
+            return com.ToString();
+        }
         protected void Create_Click(object sender, EventArgs e)
         {
             if (Session["ModuleId"] != null)
@@ -123,6 +137,7 @@ namespace Crud__Asp.net_Web_form_
                     ModuleDetails(Convert.ToInt32(Session["ModuleId"]), TxtModule.Value, false, "UPDATE");
 
                 }
+                Reset_Click(sender,e);
                 BindDataToGridView();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
 
@@ -133,19 +148,34 @@ namespace Crud__Asp.net_Web_form_
                 if (CheckBox1.Checked == true)
                 {
                     ModuleDetails(0, TxtModule.Value, true, "INSERT");
+                 
                 }
                 else
                 {
                     ModuleDetails(0, TxtModule.Value, false, "INSERT");
 
                 }
+                Reset_Click(sender, e);
                 BindDataToGridView();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
             }
         }
+        protected void DeleteRecord(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");         
+            ModuleDetails(Convert.ToInt32(hdnId.Value), "", true, "DELETE");
+            ModuleData.EditIndex = -1;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted');", true);
+            BindDataToGridView();           
+        }
+
         protected void Reset_Click(object sender, EventArgs e)
         {
-
+            Session["ModuleId"] = null;
+            TxtModule.Value=string.Empty;
+            CheckBox1.Checked = false;
         }
     }
 }

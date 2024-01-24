@@ -16,17 +16,17 @@
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
                             <asp:GridView ID="ModuleRightsGridView" runat="server" AutoGenerateColumns="false"
-                                Width="600px" CssClass="Grid" PageSize="8" OnRowDataBound="ModuleRightsGridView_RowDataBound">
+                                Width="600px" CssClass="Grid" PageSize="8">
                                 <HeaderStyle CssClass="GridHeader" />
                                 <RowStyle CssClass="GridRow" />
                                 <AlternatingRowStyle CssClass="AlternateGridRow" />
                                 <PagerStyle HorizontalAlign="Center" />
                                 <Columns>
-                                    <asp:TemplateField HeaderText="Clients">
+                                    <asp:TemplateField HeaderText="Employees">
                                         <ItemTemplate>
-                                            <asp:Label ID="ClientIdLabel" runat="server" Text='<%# Bind("Id")%>' CssClass="Hide">  
-                                            </asp:Label>
-                                            <asp:Label ID="ClientNameLabel" runat="server" Text='<% #Bind("Name")%>'>
+                                            <asp:HiddenField ID="hndEmpId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id")%>' />
+
+                                            <asp:Label ID="EmpNameLabel" runat="server" Text='<% #Bind("Name")%>'>
                                             </asp:Label>
                                         </ItemTemplate>
                                         <ItemStyle CssClass="AlignLeft" Width="200px" />
@@ -36,6 +36,8 @@
                         </div>
                     </div>
                 </asp:Panel>
+                <input id="EmpCount" type="hidden" runat="server" style="width: 50px" />
+
                 <input id="ModuleCount" type="hidden" runat="server" style="width: 50px" />
 
             </ContentTemplate>
