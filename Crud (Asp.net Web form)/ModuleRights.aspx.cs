@@ -9,26 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace Crud__Asp.net_Web_form_
 {
-    public class GridViewCheckBoxClass : ITemplate
-    {
-        string sControlId;
-
-        public GridViewCheckBoxClass(string _sControlId)
-        {
-            sControlId = _sControlId;
-        }
-
-        #region ITemplate Members
-
-        public void InstantiateIn(Control container)
-        {
-            CheckBox objCheckBox = new CheckBox();
-            objCheckBox.ID = "ModuleCheckBox" + sControlId;
-            container.Controls.Add(objCheckBox);
-        }
-
-        #endregion
-    }
+  
     public partial class ModuleRights : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
@@ -38,10 +19,14 @@ namespace Crud__Asp.net_Web_form_
             base.OnInit(e);
             CreateGridViewColumns();
         }
+        static int currentUserId;
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
+                currentUserId = Convert.ToInt32(Session["CurrentUserId"]);
                 LoadClients();
                 LoadModuleRights();
             }
@@ -129,7 +114,6 @@ namespace Crud__Asp.net_Web_form_
                     }
                 }
             }
-            //int EmployeeUserCode;
             for (int iModule = 1; iModule > 0; iModule--)
             {
                 for (int j = 0; j < ModuleRightsGridView.Rows.Count; j++)
@@ -197,32 +181,26 @@ namespace Crud__Asp.net_Web_form_
             adapter.SelectCommand = objCom;
             DataTable dataTable = new DataTable();
             adapter.Fill(dataTable);
-
             return dataTable;
         }
-        public string ModuleRightsSql(int moduleRightsId,
-            int moduleId,
-            bool rights,
-            int createById,
-            string createdDate,
-            int updateById,
-            string updateDate,
+        public string ModuleRightsSql(int EmpModuleRightsId,
+            int ModuleId,
+            int EmployeeId,
+            bool ModuleRight,
+            int CreatedById,
             string statementType
             )
         {
-            con.Open();
             SqlCommand com = new SqlCommand();
 
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
-            com.CommandText = "Sp_ModuleRights";
-            com.Parameters.Add("ModuleRightsId", SqlDbType.Int).Value = moduleRightsId;
-            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = moduleId;
-            com.Parameters.Add("Rights", SqlDbType.Bit).Value = rights;
-            com.Parameters.Add("CreatedById", SqlDbType.Int).Value = createById;
-            com.Parameters.Add("CreateDate", SqlDbType.Date).Value = createdDate;
-            com.Parameters.Add("UpdateById", SqlDbType.Int).Value = updateById;
-            com.Parameters.Add("UpdateDate", SqlDbType.Date).Value = updateDate;
+            com.CommandText = "Sp_ModuleRightsForEmployee";
+            com.Parameters.Add("EmpModuleRightsId", SqlDbType.Int).Value = EmpModuleRightsId;
+            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.Parameters.Add("EmployeeId", SqlDbType.Int).Value = EmployeeId;
+            com.Parameters.Add("ModuleRight", SqlDbType.Bit).Value = ModuleRight;
+            com.Parameters.Add("CreatedById", SqlDbType.Int).Value = CreatedById;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = statementType;
             com.CommandTimeout = 0;
             com.ExecuteNonQuery();
@@ -237,60 +215,61 @@ namespace Crud__Asp.net_Web_form_
             }
             ViewState["dt"] = dt;
             ViewState["sort"] = "ASC";
-            con.Close();
+
             return com.ToString();
         }
-        //protected void ModuleRightsGridView_RowDataBound(object sender, GridViewRowEventArgs e)
-        //{
-        //    if (e.Row.RowType == DataControlRowType.DataRow)
-        //    {
-        //        e.Row.Attributes.Add("onmouseover", "this.className=GirdRow RowHighLightColor'");
-        //        if (e.Row.RowIndex % 2 == 0)
-        //            e.Row.Attributes.Add("onmouseout", "this.className='GridRow'");
-        //        else
-        //            e.Row.Attributes.Add("onmouseout", "this.className='AlternateGridRow'");
-        //    }
-        //}
 
-        public bool ModuleRightsCheck(int ModuleId,int EmployeeId)
+
+        public bool ModuleRightsCheck(int ModuleId, int EmployeeId)
         {
-            con.Open();
+
             SqlCommand com = new SqlCommand();
 
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_CheckModuleRightsForEmployee";
-            com.Parameters.Add("ModuleId", SqlDbType.Int).Value=ModuleId;
-            com.Parameters.Add("EmployeeId",SqlDbType.Int).Value = EmployeeId;
-            com.Parameters.Add("RightsCheck",SqlDbType.Bit).Direction=ParameterDirection.Output;
+            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.Parameters.Add("EmployeeId", SqlDbType.Int).Value = EmployeeId;
+            com.Parameters.Add("RightsCheck", SqlDbType.Bit).Direction = ParameterDirection.Output;
             com.ExecuteNonQuery();
             return Convert.ToBoolean(com.Parameters["RightsCheck"].Value);
-        } 
-        private void SaveModuleRights()
+        }
+        public void SaveModuleRights(object sender, EventArgs e)
         {
             DataTable ModuleRightsDataTable;
             ModuleRightsDataTable = GetModuleRights();
-            for(int i = 1; i < ModuleRightsGridView.Columns.Count; i++)
+            for (int i = 1; i < ModuleRightsGridView.Columns.Count; i++)
             {
-                int EmployeeIdCode = Convert.ToInt32(ModuleRightsGridView.Columns[i].FooterText);
-                for (int j = 1;j<ModuleRightsGridView.Rows.Count;j++)
+                int ModuleIdCode = Convert.ToInt32(ModuleRightsGridView.Columns[i].FooterText);
+                for (int j = 1; j < ModuleRightsGridView.Rows.Count; j++)
                 {
                     int EmployeeCode = Convert.ToInt32(((HiddenField)ModuleRightsGridView.Rows[j].FindControl("hndEmpId")).Value);
 
-                    DataView RightsView=new DataView(ModuleRightsDataTable);
-                    RightsView.RowFilter = "EmployeeId=" + EmployeeCode + "AND ModuleId=" + EmployeeIdCode;
+                    DataView RightsView = new DataView(ModuleRightsDataTable);
+                    RightsView.RowFilter = "EmployeeId=" + EmployeeCode + "AND ModuleId=" + ModuleIdCode;
                     CheckBox ModuleRightsCheckBox = (CheckBox)ModuleRightsGridView.Rows[j].FindControl("ModuleCheckBox" + (i - 1));
-                    if (RightsView.Count> 0)
+
+                    if (RightsView.Count > 0)
                     {
                         Boolean boolRights = Convert.ToBoolean(RightsView[0]["ModuleRight"]);
-                        if (ModuleRightsCheckBox!=null)
+                        if (ModuleRightsCheckBox != null)
                         {
                             if (ModuleRightsCheckBox.Checked != boolRights)
                             {
+                                bool RightsCheckValue = ModuleRightsCheck(ModuleIdCode, EmployeeCode);
+                                if (RightsCheckValue)
+                                {
+                                    ModuleRightsSql(0, ModuleIdCode, EmployeeCode, ModuleRightsCheckBox.Checked, currentUserId, "UPDATE");
 
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        ModuleRightsSql(0, ModuleIdCode, EmployeeCode, ModuleRightsCheckBox.Checked, currentUserId, "INSERT");
+                    }
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
                 }
             }
         }

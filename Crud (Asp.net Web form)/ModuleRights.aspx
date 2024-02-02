@@ -35,6 +35,9 @@
                             </asp:GridView>
                         </div>
                     </div>
+                       <div class="col-12 d-flex justify-content-center gap-3 mt-5">
+                                <asp:Button ID="SaveClick" runat="server" OnClick="SaveModuleRights" Text="Save" class="btn btn-dark fw-bold" />
+                            </div>
                 </asp:Panel>
                 <input id="EmpCount" type="hidden" runat="server" style="width: 50px" />
 

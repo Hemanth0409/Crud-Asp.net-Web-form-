@@ -61,8 +61,7 @@ namespace Crud__Asp.net_Web_form_
         }
         public void BindDataToGridView()
         {
-
-            SqlCommand comm = new SqlCommand("EXEC SelectData ", con);
+            SqlCommand comm = new SqlCommand("EXEC SelectData", con);
             SqlDataAdapter adapter = new SqlDataAdapter(comm);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
@@ -107,12 +106,13 @@ namespace Crud__Asp.net_Web_form_
             GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
 
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
-
+            Session["UserId"]=hdnId.Value;
             con.Open();
             EmployeeDetails(Convert.ToInt32(hdnId.Value), "", "", 0, 0, "", "", "", "", "", "", "", "", true, "DELETE");
             EmpDetails.EditIndex = -1;
             BindDataToGridView();
-            con.Close();
+            con.Close(); 
+
         }
         protected void Create_Click(object sender, EventArgs e)
         {
@@ -154,7 +154,6 @@ namespace Crud__Asp.net_Web_form_
                 con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
                 BindDataToGridView();
-
             }
             Reset_Click(sender, e);
 

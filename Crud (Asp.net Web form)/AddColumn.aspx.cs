@@ -24,10 +24,9 @@ namespace Crud__Asp.net_Web_form_
 
         }
 
-    public void BindDataToGridView()
+        public void BindDataToGridView()
         {
             GetColumnById(currentModuleId);
-
         }
 
         public string GetColumnById(int ModuleId)

@@ -105,7 +105,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="About.aspx" />
     <Content Include="AddColumn.aspx" />
     <Content Include="BlankPage.aspx" />
     <Content Include="Contact.aspx" />
@@ -129,6 +128,7 @@
     <Content Include="Country.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="DynamicModule.aspx" />
+    <Content Include="DynamicPage.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Index.aspx" />
@@ -207,13 +207,6 @@
       <DependentUpon>AddColumn.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="About.aspx.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="About.aspx.designer.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BlankPage.aspx.cs">
       <DependentUpon>BlankPage.aspx</DependentUpon>
@@ -236,6 +229,7 @@
     <Compile Include="Country.aspx.designer.cs">
       <DependentUpon>Country.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DataAccess.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -250,9 +244,17 @@
     <Compile Include="DynamicModule.aspx.designer.cs">
       <DependentUpon>DynamicModule.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DynamicPage.aspx.cs">
+      <DependentUpon>DynamicPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DynamicPage.aspx.designer.cs">
+      <DependentUpon>DynamicPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="GridViewCheckBoxClass .cs" />
     <Compile Include="Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -269,6 +271,7 @@
     </Compile>
     <Compile Include="ModuleRights.aspx.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ModuleRights.aspx.designer.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>

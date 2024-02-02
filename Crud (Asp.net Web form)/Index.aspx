@@ -32,26 +32,31 @@
                                         <a href="Country.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">Country </span>
                                         </a>
-                               
+
                                     </li>
-                                     <li class="nav-item">
+                                    <li class="nav-item">
                                         <a href="State.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">State</span>
                                         </a>
-                               
+
                                     </li>
-                                      <li class="nav-item">
+                                    <li class="nav-item">
                                         <a href="DynamicModule.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">DynamicModule </span>
                                         </a>
-                               
+
                                     </li>
-                                       </li>
-                                      <li class="nav-item">
+                                    <li class="nav-item">
                                         <a href="ModuleRights.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">ModuleRights </span>
                                         </a>
-                               
+
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="DynamicPage.aspx" class="nav-link px-0 text-white" target="switch-frame">
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">Demo Check </span>
+                                        </a>
+
                                     </li>
                                     <%--  <li>
                                         <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
@@ -113,6 +118,7 @@
                                         </li>
                                         <li><a class="dropdown-item" href="#">Sign out</a></li>
                                     </ul>--%>
+                                    </ul>
                             </div>
                         </div>
 
