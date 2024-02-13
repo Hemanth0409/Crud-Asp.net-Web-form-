@@ -13,12 +13,10 @@ namespace Crud__Asp.net_Web_form_
     public partial class AddColumn : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
-
+        SqlCommand com;
         int currentModuleId;
         protected void Page_Load(object sender, EventArgs e)
         {
-            //ListView.Visible = true;
-            //formViewId.Visible = false;
             currentModuleId = Convert.ToInt32(Session["ModuleId"]);
             BindDataToGridView();
 
@@ -27,17 +25,18 @@ namespace Crud__Asp.net_Web_form_
         public void BindDataToGridView()
         {
             GetColumnById(currentModuleId);
+        
         }
 
         public string GetColumnById(int ModuleId)
         {
-            SqlCommand com = new SqlCommand();
-            con.Open();
+            SqlCommand com = new SqlCommand();           
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_GetAllColumnDataById";
             com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
             com.CommandTimeout = 0;
+            con.Open();
             SqlDataAdapter adapter = new SqlDataAdapter(com);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
@@ -57,15 +56,14 @@ namespace Crud__Asp.net_Web_form_
         {
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
-            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            con.Open();
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");        
             ColumnControlDetails(Convert.ToInt32(hdnId.Value), 0, 0, "", true, 0, 0, "", "", "", 0, 0, "", true, true, "DELETE");
             ColumnControlData.EditIndex = -1;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted');", true);
             BindDataToGridView();
-            con.Close();
+         
         }
-       
+
         public string ColumnControlDetails(
         int ColumnControlId,
         int ModuleId,
@@ -84,8 +82,8 @@ namespace Crud__Asp.net_Web_form_
         bool DefaultCheckBoxValue,
         string StatementType)
         {
-            SqlCommand com = new SqlCommand();
-
+            com = new SqlCommand();
+            con.Open();
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_ColumnControl";
@@ -107,18 +105,8 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = "";
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
-            SqlDataAdapter adapter = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-
-            if (dt.Rows.Count > 0)
-            {
-                ColumnControlData.DataSource = dt;
-                ColumnControlData.DataBind();
-            }
-            ViewState["dt"] = dt;
-            ViewState["sort"] = "ASC";
             com.ExecuteNonQuery();
+            con.Close();
             return com.ToString();
         }
         protected void Reset_Click(object sender, EventArgs e)
@@ -197,27 +185,27 @@ namespace Crud__Asp.net_Web_form_
 
             if (Session["ColumnControlId"] != null)
             {
-                con.Open();
+             
                 ColumnControlDetails(Convert.ToInt32(Session["ColumnControlId"]), currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "UPDATE");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
-                con.Close();
+           
                 BindDataToGridView();
             }
             else
             {
-                con.Open();
+              
                 ColumnControlDetails(0, currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueTxt, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
-                con.Close();
+              
                 BindDataToGridView();
             }
             Reset_Click(sender, e);
         }
-    
+
         protected void EditButton_Click(object sender, EventArgs e)
         {
             //ListView.Visible = false;
@@ -297,7 +285,7 @@ namespace Crud__Asp.net_Web_form_
             ColumnControlData.PageIndex = e.NewPageIndex;
             BindDataToGridView();
         }
-        public void AddColumnFields(object sender,EventArgs e)
+        public void AddColumnFields(object sender, EventArgs e)
         {
             ListView.Visible = false;
             formViewId.Visible = true;

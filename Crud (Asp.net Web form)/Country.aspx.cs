@@ -1,15 +1,8 @@
-﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml.Linq;
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -25,24 +18,24 @@ namespace Crud__Asp.net_Web_form_
             }
         }
         public void InsertCountry_Click(object sender, EventArgs e)
-        {         
-                Button2.Visible = false;
-                Button1.Visible = true;
-                con.Open();
-                SqlCommand InsertCom = new SqlCommand("Exec InsertCountry @countryName='" + InsertCountry.Value + "'", con);
-                InsertCom.ExecuteNonQuery();
-                con.Close();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Country Inserted  Successfully');", true);
-                InsertCountry.Value = string.Empty;
-                BindDataToGridView();         
+        {
+            Button2.Visible = false;
+            Button1.Visible = true;
+            con.Open();
+            SqlCommand InsertCom = new SqlCommand("Exec InsertCountry @countryName='" + InsertCountry.Value + "'", con);
+            InsertCom.ExecuteNonQuery();
+            con.Close();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Country Inserted  Successfully');", true);
+            InsertCountry.Value = string.Empty;
+            BindDataToGridView();
         }
+
         public void BindDataToGridView()
         {
             SqlCommand comm = new SqlCommand("exec DisplayCountry ", con);
             SqlDataAdapter adapter = new SqlDataAdapter(comm);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
-
             if (dt.Rows.Count > 0)
             {
                 Countrygrid.DataSource = dt;
@@ -88,21 +81,14 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             BindDataToGridView();
         }
-        protected void UpdateCountry_Click(object sender, EventArgs e) {
+        protected void UpdateCountry_Click(object sender, EventArgs e)
+        {
             con.Open();
             SqlCommand updatecom = new SqlCommand("exec EditCountry  @CountryId='" + Session["Id"] + "', @Countryname='" + InsertCountry.Value + "'", con);
             updatecom.ExecuteNonQuery();
             con.Close();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
             BindDataToGridView();
-        }
-        protected void ClearCountry_Click(object sender, EventArgs e)
-        {
-            Button1.Visible = true;
-            Button2.Visible = false;
-            Session["Id"] = null;
-            InsertCountry.Value = string.Empty;
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "windows.Reload();", true);
         }
         protected void Search_Click(object sender, EventArgs e)
         {
@@ -115,14 +101,21 @@ namespace Crud__Asp.net_Web_form_
                 adapter.Fill(dt);
                 Countrygrid.DataSource = dt;
                 Countrygrid.DataBind();
-
             }
             else
             {
                 BindDataToGridView();
             }
-
         }
+        protected void ClearCountry_Click(object sender, EventArgs e)
+        {
+            Button1.Visible = true;
+            Button2.Visible = false;
+            Session["Id"] = null;
+            InsertCountry.Value = string.Empty;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "windows.Reload();", true);
+        }
+
         protected void ResetSearch_Click(object sender, EventArgs e)
         {
             searchText.Value = string.Empty;

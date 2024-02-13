@@ -46,11 +46,11 @@
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
                                     <label for="Name" class="form-label m-0">Add for Clients:</label>
+                                    <asp:CheckBox ID="CheckBox1" runat="server" />
+
                                 </div>
 
-                                <div class="col-md-4 mt-4">
-                                    <asp:CheckBox ID="CheckBox1" runat="server" />
-                                </div>
+                             
                             </div>
                             <div class="col-12 d-flex justify-content-center gap-3 mt-5">
                                 <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
