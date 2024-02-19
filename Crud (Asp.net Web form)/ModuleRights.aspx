@@ -15,34 +15,27 @@
                 <asp:Panel ID="ListView" runat="server" Visible="true">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="ModuleRightsGridView" runat="server" AutoGenerateColumns="false"
-                                Width="600px" CssClass="Grid" PageSize="8">
-                                <HeaderStyle CssClass="GridHeader" />
-                                <RowStyle CssClass="GridRow" />
-                                <AlternatingRowStyle CssClass="AlternateGridRow" />
-                                <PagerStyle HorizontalAlign="Center" />
-                                <Columns>
-                                    <asp:TemplateField HeaderText="Employees">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="hndEmpId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Id")%>' />
 
-                                            <asp:Label ID="EmpNameLabel" runat="server" Text='<% #Bind("Name")%>'>
-                                            </asp:Label>
+                            <asp:GridView ID="ModuleRightsGridView" runat="server" CssClass="table table-striped" AutoGenerateColumns="false"  autoFit="true" Style="margin-top: 0px;" AllowPaging="True" Height="186px" PageSize="5">
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Employee Name">
+                                        <ItemTemplate>
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%# Eval("EmployeeId") %>' />
+                                            <%# Eval("EmployeeName") %>
                                         </ItemTemplate>
-                                        <ItemStyle CssClass="AlignLeft" Width="200px" />
                                     </asp:TemplateField>
                                 </Columns>
+
                             </asp:GridView>
-                        </div>
-                    </div>
-                       <div class="col-12 d-flex justify-content-center gap-3 mt-5">
+                            <div class="col-12 d-flex justify-content-center gap-3 mt-5">
                                 <asp:Button ID="SaveClick" runat="server" OnClick="SaveModuleRights" Text="Save" class="btn btn-dark fw-bold" />
                             </div>
+                        </div>
+                    </div>
                 </asp:Panel>
+
                 <input id="EmpCount" type="hidden" runat="server" style="width: 50px" />
-
                 <input id="ModuleCount" type="hidden" runat="server" style="width: 50px" />
-
             </ContentTemplate>
         </asp:UpdatePanel>
     </form>

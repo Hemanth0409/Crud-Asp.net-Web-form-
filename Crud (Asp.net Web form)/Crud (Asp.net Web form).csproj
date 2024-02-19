@@ -254,7 +254,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="GridViewCheckBoxClass .cs" />
+    <Compile Include="DynamicCheckBoxTemplate.cs" />
     <Compile Include="Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -271,6 +271,7 @@
     </Compile>
     <Compile Include="ModuleRights.aspx.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ModuleRights.aspx.designer.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>
