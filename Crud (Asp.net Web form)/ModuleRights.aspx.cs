@@ -1,13 +1,35 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Crud__Asp.net_Web_form_
 {
-  
+    public class DynamicCheckBoxTemplate : ITemplate
+    {
+        private string columnName;
+
+        public DynamicCheckBoxTemplate(string columnName)
+        {
+            this.columnName = columnName;
+        }
+        public void InstantiateIn(Control container)
+        {
+            CheckBox checkBox = new CheckBox();
+            checkBox.ID += "chk_" + columnName;
+            checkBox.DataBinding += CheckBox_DataBinding;
+            checkBox.EnableViewState = true;
+            container.Controls.Add(checkBox);
+        }
+        private void CheckBox_DataBinding(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            GridViewRow container = (GridViewRow)checkBox.NamingContainer;
+            checkBox.Checked = Convert.ToBoolean(DataBinder.Eval(container.DataItem, columnName));
+        }
+    }
     public partial class ModuleRights : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
@@ -37,8 +59,6 @@ namespace Crud__Asp.net_Web_form_
             ModuleRightsGridView.DataSource = dt;
             ModuleRightsGridView.DataBind();
         }
-
-
         public DataTable GetEmployeeDetail()
         {
             SqlCommand cmd = new SqlCommand();
@@ -47,13 +67,10 @@ namespace Crud__Asp.net_Web_form_
             cmd.Connection = con;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "Sp_ModuleRightsDisplayData";
-
             SqlParameter dynamicSQLParam = cmd.Parameters.Add("@DynamicSQL", SqlDbType.NVarChar, 4000);
             dynamicSQLParam.Direction = ParameterDirection.Output;
-
             SqlParameter columnNamesParam = cmd.Parameters.Add("@ColumnNames", SqlDbType.NVarChar, 4000);
             columnNamesParam.Direction = ParameterDirection.Output;
-
             adapter.SelectCommand = cmd;
             adapter.Fill(dt);
             return dt;
@@ -80,12 +97,12 @@ namespace Crud__Asp.net_Web_form_
             return dataTable;
         }
         public string ModuleRightsSql(
-            string ModuleName,
-            int EmployeeId,
-            bool ModuleRight,
-            int CreatedById,
-            string statementType
-            )
+              string ModuleName,
+              int EmployeeId,
+              bool ModuleRight,
+              int CreatedById,
+              string statementType
+              )
         {
             SqlCommand com = new SqlCommand();
             com.Connection = con;
@@ -102,24 +119,28 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void SaveModuleRights(object sender, EventArgs e)
         {
-            for (int i = 1; i < ModuleRightsGridView.Rows.Count; i++)
+            foreach (GridViewRow row in ModuleRightsGridView.Rows)
             {
-                GridViewRow row = ModuleRightsGridView.Rows[i];
                 int employeeId = Convert.ToInt32(((HiddenField)row.FindControl("hdnId")).Value);
-                for (int j = 1; j < ModuleRightsGridView.Columns.Count; j++)
+
+                // Loop through each cell in the row
+                for (int j = 0; j < row.Cells.Count; j++)
                 {
-                    string moduleName = ModuleRightsGridView.Columns[j].HeaderText;
-                    string checkboxId = "ModuleRightsGridView_chk" + moduleName+"_"+(i-1);
-                    CheckBox checkBox = (CheckBox)row.FindControl(checkboxId);
-                    if (checkBox != null) 
+                    // Find the checkbox control in the cell
+                    CheckBox checkBox = row.Cells[j].Controls.OfType<CheckBox>().FirstOrDefault();
+
+                    if (checkBox != null)
                     {
                         bool moduleRight = checkBox.Checked;
-                        ModuleRightsSql(moduleName, employeeId, moduleRight, 10, "UPDATE");
+                        string moduleName = ModuleRightsGridView.Columns[j].HeaderText;
+
+                        // Call your SQL method to save module rights here
+                        // ModuleRightsSql(moduleName, employeeId, moduleRight, 10, "UPDATE");
                     }
                 }
             }
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Module rights saved successfully.');", true);
-            //PopulateGridView();
         }
+
     }
 }

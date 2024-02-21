@@ -33,7 +33,6 @@
                         </div>
                     </div>
                 </asp:Panel>
-
                 <input id="EmpCount" type="hidden" runat="server" style="width: 50px" />
                 <input id="ModuleCount" type="hidden" runat="server" style="width: 50px" />
             </ContentTemplate>
