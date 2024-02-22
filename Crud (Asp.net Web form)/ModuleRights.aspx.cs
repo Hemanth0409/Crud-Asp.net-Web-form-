@@ -65,7 +65,7 @@ namespace Crud__Asp.net_Web_form_
                 {
                     TemplateField field = new TemplateField();
                     field.HeaderText = column.ColumnName;
-                    field.ItemTemplate = new DynamicCheckBoxTemplate(checkboxIdCounter++,column.ColumnName); // Pass the counter as ID
+                    field.ItemTemplate = new DynamicCheckBoxTemplate(checkboxIdCounter++,column.ColumnName); 
                     ModuleRightsGridView.Columns.Add(field);
                 }
             }
