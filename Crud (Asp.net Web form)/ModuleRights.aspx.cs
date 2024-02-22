@@ -145,6 +145,7 @@ namespace Crud__Asp.net_Web_form_
                     CheckBox checkBoxValue = (CheckBox)ModuleRightsGridView.Rows[j].FindControl(checkBoxId);
                     if (checkBoxValue != null)
                     {
+
                         bool moduleRight = checkBoxValue.Checked;
                         ModuleRightsSql(moduleName, empId, moduleRight, 10, "UPDATE");
                     }
