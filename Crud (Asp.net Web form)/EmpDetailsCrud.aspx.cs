@@ -14,7 +14,7 @@ namespace Crud__Asp.net_Web_form_
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         string excelon = ConfigurationManager.ConnectionStrings["excelcon"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)

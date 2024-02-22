@@ -14,7 +14,7 @@ namespace Crud__Asp.net_Web_form_
 {
     public partial class Login : System.Web.UI.Page
     {
-        SqlConnection conn = new SqlConnection("Data Source=DESKTOP-DBQ88HK\\SQLEXPRESS2019;Initial Catalog=Aspnet;Integrated Security=True");
+        SqlConnection conn = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
