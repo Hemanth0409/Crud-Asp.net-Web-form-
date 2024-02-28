@@ -60,13 +60,22 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.GridView ModuleRightsGridView;
 
         /// <summary>
-        /// SaveClick control.
+        /// SaveButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SaveClick;
+        protected global::System.Web.UI.WebControls.Button SaveButton;
+
+        /// <summary>
+        /// CheckedCheckboxesHiddenField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField CheckedCheckboxesHiddenField;
 
         /// <summary>
         /// EmpCount control.

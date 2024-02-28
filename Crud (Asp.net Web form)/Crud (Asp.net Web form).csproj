@@ -271,6 +271,7 @@
     </Compile>
     <Compile Include="ModuleRights.aspx.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ModuleRights.aspx.designer.cs">
       <DependentUpon>ModuleRights.aspx</DependentUpon>
