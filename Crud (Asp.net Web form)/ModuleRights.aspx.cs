@@ -56,18 +56,6 @@ namespace Crud__Asp.net_Web_form_
             adapter.Fill(dt);
             return dt;
         }
-
-
-
-        public DataTable GetModuleRights(string ModuleName)
-        {
-            SqlCommand com = new SqlCommand();
-            com.CommandType = CommandType.StoredProcedure;
-            com.CommandText = "Sp_GetModuleRights";
-            com.Parameters.Add("ModuleName", SqlDbType.NVarChar).Value = ModuleName;
-            return GetDataTable(com);
-
-        }
         public bool ModuleRightsCheck(string ModuleName, int EmployeeId)
         {
             SqlCommand com = new SqlCommand();
