@@ -18,21 +18,20 @@ namespace Crud__Asp.net_Web_form_
             if (!Page.IsPostBack)
             {
                 PopulateGridView();
-                LoadModuleRights();
             }
         }
 
         protected void PopulateGridView()
         {
             DataTable dt = GetEmployeeDetail();
-            int uniqueId = 0;
+            //int uniqueId = 0;
             foreach (DataColumn column in dt.Columns)
             {
                 if (column.ColumnName != "EmployeeID" && column.ColumnName != "EmployeeName")
                 {
                     TemplateField field = new TemplateField();
                     field.HeaderText = column.ColumnName;
-                    DynamicCheckBoxTemplate checkBoxTemplate = new DynamicCheckBoxTemplate(uniqueId++);
+                    DynamicCheckBoxTemplate checkBoxTemplate = new DynamicCheckBoxTemplate(column.ColumnName);
 
                     field.ItemTemplate = checkBoxTemplate;
                     ModuleRightsGridView.Columns.Add(field);
@@ -59,27 +58,7 @@ namespace Crud__Asp.net_Web_form_
             return dt;
         }
 
-        public void LoadModuleRights()
-        {
-            DataTable moduleRightsData = GetEmployeeDetail();
 
-            for (int i = 0; i < ModuleRightsGridView.Rows.Count; i++)
-            {
-                GridViewRow row = ModuleRightsGridView.Rows[i];
-
-                for (int j = 1; j < ModuleRightsGridView.Columns.Count; j++)
-                {
-                    string columnName = ModuleRightsGridView.Columns[j].HeaderText;
-                    CheckBox ModuleRightsValue = (CheckBox)ModuleRightsGridView.Rows[i].FindControl("chk_" + (j-1));
-
-                    if (ModuleRightsValue != null)
-                    {
-                        int moduleRightValue = Convert.ToInt32(moduleRightsData.Rows[i][columnName]);
-                        ModuleRightsValue.Checked = moduleRightValue == 1;
-                    }
-                }
-            }
-        }
 
         public DataTable GetModuleRights(string ModuleName)
         {
@@ -90,7 +69,18 @@ namespace Crud__Asp.net_Web_form_
             return GetDataTable(com);
 
         }
-
+        public bool ModuleRightsCheck(string ModuleName, int EmployeeId)
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "Sp_CheckModuleRightsForEmployee";
+            com.Parameters.Add("ModuleName", SqlDbType.NVarChar).Value = ModuleName;
+            com.Parameters.Add("EmployeeId", SqlDbType.Int).Value = EmployeeId;
+            com.Parameters.Add("RightsCheck", SqlDbType.Bit).Direction = ParameterDirection.Output;
+            com.ExecuteNonQuery();
+            return Convert.ToBoolean(com.Parameters["RightsCheck"].Value);
+        }
         public DataTable GetDataTable(SqlCommand objCom)
         {
             objCom.Connection = con;
@@ -119,42 +109,61 @@ namespace Crud__Asp.net_Web_form_
 
         protected void SaveButton_Click(object sender, EventArgs e)
         {
+
             string checkedCheckboxesJson = CheckedCheckboxesHiddenField.Value;
             List<CheckedCheckbox> checkedCheckboxes = JsonConvert.DeserializeObject<List<CheckedCheckbox>>(checkedCheckboxesJson);
 
             foreach (var checkbox in checkedCheckboxes)
             {
-                string columnName = checkbox.ColumnName;
+                string moduleName = checkbox.ColumnName;
                 int rowIndex = checkbox.RowIndex;
-                int employeeId = Convert.ToInt32(((HiddenField)ModuleRightsGridView.Rows[rowIndex-1].FindControl("hdnId")).Value);
-                ModuleRightsSql(columnName, employeeId, true, 10, "UPDATE");
+                string checkBoxValue = checkbox.CheckBoxValue;
+
+                int employeeId = Convert.ToInt32(((HiddenField)ModuleRightsGridView.Rows[rowIndex - 1].FindControl("hdnId")).Value);
+                con.Open();
+                bool RightsCheckValue = ModuleRightsCheck(moduleName, employeeId);
+                if (checkBoxValue == "true")
+                {
+                    ModuleRightsSql(moduleName, employeeId, true, 10, RightsCheckValue ? "UPDATE" : "INSERT");
+                }
+                else if (checkBoxValue == "false")
+                {
+                    ModuleRightsSql(moduleName, employeeId, false, 10, "UPDATE");
+                }
+                con.Close();
             }
-
-
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Module Rights Successfully Updated');", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "redirect", "setTimeout(function(){ window.location.href = 'ModuleRights.aspx'; },00);", true);
         }
     }
 
     public class DynamicCheckBoxTemplate : ITemplate
     {
-        private int columnIndex;
+        private string columnName;
 
-        public DynamicCheckBoxTemplate(int columnIndex)
+        public DynamicCheckBoxTemplate(string columnName)
         {
-            this.columnIndex = columnIndex;
+            this.columnName = columnName;
         }
 
         public void InstantiateIn(Control container)
         {
             CheckBox checkBox = new CheckBox();
-            checkBox.ID = "chk_" + columnIndex;
+            checkBox.ID = "chk" + columnName;
+            checkBox.DataBinding += CheckBox_DataBinding;
             container.Controls.Add(checkBox);
         }
+        private void CheckBox_DataBinding(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            GridViewRow container = (GridViewRow)checkBox.NamingContainer;
+            checkBox.Checked = Convert.ToBoolean(DataBinder.Eval(container.DataItem, columnName));
+        }
     }
-
     public class CheckedCheckbox
     {
         public string ColumnName { get; set; }
         public int RowIndex { get; set; }
+        public string CheckBoxValue { get; set; }
     }
 }

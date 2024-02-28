@@ -14,28 +14,23 @@
             var headerCells = gridView.getElementsByTagName('th');
 
             for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].type === 'checkbox' && checkboxes[i].checked) {
+                if (checkboxes[i].type === 'checkbox') {
                     var columnIndex = checkboxes[i].parentNode.cellIndex;
                     var columnName = getColumnName(headerCells[columnIndex]);
                     var rowIndex = checkboxes[i].parentNode.parentNode.rowIndex;
-                    checkedCheckboxes.push({ columnName: columnName, rowIndex: rowIndex });
+                    checkedCheckboxes.push({ columnName: columnName, rowIndex: rowIndex, checkBoxValue: checkboxes[i].checked });
                 }
             }
-
-            if (checkedCheckboxes.length === 0) {
-                alert('Please select at least one module right.');
-                return false;
+            for (var j = 0; j < checkedCheckboxes.length; j++) {
+                console.log(checkedCheckboxes[j].columnName, checkedCheckboxes[j].rowIndex, checkedCheckboxes[j].checkBoxValue);
             }
             document.getElementById('<%= CheckedCheckboxesHiddenField.ClientID %>').value = JSON.stringify(checkedCheckboxes);
-
             return true;
         }
-
         function getColumnName(headerCell) {
             var columnName = headerCell.innerText.trim();
             return columnName;
         }
-
     </script>
 </head>
 <body>
@@ -64,8 +59,6 @@
                     </div>
                 </asp:Panel>
                 <asp:HiddenField ID="CheckedCheckboxesHiddenField" runat="server" />
-                <input id="EmpCount" type="hidden" runat="server" style="width: 50px" />
-                <input id="ModuleCount" type="hidden" runat="server" style="width: 50px" />
             </ContentTemplate>
         </asp:UpdatePanel>
     </form>
