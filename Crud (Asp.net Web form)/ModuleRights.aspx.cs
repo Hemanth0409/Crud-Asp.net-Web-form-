@@ -24,7 +24,6 @@ namespace Crud__Asp.net_Web_form_
         protected void PopulateGridView()
         {
             DataTable dt = GetEmployeeDetail();
-            //int uniqueId = 0;
             foreach (DataColumn column in dt.Columns)
             {
                 if (column.ColumnName != "EmployeeID" && column.ColumnName != "EmployeeName")
@@ -135,35 +134,5 @@ namespace Crud__Asp.net_Web_form_
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Module Rights Successfully Updated');", true);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "redirect", "setTimeout(function(){ window.location.href = 'ModuleRights.aspx'; },00);", true);
         }
-    }
-
-    public class DynamicCheckBoxTemplate : ITemplate
-    {
-        private string columnName;
-
-        public DynamicCheckBoxTemplate(string columnName)
-        {
-            this.columnName = columnName;
-        }
-
-        public void InstantiateIn(Control container)
-        {
-            CheckBox checkBox = new CheckBox();
-            checkBox.ID = "chk" + columnName;
-            checkBox.DataBinding += CheckBox_DataBinding;
-            container.Controls.Add(checkBox);
-        }
-        private void CheckBox_DataBinding(object sender, EventArgs e)
-        {
-            CheckBox checkBox = (CheckBox)sender;
-            GridViewRow container = (GridViewRow)checkBox.NamingContainer;
-            checkBox.Checked = Convert.ToBoolean(DataBinder.Eval(container.DataItem, columnName));
-        }
-    }
-    public class CheckedCheckbox
-    {
-        public string ColumnName { get; set; }
-        public int RowIndex { get; set; }
-        public string CheckBoxValue { get; set; }
-    }
+    }   
 }

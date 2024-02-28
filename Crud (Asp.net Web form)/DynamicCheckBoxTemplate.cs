@@ -7,27 +7,33 @@ using System.Web.UI;
 
 namespace Crud__Asp.net_Web_form_
 {
-    //public class DynamicCheckBoxTemplate : ITemplate
-    //{
-    //    private string columnName;
+    public class CheckedCheckbox
+    {
+        public string ColumnName { get; set; }
+        public int RowIndex { get; set; }
+        public string CheckBoxValue { get; set; }
+    }
+    public class DynamicCheckBoxTemplate : ITemplate
+    {
+        private string columnName;
 
-    //    public DynamicCheckBoxTemplate(string columnName)
-    //    {
-    //        this.columnName = columnName;
-    //    }
-    //    public void InstantiateIn(Control container)
-    //    {
-    //        CheckBox checkBox = new CheckBox();
-    //        checkBox.ID += "chk_" + columnName;
-    //        checkBox.DataBinding += CheckBox_DataBinding;
-    //        checkBox.EnableViewState = true;
-    //        container.Controls.Add(checkBox);
-    //    }
-    //    private void CheckBox_DataBinding(object sender, EventArgs e)
-    //    {
-    //        CheckBox checkBox = (CheckBox)sender;
-    //        GridViewRow container = (GridViewRow)checkBox.NamingContainer;
-    //        checkBox.Checked = Convert.ToBoolean(DataBinder.Eval(container.DataItem, columnName));
-    //    }
-    //}
+        public DynamicCheckBoxTemplate(string columnName)
+        {
+            this.columnName = columnName;
+        }
+
+        public void InstantiateIn(Control container)
+        {
+            CheckBox checkBox = new CheckBox();
+            checkBox.ID = "chk" + columnName;
+            checkBox.DataBinding += CheckBox_DataBinding;
+            container.Controls.Add(checkBox);
+        }
+        private void CheckBox_DataBinding(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            GridViewRow container = (GridViewRow)checkBox.NamingContainer;
+            checkBox.Checked = Convert.ToBoolean(DataBinder.Eval(container.DataItem, columnName));
+        }
+    }
 }
