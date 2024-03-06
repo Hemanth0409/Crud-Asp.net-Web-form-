@@ -177,7 +177,7 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="ColumnName" HeaderText="Column Name" SortExpression="ColumnName" />
-                                    <asp:BoundField DataField="RequiredField" HeaderText="Display" SortExpression="RequiredField" />
+                                    <asp:BoundField DataField="IsActive" HeaderText="Display" SortExpression="IsActive" />
                                     <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
                                             <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>

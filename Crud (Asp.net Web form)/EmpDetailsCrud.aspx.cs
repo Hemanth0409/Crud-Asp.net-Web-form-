@@ -178,8 +178,8 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Joined_Date", SqlDbType.Date).Value = StatementType == "DELETE" ? DateTime.ParseExact("20/11/2021", "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString() : Joined_Date;
             com.Parameters.Add("Gender", SqlDbType.VarChar, 25).Value = Gender;
             com.Parameters.Add("Language", SqlDbType.VarChar, 25).Value = Language;
-            com.Parameters.Add("txtUserName", SqlDbType.VarChar, 25).Value = txtUserName;
-            com.Parameters.Add("txtPassword", SqlDbType.VarChar, 25).Value = txtPassword;
+            com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = txtUserName;
+            com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = txtPassword;
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;

@@ -14,13 +14,14 @@ using System.Xml.Linq;
 
 namespace Crud__Asp.net_Web_form_
 {
+
     public partial class Dynamic_Module : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         SqlCommand com;
+        //ConnectFile demo; 
         protected void Page_Load(object sender, EventArgs e)
         {
-
             BindDataToGridView();
         }
         public void BindDataToGridView()
@@ -40,7 +41,6 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-
             GridViewRow gdRow = (GridViewRow)ModuleData.Rows[e.RowIndex];
 
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
@@ -58,11 +58,7 @@ namespace Crud__Asp.net_Web_form_
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
             Session["ModuleId"] = hdnId.Value;
             Response.Redirect("~/AddColumn.aspx", false);
-
         }
-
-
-
         protected void EditButton_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;

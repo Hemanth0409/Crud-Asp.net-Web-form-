@@ -78,7 +78,14 @@ namespace Crud__Asp.net_Web_form_
             return dataTable;
         }
 
-        public string ModuleRightsSql(string ModuleName, int EmployeeId, bool ModuleRight, int CreatedById, string statementType)
+        public string ModuleRightsSql
+            (
+            string ModuleName,
+            int EmployeeId, 
+            bool ModuleRight, 
+            int CreatedById,
+            string statementType
+            )
         {
             SqlCommand com = new SqlCommand();
             com.Connection = con;

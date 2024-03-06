@@ -206,6 +206,7 @@
     <Compile Include="AddColumn.aspx.designer.cs">
       <DependentUpon>AddColumn.aspx</DependentUpon>
     </Compile>
+    <Content Include="App_Code\ConnectFile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BlankPage.aspx.cs">
