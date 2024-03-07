@@ -51,15 +51,6 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.Panel Panel1;
 
         /// <summary>
-        /// TxtColumnName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText TxtColumnName;
-
-        /// <summary>
         /// formViewId control.
         /// </summary>
         /// <remarks>

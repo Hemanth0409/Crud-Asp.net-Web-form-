@@ -19,16 +19,7 @@
                     <div class="container my-5 d-flex flex-column justify-content-center">
                         <h3 class="mb-3 ms-5 text-center">Dynamic Form</h3>
                         <div class="row">
-                            <div class="row justify-content-center align-items-center" runat="server" visible="true">
-                                <div class="col-md-2 mt-4 text-center">
-                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Column Name:</label>
-                                </div>
-                                <div class="col-md-4 mt-4">
-                                    <input type="text" class="form-control float-end" runat="server" id="TxtColumnName" />
-                                </div>
-                            </div>
                         </div>
-                    </div>
                 </asp:Panel>
                 <asp:Panel ID="formViewId" runat="server">
                     <div id="buttonDisplayId">

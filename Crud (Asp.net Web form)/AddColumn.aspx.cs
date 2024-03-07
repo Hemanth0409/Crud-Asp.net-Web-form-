@@ -143,7 +143,7 @@ namespace Crud__Asp.net_Web_form_
 
                 lineToDisplayValue = 0;
             }
-
+            
 
             string ColumnName = TxtColumnName.Value ?? string.Empty;
 
@@ -155,8 +155,8 @@ namespace Crud__Asp.net_Web_form_
             char choiceTypeValue = (RadioButton1.Checked) ? 'D' : (RadioButton2.Checked) ? 'R' : (RadioButton3.Checked) ? 'C' : 'N';
 
             string defaultValueTxt = DefaultTxt.Value ?? string.Empty;
+            string defaultDateValue = TxtjoinDate.Value =="" ?  DateTime.Now.Date.ToString("yyyy-MM-dd"): TxtjoinDate.Value;
 
-            string defaultDateValue= TxtjoinDate.Value ?? string.Empty;
 
             int charSize;
             if (!int.TryParse(Characters.Value, out charSize))
@@ -188,10 +188,10 @@ namespace Crud__Asp.net_Web_form_
 
             bool defaultCheckBox = DefaultValue.SelectedItem.Value == "No" ? defaultCheckBox = false : defaultCheckBox = true;
 
-            string defaultValueRecord = defaultValueTxt == "" ? defaultDateValue : defaultValueTxt;
             if (Session["ColumnControlId"] != null)
             {
-             
+            string defaultValueRecord = defaultValueTxt != defaultDateValue  ? defaultDateValue : defaultValueTxt ;
+
                 ColumnControlDetails(Convert.ToInt32(Session["ColumnControlId"]), currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueRecord, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "UPDATE");
@@ -201,12 +201,11 @@ namespace Crud__Asp.net_Web_form_
             }
             else
             {
-              
+            string defaultValueRecord = defaultValueTxt == "" ? defaultDateValue : defaultValueTxt;
                 ColumnControlDetails(0, currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueRecord, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
-              
                 BindDataToGridView();
             }
             Reset_Click(sender, e);
