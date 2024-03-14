@@ -34,9 +34,9 @@ namespace Crud__Asp.net_Web_form_
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_GetAllColumnDataById";
-            com.Parameters.Add("ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.Parameters.Add("ModuleName", SqlDbType.NVarChar).Value = "";
+            com.Parameters.Add("ModuleDataId", SqlDbType.Int).Value = ModuleId;
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = 1;
-
             com.CommandTimeout = 0;
             con.Open();
             SqlDataAdapter adapter = new SqlDataAdapter(com);
@@ -62,8 +62,7 @@ namespace Crud__Asp.net_Web_form_
             ColumnControlDetails(Convert.ToInt32(hdnId.Value), 0, 0, "", true, 0, 0, "", "", "", 0, 0, "", true, true, "DELETE");
             ColumnControlData.EditIndex = -1;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted');", true);
-            BindDataToGridView();
-         
+            BindDataToGridView();         
         }
 
         public string ColumnControlDetails(

@@ -68,15 +68,7 @@ namespace Crud__Asp.net_Web_form_
             com.ExecuteNonQuery();
             return Convert.ToBoolean(com.Parameters["RightsCheck"].Value);
         }
-        public DataTable GetDataTable(SqlCommand objCom)
-        {
-            objCom.Connection = con;
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            adapter.SelectCommand = objCom;
-            DataTable dataTable = new DataTable();
-            adapter.Fill(dataTable);
-            return dataTable;
-        }
+       
 
         public string ModuleRightsSql
             (

@@ -18,8 +18,7 @@
                 <asp:Panel ID="Panel1" runat="server" Visible="true">
                     <div class="container my-5 d-flex flex-column justify-content-center">
                         <h3 class="mb-3 ms-5 text-center">Dynamic Form</h3>
-                        <div class="row">
-                        </div>
+                        
                 </asp:Panel>
                 <asp:Panel ID="formViewId" runat="server">
                     <div id="buttonDisplayId">
@@ -28,6 +27,7 @@
                         <asp:Button ID="btnDeleteId" OnClick="DeleteClick" runat="server" Text="Delete" class="btn btn-dark me-2 ms-auto float-end" />
                         <asp:Button ID="btnDeleteAllId" OnClick="DeleteAllClick" runat="server" Text="Delete All" class="btn me-2 btn-dark  ms-auto float-end" />
                     </div>
+                    <asp:Label runat="server" ID="lblModuleName"></asp:Label>
                     <%-- <asp:GridView ID="ColumnControlData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false"  autoFit="true" Style="margin-top: 0px;"  AllowPaging="True" Height="186px" PageSize="5">
                         <Columns>
                             <asp:TemplateField ShowHeader="False">

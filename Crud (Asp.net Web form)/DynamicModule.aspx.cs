@@ -22,7 +22,11 @@ namespace Crud__Asp.net_Web_form_
         //ConnectFile demo; 
         protected void Page_Load(object sender, EventArgs e)
         {
-            BindDataToGridView();
+            if (!Page.IsPostBack)
+            {
+                BindDataToGridView();
+                Reset_Click(sender, e);
+            }
         }
         public void BindDataToGridView()
         {
@@ -87,7 +91,7 @@ namespace Crud__Asp.net_Web_form_
             string StatementType)
         {
             con.Open();
-             com = new SqlCommand();
+            com = new SqlCommand();
 
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
@@ -97,11 +101,11 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
-            com.ExecuteNonQuery();            
+            com.ExecuteNonQuery();
             con.Close();
             return com.ToString();
         }
-
+    
         protected void Create_Click(object sender, EventArgs e)
         {
             if (TxtModule.Value == "")
@@ -112,7 +116,7 @@ namespace Crud__Asp.net_Web_form_
             {
                 if (Session["ModuleId"] == null)
                 {
-                    ModuleDetails(0, TxtModule.Value, CheckBox1.Checked ? true : false, "INSERT");                   
+                    ModuleDetails(0, TxtModule.Value, CheckBox1.Checked ? true : false, "INSERT");
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
                 }
                 else if (Session["ModuleId"] != null)

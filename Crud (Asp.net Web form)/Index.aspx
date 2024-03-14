@@ -42,24 +42,18 @@
                                         <a href="DynamicModule.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">DynamicModule </span>
                                         </a>
-
                                     </li>
                                     <li class="nav-item">
                                         <a href="ModuleRights.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">ModuleRights </span>
                                         </a>
-
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="DynamicPage.aspx" class="nav-link px-0 text-white" target="switch-frame">
-                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">Demo Check </span>
-                                        </a>
-
-                                    </li>
+                                    </li>                                    
+                                    <ul class=" switcher nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="Ul1" runat="server" clientidmode="Static">
+                                        <asp:PlaceHolder runat="server" ID="navMenu"></asp:PlaceHolder>
+                                    </ul>
                                 </ul>
                             </div>
                         </div>
-
                         <script>
                             var switcher$ = $('.switcher');
                             var switchTarget$ = $('.switch-target');
@@ -75,7 +69,6 @@
                             <iframe id="ContentIFrame" frameborder="0" name="switch-frame" style="height: 1000px; width: 98%" class="switch-target" src="BlankPage.aspx"></iframe>
                         </div>
                     </div>
-
                 </div>
             </ContentTemplate>
         </asp:UpdatePanel>

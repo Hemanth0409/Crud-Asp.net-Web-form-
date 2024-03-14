@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <VisualElements ForegroundText="light" BackgroundColor="#433B3B" ShowNameOnSquare150x150Logo="on" Square150x150Logo="12.2.0.13489/office6/StartScreenTile/ksolaunch/logo.png" Square70x70Logo="12.2.0.13489/office6/StartScreenTile/ksolaunch/logo-small.png"/>
+</Application>

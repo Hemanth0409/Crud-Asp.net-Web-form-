@@ -225,7 +225,7 @@
                                     <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
                                     <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
-                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
+                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click" ></asp:Button>
                                             <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
                                                 OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
                                         </ItemTemplate>

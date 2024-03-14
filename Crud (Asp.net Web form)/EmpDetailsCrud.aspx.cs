@@ -82,7 +82,7 @@ namespace Crud__Asp.net_Web_form_
         }
 
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
+            {
             string gender;
 
             if (rdoMale.Checked)
