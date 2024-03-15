@@ -106,7 +106,7 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = "";
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
-            com.ExecuteNonQuery();
+                com.ExecuteNonQuery();
             con.Close();
             return com.ToString();
         }

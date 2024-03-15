@@ -15,7 +15,6 @@ namespace Crud__Asp.net_Web_form_
             if (!Page.IsPostBack)
             {
                 List<string> moduleNames = GetModuleNames(2083);
-
                 foreach (string moduleName in moduleNames)
                 {
                     AddNavigationItem(moduleName);
@@ -34,12 +33,12 @@ namespace Crud__Asp.net_Web_form_
             li.Controls.Add(anchor);
         }
 
-        public List<string> GetModuleNames(int EmployeeId)
+        public List<string> GetModuleNames(int EmployeeId) 
         {
             List<string> moduleNames = new List<string>();
             using (SqlConnection connection = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True"))
             {
-                using (SqlCommand command = new SqlCommand("SP_DisplayModuleRightForEmployee", connection))
+                using (SqlCommand command = new SqlCommand("SP_DisplayModuleRightForEmployee",connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add("@EmployeeId", SqlDbType.Int).Value = EmployeeId;                   
