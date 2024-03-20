@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Web;
+using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
-using System.Net.NetworkInformation;
-using System.Xml.Linq;
 
 namespace Crud__Asp.net_Web_form_
 {
-
     public partial class Dynamic_Module : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         SqlCommand com;
-        //ConnectFile demo; 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -34,7 +24,6 @@ namespace Crud__Asp.net_Web_form_
             SqlDataAdapter adapter = new SqlDataAdapter(com);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
-
             if (dt.Rows.Count > 0)
             {
                 ModuleData.DataSource = dt;
@@ -92,7 +81,6 @@ namespace Crud__Asp.net_Web_form_
         {
             con.Open();
             com = new SqlCommand();
-
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_Module_Data";
@@ -105,7 +93,6 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             return com.ToString();
         }
-    
         protected void Create_Click(object sender, EventArgs e)
         {
             if (TxtModule.Value == "")

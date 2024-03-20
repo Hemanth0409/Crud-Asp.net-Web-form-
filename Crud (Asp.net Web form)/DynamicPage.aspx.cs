@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,7 +14,8 @@ namespace Crud__Asp.net_Web_form_
     {
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         SqlCommand com;
-        int currentModuleId;
+        static int currentModuleId;
+        int employeeId = 2083;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -21,25 +23,29 @@ namespace Crud__Asp.net_Web_form_
                 if (Request.QueryString["moduleName"] != null)
                 {
                     string moduleName = Request.QueryString["moduleName"];
-                    lblModuleName.Text = moduleName;
+                    Session["ModuleName"] = moduleName.Replace(" ", "_");
                     LoadForms(moduleName);
-
+                    GetModuleId(moduleName);
                 }
-                //BindDataToGridView();
             }
         }
-        //public void BindDataToGridView()
-        //{
-        //    DataTable dt = GetColumnById(9);
-        //    foreach (DataColumn column in dt.Columns)
-        //    {
-        //        TemplateField field = new TemplateField();
-        //        field.HeaderText = column.ColumnName;
-        //        ColumnControlData.Columns.Add(field);
-        //    }
-        //    ColumnControlData.DataSource = dt;
-        //    ColumnControlData.DataBind();
-        //}
+        public void GetModuleId(string ModuleName)
+        {
+            using (SqlCommand command = new SqlCommand("Sp_GetModuleId", con))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add("moduleName", SqlDbType.NVarChar).Value = ModuleName;
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int moduleId = Convert.ToInt32(reader["ModuleId"]);
+                    currentModuleId = moduleId;
+                }
+                reader.Close();
+            }
+        }
+
         public DataTable GetColumnByName(string ModuleName)
         {
             SqlCommand com = new SqlCommand();
@@ -58,6 +64,58 @@ namespace Crud__Asp.net_Web_form_
             con.Close();
             return dt;
         }
+        protected string DynamicTable(string tableName, int EmployeeId, int ModuleId, string TableValue)
+        {
+            con.Open();
+            SqlCommand com = new SqlCommand();
+            com.Connection = con;
+            com.CommandType = CommandType.StoredProcedure;
+            com.CommandText = "InsertValuesIntoTable";
+            com.Parameters.Add("@tableName", SqlDbType.NVarChar).Value = tableName;
+            com.Parameters.Add("@EmployeeId", SqlDbType.Int).Value = EmployeeId;
+            com.Parameters.Add("@ModuleId", SqlDbType.Int).Value = ModuleId;
+            com.Parameters.Add("@keyValueString", SqlDbType.NVarChar).Value = TableValue;
+            com.ExecuteNonQuery();
+            con.Close();
+            return com.ToString();
+        }
+        protected void SaveButton_Click(object sender, EventArgs e)
+        {
+            Panel2.Controls.Clear();
+            string value21 = "";
+            Dictionary<string, List<string>> keyValuesMap = new Dictionary<string, List<string>>();
+
+            foreach (string key in Request.Form.AllKeys)
+            {
+                if (!key.Contains("__"))
+                {
+                    string value = Request.Form[key];
+                    if (value != "updatepannel|SaveBtn" && value != "Save")
+                    {
+                        string actualKey = key.Split('$')[0];
+                        if (keyValuesMap.ContainsKey(actualKey))
+                        {
+                            keyValuesMap[actualKey].Add(value == "on" ? "1" : value);
+                        }
+                        else
+                        {
+                            keyValuesMap.Add(actualKey, new List<string> { value == "on" ? "1" : value });
+                        }
+                    }
+                }
+            }
+
+            foreach (var kvp in keyValuesMap)
+            {
+                string concatenatedValues = string.Join(":", kvp.Value.Select(val => val.Replace(" ", " ")));
+                value21 += string.IsNullOrEmpty(value21) ? "" : ",";
+                value21 += kvp.Key + "=" + concatenatedValues;
+            }
+
+            DynamicTable(Session["ModuleName"].ToString(), employeeId, currentModuleId, value21);
+        }
+
+
 
         protected void LoadForms(string moduleName)
         {
@@ -76,19 +134,18 @@ namespace Crud__Asp.net_Web_form_
                     string choiceType = row.Field<string>("ChoiceType");
                     string[] choices = choiceValue.Split(',');
                     Panel1.Controls.Add(new LiteralControl("<div class=\"row justify-content-center align-items-center\" > "));
-                    Panel1.Controls.Add(new LiteralControl("<div class=\"col-md-2 mt-4 text-center \" > "));
+                    Panel1.Controls.Add(new LiteralControl("<div class=\"col-md-2 mt-4 text-center\" > "));
                     Label label = new Label();
                     label.Text = columnName;
                     label.CssClass = "form-label m-0";
                     Panel1.Controls.Add(label);
                     Panel1.Controls.Add(new LiteralControl("</div>"));
                     Panel1.Controls.Add(new LiteralControl("<div class=\"col-md-4 mt-4\">"));
-
                     switch (controlId)
                     {
                         case 0:
                             TextBox textBox = new TextBox();
-                            textBox.ID = "Txt" + columnName.Replace(" ", "");
+                            textBox.ID = columnName.Replace(" ", "");
                             textBox.CssClass = "form-control float-end";
                             textBox.MaxLength = 10;
                             textBox.Text = DefaultText;
@@ -96,7 +153,7 @@ namespace Crud__Asp.net_Web_form_
                             break;
                         case 1:
                             TextBox multiLineTextBox = new TextBox();
-                            multiLineTextBox.ID = "Txt" + columnName.Replace(" ", "");
+                            multiLineTextBox.ID = columnName.Replace(" ", "");
                             multiLineTextBox.CssClass = "form-control float-end";
                             multiLineTextBox.TextMode = TextBoxMode.MultiLine;
                             multiLineTextBox.Rows = 5;
@@ -106,7 +163,7 @@ namespace Crud__Asp.net_Web_form_
                             if (choiceType == "D")
                             {
                                 DropDownList dropDownList = new DropDownList();
-                                dropDownList.ID = "Ddl" + columnName.Replace(" ", "");
+                                dropDownList.ID = columnName.Replace(" ", "");
                                 dropDownList.CssClass = "form-control float-end";
                                 foreach (string choice in choices)
                                 {
@@ -125,14 +182,15 @@ namespace Crud__Asp.net_Web_form_
                                 foreach (string choice in choices)
                                 {
                                     RadioButton radioButton = new RadioButton();
-                                    radioButton.ID = "Rdo" + choice.Replace(" ", "");
+                                    radioButton.ID = choice.Replace(" ", "");
                                     radioButton.Text = choice.Trim();
-                                    radioButton.GroupName = "RdoGroup" + columnName.Replace(" ", "");
+                                    radioButton.GroupName =  columnName.Replace(" ", "");
                                     radioButton.CssClass = "form-check-input border-0";
                                     if (choice.Trim() == DefaultText)
                                     {
                                         radioButton.Checked = true;
                                     }
+
                                     radioPanel.Controls.Add(radioButton);
                                     radioPanel.Controls.Add(new LiteralControl("<br/>"));
                                 }
@@ -141,16 +199,13 @@ namespace Crud__Asp.net_Web_form_
                             else if (choiceType == "C")
                             {
                                 CheckBoxList checkBoxList = new CheckBoxList();
-                                checkBoxList.ID = "Cbl" + columnName.Replace(" ", "");
+                                checkBoxList.ID = columnName.Replace(" ", "");
                                 checkBoxList.CssClass = "form-control float-end";
-
                                 foreach (string choice in choices)
                                 {
                                     checkBoxList.Items.Add(new ListItem(choice.Trim()));
                                 }
-
                                 string[] defaultValues = DefaultText.Split(',');
-
                                 foreach (ListItem item in checkBoxList.Items)
                                 {
                                     if (defaultValues.Contains(item.Value))
@@ -163,8 +218,8 @@ namespace Crud__Asp.net_Web_form_
                             break;
                         case 3:
                             TextBox numberTextBox = new TextBox();
-                            numberTextBox.ID = "Txt" + columnName.Replace(" ", "");
-                            numberTextBox.CssClass = " float-end";
+                            numberTextBox.ID = columnName.Replace(" ", "");
+                            numberTextBox.CssClass = "form-control float-end";
                             numberTextBox.Attributes["type"] = "number";
                             numberTextBox.Text = DefaultText;
                             numberTextBox.Attributes["min"] = minValue.ToString();
@@ -173,7 +228,7 @@ namespace Crud__Asp.net_Web_form_
                             break;
                         case 4:
                             TextBox dateTextBox = new TextBox();
-                            dateTextBox.ID = "Txt" + columnName.Replace(" ", "");
+                            dateTextBox.ID = columnName.Replace(" ", "");
                             dateTextBox.CssClass = "form-control float-end";
                             dateTextBox.Attributes["type"] = "date";
                             dateTextBox.Text = DefaultText;
@@ -181,20 +236,19 @@ namespace Crud__Asp.net_Web_form_
                             break;
                         case 5:
                             CheckBox checkBox = new CheckBox();
-                            checkBox.ID = "Chk" + columnName.Replace(" ", "");
+                            checkBox.ID = columnName.Replace(" ", "");
                             checkBox.CssClass = "form-control float-end";
                             checkBox.Checked = DefaultCheckBoxValue;
                             Panel1.Controls.Add(checkBox);
                             break;
                         case 6:
                             FileUpload fileUpload = new FileUpload();
-                            fileUpload.ID = "File" + columnName.Replace(" ", "");
+                            fileUpload.ID = columnName.Replace(" ", "");
                             Panel1.Controls.Add(fileUpload);
                             break;
                         default:
                             break;
                     }
-
                     Panel1.Controls.Add(new LiteralControl("</div>"));
                     Panel1.Controls.Add(new LiteralControl("</div>"));
                 }
