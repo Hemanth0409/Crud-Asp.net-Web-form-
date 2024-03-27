@@ -32,7 +32,7 @@
                     </asp:Panel>
                     <asp:Label runat="server" ID="ResultLabel"></asp:Label>
                     <asp:Label runat="server" ID="lblModuleName"></asp:Label>
-                    <%-- <asp:GridView ID="ColumnControlData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false"  autoFit="true" Style="margin-top: 0px;"  AllowPaging="True" Height="186px" PageSize="5">
+                     <asp:GridView ID="ColumnControlData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false"  autoFit="true" Style="margin-top: 0px;"  AllowPaging="True" Height="186px" PageSize="5">
                         <Columns>
                             <asp:TemplateField ShowHeader="False">
                                 <ItemTemplate>
@@ -42,7 +42,7 @@
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
-                    </asp:GridView> --%>
+                    </asp:GridView> 
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>

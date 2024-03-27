@@ -26,8 +26,51 @@ namespace Crud__Asp.net_Web_form_
                     Session["ModuleName"] = moduleName.Replace(" ", "_");
                     LoadForms(moduleName);
                     GetModuleId(moduleName);
+                    BindGridData(moduleName, 2083);
                 }
             }
+        }
+        public void BindGridData(string moduleName, int employeeID)
+        {
+            DataTable dt = DisplayColumnValue(moduleName, employeeID);
+
+            ColumnControlData.Columns.Clear();
+
+            foreach (DataColumn column in dt.Columns)
+            {
+                string moduleIdName = moduleName + "ID";
+                if (column.ColumnName != moduleIdName && column.ColumnName!= "EMPLOYEEID"&& column.ColumnName!="MODULEID")
+                {
+                    BoundField boundField = new BoundField();
+                    boundField.DataField = column.ColumnName;
+                    boundField.HeaderText = column.ColumnName;
+                    ColumnControlData.Columns.Add(boundField);
+                }
+            }
+
+            ColumnControlData.DataSource = dt;
+            ColumnControlData.DataBind();
+        }
+
+
+        public DataTable DisplayColumnValue(string ModuleName, int EmployeeId)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True"))
+            {
+                using (SqlCommand com = new SqlCommand("Sp_DisplayDynamicTable", con))
+                {
+                    com.CommandType = CommandType.StoredProcedure;
+                    com.Parameters.Add("@TableName", SqlDbType.NVarChar).Value = ModuleName;
+                    com.Parameters.Add("@EmployeeId", SqlDbType.Int).Value = EmployeeId;
+                    con.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(com))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
         }
         public void GetModuleId(string ModuleName)
         {
@@ -45,7 +88,6 @@ namespace Crud__Asp.net_Web_form_
                 reader.Close();
             }
         }
-
         public DataTable GetColumnByName(string ModuleName)
         {
             SqlCommand com = new SqlCommand();
@@ -104,19 +146,16 @@ namespace Crud__Asp.net_Web_form_
                     }
                 }
             }
-
             foreach (var kvp in keyValuesMap)
             {
                 string concatenatedValues = string.Join(":", kvp.Value.Select(val => val.Replace(" ", " ")));
                 value21 += string.IsNullOrEmpty(value21) ? "" : ",";
                 value21 += kvp.Key + "=" + concatenatedValues;
             }
-
             DynamicTable(Session["ModuleName"].ToString(), employeeId, currentModuleId, value21);
+            BindGridData(Session["ModuleName"].ToString(), 2083);
+
         }
-
-
-
         protected void LoadForms(string moduleName)
         {
             DataTable dt = GetColumnByName(moduleName);
@@ -184,13 +223,12 @@ namespace Crud__Asp.net_Web_form_
                                     RadioButton radioButton = new RadioButton();
                                     radioButton.ID = choice.Replace(" ", "");
                                     radioButton.Text = choice.Trim();
-                                    radioButton.GroupName =  columnName.Replace(" ", "");
+                                    radioButton.GroupName = columnName.Replace(" ", "");
                                     radioButton.CssClass = "form-check-input border-0";
                                     if (choice.Trim() == DefaultText)
                                     {
                                         radioButton.Checked = true;
                                     }
-
                                     radioPanel.Controls.Add(radioButton);
                                     radioPanel.Controls.Add(new LiteralControl("<br/>"));
                                 }

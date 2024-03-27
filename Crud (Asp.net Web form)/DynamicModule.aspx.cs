@@ -89,6 +89,7 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("IsActive", SqlDbType.Bit).Value = IsActive;
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
+            
             com.ExecuteNonQuery();
             con.Close();
             return com.ToString();
