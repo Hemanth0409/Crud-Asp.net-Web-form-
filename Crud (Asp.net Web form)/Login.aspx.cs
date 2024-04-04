@@ -54,7 +54,6 @@ namespace Crud__Asp.net_Web_form_
         {
             conn.Open();
             SqlCommand com = new SqlCommand();
-
             com.Connection = conn;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_LoginProcedure";
@@ -64,7 +63,6 @@ namespace Crud__Asp.net_Web_form_
             com.ExecuteNonQuery();           
             conn.Close();
             return Convert.ToInt32(com.Parameters["UserId"].Value);
-
         }
     }
 }

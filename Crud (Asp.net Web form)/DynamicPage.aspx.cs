@@ -1,12 +1,17 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.IO;
+using System.Web;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using OfficeOpenXml;
+using ListItem = System.Web.UI.WebControls.ListItem;
+using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -27,9 +32,120 @@ namespace Crud__Asp.net_Web_form_
                     LoadForms(moduleName);
                     GetModuleId(moduleName);
                     BindGridData(moduleName, 2083);
+
+                    //BindColumnNamesToListBox(moduleName);
                 }
             }
         }
+        //protected void BindColumnNamesToListBox(string moduleName)
+        //{
+        //    DataTable dt = GetColumnByName(moduleName);
+
+        //    ColumnNameCheckBoxList.Items.Clear();
+        //    SelectAllCheckBox.Checked = false;
+
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        string columnName = row.Field<string>("ColumnName");
+        //        ListItem item = new ListItem(columnName);
+        //        ColumnNameCheckBoxList.Items.Add(item);
+        //    }
+        //}
+
+        protected void Export_Click(object sender, EventArgs e)
+        {
+            string exportFormat = FileFormat.SelectedValue;
+
+            switch (exportFormat)
+            {
+                case "Excel":
+                    ExportToExcel();
+                    break;
+                case "Pdf":
+                    ExportToPdf();
+                    break;
+                default:
+                    break;
+            }
+        }
+        protected void SetEPPlusLicense()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        }
+        protected void ExportToExcel()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Sheet1");
+
+                for (int i = 0; i < ColumnControlData.Columns.Count; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = ColumnControlData.Columns[i].HeaderText;
+                }
+
+                for (int row = 0; row < ColumnControlData.Rows.Count; row++)
+                {
+                    for (int col = 0; col < ColumnControlData.Columns.Count; col++)
+                    {
+                        string cellValue = ColumnControlData.Rows[row].Cells[col].Text;
+
+                        worksheet.Cells[row + 2, col + 1].Value = cellValue;
+
+                        string fieldName = ColumnControlData.Columns[col].HeaderText;
+                    }
+                }
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;filename=ExportExcel.xlsm");
+                Response.BinaryWrite(excelPackage.GetAsByteArray());
+                Response.End();
+            }
+        }
+        protected void ExportToPdf()
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 10f);
+                PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, memoryStream);
+                pdfDoc.Open();
+
+                PdfPTable pdfTable = new PdfPTable(ColumnControlData.Columns.Count);
+
+                for (int i = 0; i < ColumnControlData.Columns.Count; i++)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(ColumnControlData.Columns[i].HeaderText));
+                    pdfTable.AddCell(cell);
+                }
+                for (int row = 0; row < ColumnControlData.Rows.Count; row++)
+                {
+                    for (int col = 0; col < ColumnControlData.Columns.Count; col++)
+                    {
+                        pdfTable.AddCell(ColumnControlData.Rows[row].Cells[col].Text);
+                    }
+                }
+                pdfDoc.Add(pdfTable);
+                pdfDoc.Close();
+
+                Response.ContentType = "application/pdf";
+                Response.AddHeader("content-disposition", "attachment;filename=ExportedData.pdf");
+                Response.OutputStream.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
+                Response.OutputStream.Flush();
+                Response.OutputStream.Close();
+                Response.End();
+            }
+        }
+
+        //protected void SelectAllCheckBox_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    bool selectAll = SelectAllCheckBox.Checked;
+
+        //    foreach (ListItem item in ColumnNameCheckBoxList.Items)
+        //    {
+        //        item.Selected = selectAll;
+        //    }
+        //}
         public void BindGridData(string moduleName, int employeeID)
         {
             DataTable dt = DisplayColumnValue(moduleName, employeeID);
@@ -39,7 +155,7 @@ namespace Crud__Asp.net_Web_form_
             foreach (DataColumn column in dt.Columns)
             {
                 string moduleIdName = moduleName + "ID";
-                if (column.ColumnName != moduleIdName && column.ColumnName!= "EMPLOYEEID"&& column.ColumnName!="MODULEID")
+                if (column.ColumnName != moduleIdName && column.ColumnName != "EMPLOYEEID" && column.ColumnName != "MODULEID")
                 {
                     BoundField boundField = new BoundField();
                     boundField.DataField = column.ColumnName;
@@ -47,12 +163,9 @@ namespace Crud__Asp.net_Web_form_
                     ColumnControlData.Columns.Add(boundField);
                 }
             }
-
             ColumnControlData.DataSource = dt;
             ColumnControlData.DataBind();
         }
-
-
         public DataTable DisplayColumnValue(string ModuleName, int EmployeeId)
         {
             DataTable dt = new DataTable();
@@ -88,22 +201,27 @@ namespace Crud__Asp.net_Web_form_
                 reader.Close();
             }
         }
+        public void Print_Click(object sender, EventArgs e)
+        {
+
+        }
         public DataTable GetColumnByName(string ModuleName)
         {
-            SqlCommand com = new SqlCommand();
-            com.Connection = con;
-            com.CommandType = CommandType.StoredProcedure;
-            com.CommandText = "Sp_GetAllColumnDataById";
-            com.Parameters.Add("ModuleName", SqlDbType.NVarChar).Value = ModuleName;
-            com.Parameters.Add("ModuleDataId", SqlDbType.Int).Value = 0;
-            com.Parameters.Add("IsActive", SqlDbType.Bit).Value = 0;
-            com.CommandTimeout = 0;
-            con.Open();
-            SqlDataAdapter adapter = new SqlDataAdapter(com);
             DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            com.ExecuteNonQuery();
-            con.Close();
+            using (SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True"))
+            {
+                using (SqlCommand com = new SqlCommand("Sp_GetAllColumnDataById", con))
+                {
+                    com.CommandType = CommandType.StoredProcedure;
+                    com.Parameters.Add("@ModuleName", SqlDbType.NVarChar).Value = ModuleName;
+                    com.Parameters.Add("@ModuleDataId", SqlDbType.Int).Value = 0;
+                    com.Parameters.Add("@IsActive", SqlDbType.Bit).Value = 0;
+                    com.CommandTimeout = 0;
+                    con.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(com);
+                    adapter.Fill(dt);
+                }
+            }
             return dt;
         }
         protected string DynamicTable(string tableName, int EmployeeId, int ModuleId, string TableValue)
@@ -123,10 +241,8 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void SaveButton_Click(object sender, EventArgs e)
         {
-            Panel2.Controls.Clear();
             string value21 = "";
             Dictionary<string, List<string>> keyValuesMap = new Dictionary<string, List<string>>();
-
             foreach (string key in Request.Form.AllKeys)
             {
                 if (!key.Contains("__"))
@@ -154,7 +270,6 @@ namespace Crud__Asp.net_Web_form_
             }
             DynamicTable(Session["ModuleName"].ToString(), employeeId, currentModuleId, value21);
             BindGridData(Session["ModuleName"].ToString(), 2083);
-
         }
         protected void LoadForms(string moduleName)
         {
@@ -172,8 +287,9 @@ namespace Crud__Asp.net_Web_form_
                     bool DefaultCheckBoxValue = row.Field<bool>("DefaultCheckBoxValue");
                     string choiceType = row.Field<string>("ChoiceType");
                     string[] choices = choiceValue.Split(',');
-                    Panel1.Controls.Add(new LiteralControl("<div class=\"row justify-content-center align-items-center\" > "));
-                    Panel1.Controls.Add(new LiteralControl("<div class=\"col-md-2 mt-4 text-center\" > "));
+                    int maximumCharacter = row.Field<int>("MaximumCharacters");
+                    Panel1.Controls.Add(new LiteralControl("<div class=\"row justify-content-center align-items-center\">"));
+                    Panel1.Controls.Add(new LiteralControl("<div class=\"col-md-2 mt-4 text-center\">"));
                     Label label = new Label();
                     label.Text = columnName;
                     label.CssClass = "form-label m-0";
@@ -186,7 +302,7 @@ namespace Crud__Asp.net_Web_form_
                             TextBox textBox = new TextBox();
                             textBox.ID = columnName.Replace(" ", "");
                             textBox.CssClass = "form-control float-end";
-                            textBox.MaxLength = 10;
+                            textBox.MaxLength = maximumCharacter;
                             textBox.Text = DefaultText;
                             Panel1.Controls.Add(textBox);
                             break;
@@ -292,6 +408,7 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
         }
+
         protected void AddDataButton_Click(object sender, EventArgs e)
         {
 
