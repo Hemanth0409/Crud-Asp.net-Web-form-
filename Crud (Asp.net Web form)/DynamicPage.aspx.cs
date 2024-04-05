@@ -6,12 +6,11 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.IO;
-using System.Web;
+using OfficeOpenXml;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using OfficeOpenXml;
 using ListItem = System.Web.UI.WebControls.ListItem;
-using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -33,24 +32,11 @@ namespace Crud__Asp.net_Web_form_
                     GetModuleId(moduleName);
                     BindGridData(moduleName, 2083);
 
-                    //BindColumnNamesToListBox(moduleName);
+                    BindColumnNamesToListBox(moduleName);
                 }
             }
         }
-        //protected void BindColumnNamesToListBox(string moduleName)
-        //{
-        //    DataTable dt = GetColumnByName(moduleName);
-
-        //    ColumnNameCheckBoxList.Items.Clear();
-        //    SelectAllCheckBox.Checked = false;
-
-        //    foreach (DataRow row in dt.Rows)
-        //    {
-        //        string columnName = row.Field<string>("ColumnName");
-        //        ListItem item = new ListItem(columnName);
-        //        ColumnNameCheckBoxList.Items.Add(item);
-        //    }
-        //}
+        
 
         protected void Export_Click(object sender, EventArgs e)
         {
@@ -80,29 +66,49 @@ namespace Crud__Asp.net_Web_form_
             {
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Sheet1");
 
-                for (int i = 0; i < ColumnControlData.Columns.Count; i++)
+                int columnIndex = 1;
+
+                for (int i = 0; i < ColumnNameCheckBoxList.Items.Count; i++)
                 {
-                    worksheet.Cells[1, i + 1].Value = ColumnControlData.Columns[i].HeaderText;
+                    if (ColumnNameCheckBoxList.Items[i].Selected)
+                    {
+                        int colIndex = ColumnControlData.Columns
+                            .Cast<DataControlField>()
+                            .Select((col, index) => new { Column = col, Index = index })
+                            .First(col => col.Column.HeaderText == ColumnNameCheckBoxList.Items[i].Text)
+                            .Index;
+
+                        worksheet.Cells[1, columnIndex].Value = ColumnControlData.Columns[colIndex].HeaderText;
+                        columnIndex++;
+                    }
                 }
 
                 for (int row = 0; row < ColumnControlData.Rows.Count; row++)
                 {
+                    columnIndex = 1;
                     for (int col = 0; col < ColumnControlData.Columns.Count; col++)
                     {
-                        string cellValue = ColumnControlData.Rows[row].Cells[col].Text;
-
-                        worksheet.Cells[row + 2, col + 1].Value = cellValue;
-
-                        string fieldName = ColumnControlData.Columns[col].HeaderText;
+                        if (ColumnNameCheckBoxList.Items[col].Selected)
+                        {
+                            string cellValue = ColumnControlData.Rows[row].Cells[col].Text;
+                            worksheet.Cells[row + 2, columnIndex].Value = (cellValue != "&nbsp;") ? cellValue : "0";
+                            columnIndex++;
+                        }
                     }
                 }
-                Response.Clear();
+
+                Response.ClearContent();
+                Response.ClearHeaders();
+                Response.Buffer = true;
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                Response.AddHeader("content-disposition", "attachment;filename=ExportExcel.xlsm");
+                Response.AddHeader("content-disposition", "inline;filename=ExportExcel.xlsx");
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
+                Response.Flush();
                 Response.End();
             }
         }
+
+
         protected void ExportToPdf()
         {
             using (MemoryStream memoryStream = new MemoryStream())
@@ -111,25 +117,33 @@ namespace Crud__Asp.net_Web_form_
                 PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, memoryStream);
                 pdfDoc.Open();
 
-                PdfPTable pdfTable = new PdfPTable(ColumnControlData.Columns.Count);
+                PdfPTable pdfTable = new PdfPTable(ColumnControlData.Columns.Count - ColumnNameCheckBoxList.Items.Cast<ListItem>().Count(item => item.Selected));
 
                 for (int i = 0; i < ColumnControlData.Columns.Count; i++)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(ColumnControlData.Columns[i].HeaderText));
-                    pdfTable.AddCell(cell);
+                    if (ColumnNameCheckBoxList.Items[i].Selected)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(ColumnControlData.Columns[i].HeaderText));
+                        pdfTable.AddCell(cell);
+                    }
                 }
+
                 for (int row = 0; row < ColumnControlData.Rows.Count; row++)
                 {
                     for (int col = 0; col < ColumnControlData.Columns.Count; col++)
                     {
-                        pdfTable.AddCell(ColumnControlData.Rows[row].Cells[col].Text);
+                        if (ColumnNameCheckBoxList.Items[col].Selected)
+                        {
+                            pdfTable.AddCell(ColumnControlData.Rows[row].Cells[col].Text);
+                        }
                     }
                 }
+
                 pdfDoc.Add(pdfTable);
                 pdfDoc.Close();
 
                 Response.ContentType = "application/pdf";
-                Response.AddHeader("content-disposition", "attachment;filename=ExportedData.pdf");
+                Response.AddHeader("content-disposition", "inline;filename=ExportedData.pdf");
                 Response.OutputStream.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
                 Response.OutputStream.Flush();
                 Response.OutputStream.Close();
@@ -137,15 +151,29 @@ namespace Crud__Asp.net_Web_form_
             }
         }
 
-        //protected void SelectAllCheckBox_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    bool selectAll = SelectAllCheckBox.Checked;
+        protected void BindColumnNamesToListBox(string moduleName)
+        {
+            DataTable dt = GetColumnByName(moduleName);
 
-        //    foreach (ListItem item in ColumnNameCheckBoxList.Items)
-        //    {
-        //        item.Selected = selectAll;
-        //    }
-        //}
+            ColumnNameCheckBoxList.Items.Clear();
+            SelectAllCheckBox.Checked = false;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string columnName = row.Field<string>("ColumnName");
+                ListItem item = new ListItem(columnName);
+                ColumnNameCheckBoxList.Items.Add(item);
+            }
+        }
+        protected void SelectAllCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool selectAll = SelectAllCheckBox.Checked;
+
+            foreach (ListItem item in ColumnNameCheckBoxList.Items)
+            {
+                item.Selected = selectAll;
+            }
+        }
         public void BindGridData(string moduleName, int employeeID)
         {
             DataTable dt = DisplayColumnValue(moduleName, employeeID);
@@ -163,9 +191,22 @@ namespace Crud__Asp.net_Web_form_
                     ColumnControlData.Columns.Add(boundField);
                 }
             }
+            foreach (DataRow row in dt.Rows)
+            {
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+
+                    if (row[i] == DBNull.Value)
+                    {
+                        row[i] = "0";
+                    }
+                }
+            }
             ColumnControlData.DataSource = dt;
             ColumnControlData.DataBind();
         }
+
+
         public DataTable DisplayColumnValue(string ModuleName, int EmployeeId)
         {
             DataTable dt = new DataTable();

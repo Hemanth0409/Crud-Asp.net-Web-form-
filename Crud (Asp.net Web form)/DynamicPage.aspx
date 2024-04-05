@@ -30,15 +30,8 @@
                     <asp:Button ID="SaveBtn" OnClick="SaveButton_Click" runat="server" Text="Save" class="btn btn-dark me-2 ms-auto float-end" />
                     <asp:Label runat="server" ID="ResultLabel"></asp:Label>
                     <asp:Label runat="server" ID="lblModuleName"></asp:Label>
-                    <%--<asp:CheckBox ID="SelectAllCheckBox" runat="server" Text="Select All" AutoPostBack="true" OnCheckedChanged="SelectAllCheckBox_CheckedChanged" />--%>
                     <br />
-                    <%--<asp:CheckBoxList ID="ColumnNameCheckBoxList" runat="server"></asp:CheckBoxList>--%>
-                    <asp:DropDownList runat="server" ID="FileFormat">
-                        <asp:ListItem Value="Excel">EXCEL</asp:ListItem>
-                        <asp:ListItem Value="Pdf">PDF</asp:ListItem>
-                    </asp:DropDownList>
-                    <asp:Button ID="btn_ExportId" Text="Export" OnClick="Export_Click" runat="server" />
-                    <asp:Button ID="btn_PrintId" Text="Print" runat="server" OnClick="Print_Click" />
+
                     <asp:GridView ID="ColumnControlData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" autoFit="true" Style="margin-top: 0px;" AllowPaging="True" Height="186px" PageSize="5">
                         <Columns>
                             <asp:TemplateField ShowHeader="False">
@@ -53,6 +46,18 @@
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
+        <asp:Panel runat="server" ID="FilePanel">
+            <asp:CheckBox ID="SelectAllCheckBox" runat="server" Text="Select All" AutoPostBack="true" OnCheckedChanged="SelectAllCheckBox_CheckedChanged" />
+
+            <asp:CheckBoxList ID="ColumnNameCheckBoxList" runat="server" BorderStyle="Solid"></asp:CheckBoxList>
+            <asp:DropDownList runat="server" ID="FileFormat">
+                <asp:ListItem Value="Excel">EXCEL</asp:ListItem>
+                <asp:ListItem Value="Pdf">PDF</asp:ListItem>
+            </asp:DropDownList>
+            <asp:Button ID="btn_ExportId" Text="Export" OnClick="Export_Click" runat="server" />
+            <asp:Button ID="btn_PrintId" Text="Print" runat="server" OnClick="Print_Click" />
+        </asp:Panel>
+
     </form>
 </body>
 </html>

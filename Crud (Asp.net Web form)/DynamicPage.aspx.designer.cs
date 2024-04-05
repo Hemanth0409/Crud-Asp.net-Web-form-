@@ -123,6 +123,42 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.WebControls.Label lblModuleName;
 
         /// <summary>
+        /// ColumnControlData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView ColumnControlData;
+
+        /// <summary>
+        /// FilePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel FilePanel;
+
+        /// <summary>
+        /// SelectAllCheckBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox SelectAllCheckBox;
+
+        /// <summary>
+        /// ColumnNameCheckBoxList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList ColumnNameCheckBoxList;
+
+        /// <summary>
         /// FileFormat control.
         /// </summary>
         /// <remarks>
@@ -148,14 +184,5 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btn_PrintId;
-
-        /// <summary>
-        /// ColumnControlData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView ColumnControlData;
     }
 }
