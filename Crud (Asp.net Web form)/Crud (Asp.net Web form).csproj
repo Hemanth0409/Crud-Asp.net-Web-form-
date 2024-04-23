@@ -308,6 +308,7 @@
     <Content Include="Index.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="ModuleRights.aspx" />
+    <Content Include="QuizModule.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -337,6 +338,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="EmpDetailsCrud.aspx" />
+    <Content Include="QuizForms.aspx" />
     <None Include="Files\Export\UserInfo.xls" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -379,6 +381,13 @@
     </Compile>
     <Compile Include="AddColumn.aspx.designer.cs">
       <DependentUpon>AddColumn.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="QuizForms.aspx.cs">
+      <DependentUpon>QuizForms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="QuizForms.aspx.designer.cs">
+      <DependentUpon>QuizForms.aspx</DependentUpon>
     </Compile>
     <Content Include="App_Code\ConnectFile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -452,6 +461,13 @@
       <DependentUpon>ModuleRights.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuizModule.aspx.cs">
+      <DependentUpon>QuizModule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="QuizModule.aspx.designer.cs">
+      <DependentUpon>QuizModule.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

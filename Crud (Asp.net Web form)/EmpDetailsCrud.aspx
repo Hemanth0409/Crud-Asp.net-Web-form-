@@ -1,4 +1,4 @@
-﻿                txtUserName<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" EnableEventValidation="false" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmpDetailsCrud.aspx.cs" Inherits="Crud__Asp.net_Web_form_.WebForm1" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript">
         function AssignSourceToIframe() {
-            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID %>').value;   
+            var hdnvalue = document.getElementById('<%= hdnPropertyAttributeIframe.ClientID %>').value;
             document.getElementById("PropertyAttributeIframe").src = hdnvalue;
         }
     </script>
@@ -36,7 +36,8 @@
         <asp:UpdatePanel ID="updatepannel" runat="server">
             <ContentTemplate>
                 <asp:Panel ID="formViewId" runat="server">
-                    <div class="container my-5 d-flex flex-column justify-content-center">txtUserName
+                    <div class="container my-5 d-flex flex-column justify-content-center">
+                        txtUserName
                         <h1 class="mb-3 ms-5 text-center">Employee Details</h1>
                         <div class="row">
                             <div class="row justify-content-center align-items-center">
@@ -208,7 +209,7 @@
                 <asp:Panel ID="ListView" runat="server">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" 
+                            <asp:GridView ID="EmpDetails" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;"
                                 OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
@@ -225,7 +226,7 @@
                                     <asp:BoundField DataField="Address" HeaderText="Address" SortExpression="Address" />
                                     <asp:TemplateField ShowHeader="False">
                                         <ItemTemplate>
-                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click" ></asp:Button>
+                                            <asp:Button ID="EditButton" runat="server" Text="Edit" CssClass="btn btn-danger btn-sm" OnClick="EditButton_Click"></asp:Button>
                                             <asp:Button ID="DeleteButton" runat="server" Text="Delete" CssClass="btn btn-danger btn-sm" CommandName="Delete"
                                                 OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:Button>
                                         </ItemTemplate>

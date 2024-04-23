@@ -55,7 +55,7 @@
                 <asp:ListItem Value="Pdf">PDF</asp:ListItem>
             </asp:DropDownList>
             <asp:Button ID="btn_ExportId" Text="Export" OnClick="Export_Click" runat="server" />
-            <asp:Button ID="btn_PrintId" Text="Print" runat="server" OnClick="Print_Click" />
+            <%--<asp:Button ID="btn_PrintId" Text="Print" runat="server" OnClick="Print_Click" />--%>
         </asp:Panel>
 
     </form>

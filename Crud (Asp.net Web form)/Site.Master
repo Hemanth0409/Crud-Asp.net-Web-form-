@@ -12,7 +12,7 @@
         <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
 
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
 </head>
@@ -49,14 +49,16 @@
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/">Home</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/About">About</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
-                         <li class="nav-item"><a class="nav-link" runat="server" href="~/EmpDetailsCrud">Employee Details</a></li>
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/EmpDetailsCrud">Employee Details</a></li>
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/QuizModule">Quiz Module</a></li>
+
                     </ul>
                 </div>
             </div>
         </nav>
         <div class="container body-content">
-           <%-- <asp:ContentPlaceHolder ID="MainContent" runat="server">
-            </asp:ContentPlaceHolder>--%>
+             <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
             <hr />
             <footer>
                 <p>&copy; <%: DateTime.Now.Year %> - My ASP.NET Application</p>

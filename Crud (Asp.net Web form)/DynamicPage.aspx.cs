@@ -36,7 +36,7 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
         }
-        
+
 
         protected void Export_Click(object sender, EventArgs e)
         {
@@ -117,7 +117,7 @@ namespace Crud__Asp.net_Web_form_
                 PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, memoryStream);
                 pdfDoc.Open();
 
-                PdfPTable pdfTable = new PdfPTable(ColumnControlData.Columns.Count - ColumnNameCheckBoxList.Items.Cast<ListItem>().Count(item => item.Selected));
+                PdfPTable pdfTable = new PdfPTable(ColumnControlData.Columns.Count);
 
                 for (int i = 0; i < ColumnControlData.Columns.Count; i++)
                 {
@@ -150,6 +150,7 @@ namespace Crud__Asp.net_Web_form_
                 Response.End();
             }
         }
+
 
         protected void BindColumnNamesToListBox(string moduleName)
         {
@@ -195,7 +196,6 @@ namespace Crud__Asp.net_Web_form_
             {
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
-
                     if (row[i] == DBNull.Value)
                     {
                         row[i] = "0";
@@ -205,7 +205,6 @@ namespace Crud__Asp.net_Web_form_
             ColumnControlData.DataSource = dt;
             ColumnControlData.DataBind();
         }
-
 
         public DataTable DisplayColumnValue(string ModuleName, int EmployeeId)
         {
@@ -305,13 +304,17 @@ namespace Crud__Asp.net_Web_form_
             }
             foreach (var kvp in keyValuesMap)
             {
-                string concatenatedValues = string.Join(":", kvp.Value.Select(val => val.Replace(" ", " ")));
-                value21 += string.IsNullOrEmpty(value21) ? "" : ",";
-                value21 += kvp.Key + "=" + concatenatedValues;
+                if (kvp.Key != "FileFormat")
+                {
+                    string concatenatedValues = string.Join(":", kvp.Value.Select(val => val.Replace(" ", "")));
+                    value21 += string.IsNullOrEmpty(value21) ? "" : ",";
+                    value21 += kvp.Key + "=" + concatenatedValues;
+                }
             }
             DynamicTable(Session["ModuleName"].ToString(), employeeId, currentModuleId, value21);
             BindGridData(Session["ModuleName"].ToString(), 2083);
         }
+
         protected void LoadForms(string moduleName)
         {
             DataTable dt = GetColumnByName(moduleName);
@@ -411,7 +414,7 @@ namespace Crud__Asp.net_Web_form_
                                 Panel1.Controls.Add(checkBoxList);
                             }
                             break;
-                        case 3:
+                        case 3: 
                             TextBox numberTextBox = new TextBox();
                             numberTextBox.ID = columnName.Replace(" ", "");
                             numberTextBox.CssClass = "form-control float-end";

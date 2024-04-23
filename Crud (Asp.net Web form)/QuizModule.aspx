@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" EnableSessionState="True"  CodeBehind="DynamicModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.Dynamic_Module" %>
-
+﻿<%@ Page Language="C#" AutoEventWireup="true" EnableSessionState="True" CodeBehind="QuizModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.QuizModule" %>
 
 <html>
 <head runat="server">
@@ -20,14 +19,13 @@
         .error {
             color: Red
         }
-      
     </style>
 
 </head>
 <body>
     <form id="form1" runat="server">
-            <asp:ScriptManager ID="script" runat="server">
-            </asp:ScriptManager>
+        <asp:ScriptManager ID="script" runat="server">
+        </asp:ScriptManager>
         <asp:UpdatePanel ID="updatepannel" runat="server">
             <ContentTemplate>
                 <asp:Panel ID="formViewId" runat="server">
@@ -36,21 +34,17 @@
                         <div class="row">
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
-                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Module Name:</label>
+                                    <label for="Name" class="form-label m-0"><span class="RequiredField">*</span>Quiz Module Name:</label>
                                 </div>
-
                                 <div class="col-md-4 mt-4">
-                                    <input type="text" class="form-control float-end" runat="server" id="TxtModule" />
+                                    <input type="text" class="form-control float-end" runat="server" id="txtQuizModule" />
                                 </div>
                             </div>
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 mt-4 text-center">
-                                    <label for="Name" class="form-label m-0">Add for Clients:</label>
+                                    <label for="Name" class="form-label m-0">Quiz Available for User:</label>
                                     <asp:CheckBox ID="CheckBox1" runat="server" />
-
                                 </div>
-
-                             
                             </div>
                             <div class="col-12 d-flex justify-content-center gap-3 mt-5">
                                 <asp:Button ID="Button1" runat="server" OnClick="Create_Click" Text="Save" class="btn btn-dark fw-bold" />
@@ -61,15 +55,15 @@
                 <asp:Panel ID="ListView" runat="server">
                     <div class="row mt-5 ">
                         <div class="col-12 justify-content-end">
-                            <asp:GridView ID="ModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
+                            <asp:GridView ID="QuizModuleData" runat="server" CssClass="table table-striped" AutoGenerateColumns="false" OnRowDeleting="RowDeleting" autoFit="true" Style="margin-top: 0px;" OnPageIndexChanging="OnPageIndexChanging" AllowPaging="True" Height="186px" PageSize="5">
                                 <Columns>
                                     <asp:TemplateField>
                                         <ItemTemplate>
-                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"ModuleId")%>' />
+                                            <asp:HiddenField ID="hdnId" runat="server" Value='<%#DataBinder.Eval(Container.DataItem,"Quiz_ModuleId")%>' />
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:BoundField DataField="ModuleName" HeaderText="Module Name" SortExpression="ModuleName" />
-                                    <asp:BoundField DataField="IsActive" HeaderText="IsActive" SortExpression="IsActive" />
+                                    <asp:BoundField DataField="Quiz_ModuleName" HeaderText="Quiz Module Name" SortExpression="QuizModuleName" />
+                                    <asp:BoundField DataField="IsAvailable" HeaderText="IsActive" SortExpression="IsActive" />
                                     <asp:TemplateField>
                                         <ItemTemplate>
                                             <asp:Button ID="AddColumn" runat="server" Text="Add" CssClass="btn btn-primary btn-sm" OnClick="ModuleGridView_RowCommand"/>
@@ -88,7 +82,6 @@
                         </div>
                     </div>
                 </asp:Panel>
-
             </ContentTemplate>
         </asp:UpdatePanel>
     </form>

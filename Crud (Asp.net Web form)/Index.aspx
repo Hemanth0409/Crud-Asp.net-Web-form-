@@ -47,7 +47,12 @@
                                         <a href="ModuleRights.aspx" class="nav-link px-0 text-white" target="switch-frame">
                                             <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">ModuleRights </span>
                                         </a>
-                                    </li>                                    
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="QuizModule.aspx" class="nav-link px-0 text-white" target="switch-frame">
+                                            <i class="fs-4 bi-house"></i><span class="ms-1 d-none d-sm-inline">QuizModule </span>
+                                        </a>
+                                    </li>
                                     <ul class=" switcher nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="Ul1" runat="server" clientidmode="Static">
                                         <asp:PlaceHolder runat="server" ID="navMenu"></asp:PlaceHolder>
                                     </ul>

@@ -82,7 +82,7 @@ namespace Crud__Asp.net_Web_form_
         }
 
         protected void RowDeleting(object sender, GridViewDeleteEventArgs e)
-            {
+        {
             string gender;
 
             if (rdoMale.Checked)
@@ -106,12 +106,12 @@ namespace Crud__Asp.net_Web_form_
             GridViewRow gdRow = (GridViewRow)EmpDetails.Rows[e.RowIndex];
 
             HiddenField hdnId = (HiddenField)gdRow.FindControl("hdnId");
-            Session["UserId"]=hdnId.Value;
+            Session["UserId"] = hdnId.Value;
             con.Open();
             EmployeeDetails(Convert.ToInt32(hdnId.Value), "", "", 0, 0, "", "", "", "", "", "", "", "", true, "DELETE");
             EmpDetails.EditIndex = -1;
             BindDataToGridView();
-            con.Close(); 
+            con.Close();
 
         }
         protected void Create_Click(object sender, EventArgs e)
@@ -580,8 +580,6 @@ namespace Crud__Asp.net_Web_form_
                 {
                     rdoFemale.Checked = true;
                 }
-
-
                 for (int i = 0; i < Language.Items.Count; i++)
                 {
                     if (selectedItems.Contains(Language.Items[i].Value))

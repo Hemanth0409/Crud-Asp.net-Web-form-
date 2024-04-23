@@ -15,9 +15,15 @@ namespace Crud__Asp.net_Web_form_
         SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
         SqlCommand com;
         int currentModuleId;
+        string moduleID;
         protected void Page_Load(object sender, EventArgs e)
         {
-            currentModuleId = Convert.ToInt32(Session["ModuleId"]);
+            if (!string.IsNullOrEmpty(Request.QueryString["ModuleID"]))
+            {
+                moduleID = Request.QueryString["ModuleID"];
+
+            }
+            currentModuleId = Convert.ToInt32(moduleID);
             BindDataToGridView();
 
         }
@@ -25,12 +31,12 @@ namespace Crud__Asp.net_Web_form_
         public void BindDataToGridView()
         {
             GetColumnById(currentModuleId);
-        
+
         }
 
         public string GetColumnById(int ModuleId)
         {
-            SqlCommand com = new SqlCommand();           
+            SqlCommand com = new SqlCommand();
             com.Connection = con;
             com.CommandType = CommandType.StoredProcedure;
             com.CommandText = "Sp_GetAllColumnDataById";
@@ -58,11 +64,11 @@ namespace Crud__Asp.net_Web_form_
         {
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
-            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");        
+            HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
             ColumnControlDetails(Convert.ToInt32(hdnId.Value), 0, 0, "", true, 0, 0, "", "", "", 0, 0, "", true, true, "DELETE");
             ColumnControlData.EditIndex = -1;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted');", true);
-            BindDataToGridView();         
+            BindDataToGridView();
         }
 
         public string ColumnControlDetails(
@@ -106,7 +112,7 @@ namespace Crud__Asp.net_Web_form_
             com.Parameters.Add("Fieldname", SqlDbType.VarChar, 50).Value = "";
             com.Parameters.Add("StatementType", SqlDbType.VarChar, 25).Value = StatementType;
             com.CommandTimeout = 0;
-                com.ExecuteNonQuery();
+            com.ExecuteNonQuery();
             con.Close();
             return com.ToString();
         }
@@ -142,7 +148,7 @@ namespace Crud__Asp.net_Web_form_
 
                 lineToDisplayValue = 0;
             }
-            
+
 
             string ColumnName = TxtColumnName.Value ?? string.Empty;
 
@@ -154,7 +160,7 @@ namespace Crud__Asp.net_Web_form_
             char choiceTypeValue = (RadioButton1.Checked) ? 'D' : (RadioButton2.Checked) ? 'R' : (RadioButton3.Checked) ? 'C' : 'N';
 
             string defaultValueTxt = DefaultTxt.Value ?? string.Empty;
-            string defaultDateValue = TxtjoinDate.Value =="" ?  DateTime.Now.Date.ToString("yyyy-MM-dd"): TxtjoinDate.Value;
+            string defaultDateValue = TxtjoinDate.Value == "" ? DateTime.Now.Date.ToString("yyyy-MM-dd") : TxtjoinDate.Value;
 
 
             int charSize;
@@ -189,18 +195,18 @@ namespace Crud__Asp.net_Web_form_
 
             if (Session["ColumnControlId"] != null)
             {
-            string defaultValueRecord = defaultValueTxt != defaultDateValue  ? defaultDateValue : defaultValueTxt ;
+                string defaultValueRecord = defaultValueTxt != defaultDateValue ? defaultDateValue : defaultValueTxt;
 
                 ColumnControlDetails(Convert.ToInt32(Session["ColumnControlId"]), currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueRecord, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "UPDATE");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Updated');", true);
-           
+
                 BindDataToGridView();
             }
             else
             {
-            string defaultValueRecord = defaultValueTxt == "" ? defaultDateValue : defaultValueTxt;
+                string defaultValueRecord = defaultValueTxt == "" ? defaultDateValue : defaultValueTxt;
                 ColumnControlDetails(0, currentModuleId, int.Parse(RadioBtnIdForDisplay.SelectedItem.Value), ColumnName, requiredField, charSize,
                     lineToDisplayValue, dataForChoiceValue, choiceTypeValue.ToString(), defaultValueRecord, maxValue, minValue,
                     dateTimeFormatValue, displayColumn, defaultCheckBox, "INSERT");
@@ -211,7 +217,7 @@ namespace Crud__Asp.net_Web_form_
         }
 
         protected void EditButton_Click(object sender, EventArgs e)
-        {            
+        {
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
