@@ -4,213 +4,165 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Stepper with Horizontal Tables</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        #progress-bar-container {
-            position: relative;
-            width: 90%;
-            margin: auto;
-            margin-top: 65px;
-        }
-
-        #progress-bar-container ul {
-            padding-top: 15px;
-            list-style: none;
+        /* CSS for stepper */
+        .stepper {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
         }
 
-        #progress-bar-container li {
+        .step {
             flex: 1;
             text-align: center;
-            color: #aaa;
-            text-transform: uppercase;
-            font-size: 11px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
             cursor: pointer;
-            font-weight: 700;
-            position: relative;
+            transition: background-color 0.3s ease;
         }
 
-        #progress-bar-container li.active::before,
-        #progress-bar-container li:hover::before {
-            border: 2px solid #fff;
-            background-color: crimson;
-        }
-
-        #progress-bar-container li::before {
-            content: attr(data-step);
-            display: block;
-            margin: auto;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 50%;
-            border: 2px solid #aaa;
-            transition: all ease 0.3s;
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #progress-bar-container li.step1::before {
-            left: 0;
-        }
-
-        #progress-bar-container li.step4::before {
-            right: 0;
-        }
-
-        #progress-bar-container #line {
-            width: 100%;
-            margin: auto;
-            background-color: #eee;
-            height: 6px;
-            position: absolute;
-            left: 0;
-            top: 7px;
-            z-index: 1;
-            border-radius: 50px;
-            transition: all ease 0.75s;
-        }
-
-        #progress-bar-container #line-progress {
-            content: " ";
-            width: 8%;
-            height: 100%;
-            background-color: #207893;
-            background: linear-gradient(to right, #207893 0%, #2ea3b7 100%);
-            position: absolute;
-            z-index: 2;
-            border-radius: 50px;
-            transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.25);
-        }
-
-        #progress-content-section {
-            position: relative;
-            top: 100px;
-            width: 90%;
-            margin: auto;
-            background: #f3f3f3;
-            border-radius: 4px;
-        }
-
-        .section-content {
-            padding: 30px 40px;
-            text-align: center;
-            display: none;
-        }
-
-        .section-content.active {
-            display: block;
-        }
-
-        .progress-wrapper {
-            margin: auto;
-            max-width: 1080px;
-        }
-
-        @media only screen and (max-width: 768px) {
-            #progress-bar-container ul {
-                flex-direction: column;
+            .step.active {
+                background-color: #4CAF50;
+                color: white;
             }
 
-            #progress-bar-container li {
+            .step:hover {
+                background-color: #ddd;
+            }
+
+        .horizontal-table {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 10px;
+            opacity: 0;
+            position: absolute;
+            left: -9999px;
+            transition: opacity 0.3s ease;
+        }
+
+            .horizontal-table.active {
+                opacity: 1;
+                left: 0;
+            }
+
+            .horizontal-table table {
                 width: 100%;
-                margin-bottom: 15px;
+                border-collapse: collapse;
             }
 
-            #progress-bar-container li::before {
-                top: -25px;
+            .horizontal-table th,
+            .horizontal-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
             }
+
+            .horizontal-table th {
+                background-color: #f2f2f2;
+            }
+
+        .sortable {
+            cursor: move;
         }
     </style>
-
-    <script>
-        $(document).ready(function () {
-            $(".step").click(function () {
-                $(this).addClass("active").prevAll().addClass("active");
-                $(this).nextAll().removeClass("active");
-            });
-
-            $(".step01").click(function () {
-                $("#line-progress").css("width", "8%");
-                $(".step1").addClass("active").siblings().removeClass("active");
-            });
-
-            $(".step02").click(function () {
-                $("#line-progress").css("width", "50%");
-                $(".step2").addClass("active").siblings().removeClass("active");
-            });
-
-            $(".step03").click(function () {
-                $("#line-progress").css("width", "100%");
-                $(".step3").addClass("active").siblings().removeClass("active");
-            });
-
-        });
-    </script>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="progress-wrapper">
-            <div id="progress-bar-container">
-                <ul>
-                    <li class="step step01 active" data-step="1">
-                        <div class="step-inner">Step 1</div>
-                    </li>
-                    <li class="step step02" data-step="2">
-                        <div class="step-inner">Step 2</div>
-                    </li>
-                    <li class="step step03" data-step="3">
-                        <div class="step-inner">Step 3</div>
-                    </li>
-                   
-                </ul>
-                <div id="line">
-                    <div id="line-progress"></div>
-                </div>                
-                <div id="progress-content-section">
-                    <div class="section-content step1 active">
-                        <h2>Step 1</h2>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                        </p>
-                    </div>
-                    <div class="section-content step2">
-                        <h2>Step 2</h2>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                        </p>
-                    </div>
-                    <div class="section-content step3">
-                        <h2>Step 3</h2>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-                            impedit! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, soluta impedit. Eligendi aliquam ratione porro minus temporibus facilis iure numquam.
-                        </p>
-                    </div>
-                     
-                </div>
-            </div>        
+        <div class="text-center">
+            <h3 runat="server" id="txtQuizModuleId"></h3>
+        </div>
+        <div class="stepper">
+            <div class="step active" runat="server" visible="true" onclick="showTable(1)">Video Upload</div>
+            <div class="step" runat="server" visible="false" onclick="showTable(2)">Dynamic Quiz Form</div>
+            <div class="step" runat="server" visible="false" onclick="showTable(3)">Form Over View</div>
+        </div>
+        <div class="horizontal-table active" id="table1">
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table">
+                <Columns>
+                    <asp:BoundField DataField="Order" HeaderText="Order" />
+                    <asp:BoundField DataField="VideoTitle" HeaderText="Video Title" />
+                    <asp:BoundField DataField="VideoFilePath" HeaderText="Video File Path" />
+                    <asp:BoundField DataField="VideoOrder" HeaderText="Video Order" />
+                </Columns>
+            </asp:GridView>
+
+        </div>
+
+        <div class="horizontal-table" id="table2">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Header 11</th>
+                        <th>Header 21</th>
+                        <th>Header 31</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Data 1</td>
+                        <td>Data 2</td>
+                        <td>Data 3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="horizontal-table" id="table3">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Header 111</th>
+                        <th>Header 121</th>
+                        <th>Header 131</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Data 1</td>
+                        <td>Data 2</td>
+                        <td>Data 3</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </form>
+
+    <script>
+        function showTable(step) {
+            $('.horizontal-table').removeClass('active');
+            $('#table' + step).addClass('active');
+            $('.step').removeClass('active');
+            $('.step').eq(step - 1).addClass('active');
+        }
+
+        $(function () {
+            $("#<%= GridView1.ClientID %> tbody").sortable({
+            items: "tr:not(:first-child)", // Exclude header row from sorting
+            axis: "y",
+            containment: "parent",
+            cursor: "move",
+            update: function (event, ui) {
+                $(this).children().each(function (index) {
+                    if (index !== 0) { // Exclude header row
+                        $(this).find('td:first').text(index); // Update index numbers
+                    }
+                });
+            }
+        }).disableSelection();
+    });
+    </script>
+
+
+</body>
+</html>
+     });
+   </script>
 </body>
 </html>

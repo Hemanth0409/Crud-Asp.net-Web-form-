@@ -49,10 +49,14 @@ namespace Crud__Asp.net_Web_form_
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
             HiddenField hdnId = (HiddenField)row.FindControl("hdnId");
-            Session["QuizModuleId"] = hdnId.Value;
-            string redirectUrl = "~/QuizForms.aspx?QuizModuleId=" + hdnId.Value;
+            string moduleId = hdnId.Value;
+            TableCell moduleNameCell = row.Cells[1];  
+            string moduleName = moduleNameCell.Text.Trim();
+
+            string redirectUrl = $"~/QuizForms.aspx?QuizModuleId={moduleId}&QuizModuleName={moduleName}";
             Response.Redirect(redirectUrl, false);
         }
+
 
 
         protected void EditButton_Click(object sender, EventArgs e)
