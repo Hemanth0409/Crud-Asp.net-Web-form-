@@ -53,7 +53,7 @@ namespace Crud__Asp.net_Web_form_
             TableCell moduleNameCell = row.Cells[1];  
             string moduleName = moduleNameCell.Text.Trim();
 
-            string redirectUrl = $"~/QuizForms.aspx?QuizModuleId={moduleId}&QuizModuleName={moduleName}";
+            string redirectUrl = $"~/QuizVideoModule.aspx?QuizModuleId={moduleId}&QuizModuleName={moduleName}";
             Response.Redirect(redirectUrl, false);
         }
 

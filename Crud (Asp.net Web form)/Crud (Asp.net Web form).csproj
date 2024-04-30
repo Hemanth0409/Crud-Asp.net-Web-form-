@@ -308,6 +308,7 @@
     <Content Include="Index.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="ModuleRights.aspx" />
+    <Content Include="QuizFormModule.aspx" />
     <Content Include="QuizModule.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -338,7 +339,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="EmpDetailsCrud.aspx" />
-    <Content Include="QuizForms.aspx" />
+    <Content Include="QuizVideoModule.aspx" />
     <None Include="Files\Export\UserInfo.xls" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -382,12 +383,19 @@
     <Compile Include="AddColumn.aspx.designer.cs">
       <DependentUpon>AddColumn.aspx</DependentUpon>
     </Compile>
-    <Compile Include="QuizForms.aspx.cs">
-      <DependentUpon>QuizForms.aspx</DependentUpon>
+    <Compile Include="QuizFormModule.aspx.cs">
+      <DependentUpon>QuizFormModule.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="QuizForms.aspx.designer.cs">
-      <DependentUpon>QuizForms.aspx</DependentUpon>
+    <Compile Include="QuizFormModule.aspx.designer.cs">
+      <DependentUpon>QuizFormModule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="QuizVideoModule.aspx.cs">
+      <DependentUpon>QuizVideoModule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="QuizVideoModule.aspx.designer.cs">
+      <DependentUpon>QuizVideoModule.aspx</DependentUpon>
     </Compile>
     <Content Include="App_Code\ConnectFile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -507,6 +515,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Files\Import\" />
+    <Folder Include="UploadedVideo\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
