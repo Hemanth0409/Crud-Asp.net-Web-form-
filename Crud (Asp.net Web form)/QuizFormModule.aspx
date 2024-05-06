@@ -29,7 +29,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-
         .dynamic-input {
             margin-bottom: 10px;
             padding: 8px;
@@ -118,69 +117,49 @@
             </div>
         </div>
     </div>
-    <div class="container  mt-5 d-flex ">
-        <div class="displayContainer col-12">
+    <div class="container  mt-5 d-flex" runat="server" onclick="containerDisplayClick(event,'sidebar1')">
+        <div class="displayContainer col-12" id="displayContainer1">
             <div class="row mb-2 justify-content-evenly">
                 <div class="col-5">
                     <input id="formQuestions" type="text" placeholder="Question" class="fs-6 dynamic-input"
                         runat="server" />
                 </div>
+
                 <div class="col-2 justify-content-center">
                     <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
                 </div>
                 <div class="col-5">
                     <select id="formQuestionType" class="form-select fs-6">
-                        <option value="multiple">Multiple Select</option>
+                        <option value="multiple">Multiple Choice</option>
                         <option value="checkbox">Checkbox</option>
-                        <option value="radio">Radio Button</option>
+                        <option value="dropDown">Drop Down</option>
                     </select>
                 </div>
             </div>
-            <div class="row mb-1">
-                <div class="col-12 mt-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="option1" />
-                        <label class="form-check-label" for="option1">
-                            Option 1
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="option2" />
-                        <label class="form-check-label" for="option2">
-                            Option 2
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="option3" />
-                        <label class="form-check-label" for="option3">
-                            Option 3
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="option4" />
-                        <label class="form-check-label" for="option4">
-                            Option 4
-                        </label>
-                    </div>
-                </div>
+            <div class="row mb-1" id="optionsContainer">
             </div>
         </div>
-        <div class="container toolBox ms-3 col-md-2">
+        <div class="container toolBox ms-3 col-md-2" id="sidebar1" style="display: none">
             <div class="row d-flex flex-column justify-content-center align-items-center pt-3 pb-3">
                 <div class="col-12 mb-3">
-                    <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Add Questions"></i>
+                    <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true"
+                        data-toggle="tooltip" data-placement="right" title="Add Questions"></i>
                 </div>
                 <div class="col-12 mb-3">
-                    <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Add Image"></i>
+                    <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
+                        data-toggle="tooltip" data-placement="right" title="Add Image"></i>
                 </div>
                 <div class="col-12 mb-3">
-                    <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Add Video"></i>
+                    <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
+                        data-toggle="tooltip" data-placement="right" title="Add Video"></i>
                 </div>
                 <div class="col-12">
-                    <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Add Title"></i>
+                    <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
+                        data-toggle="tooltip" data-placement="right" title="Add Title"></i>
                 </div>
                 <div class="col-12 mt-3">
-                    <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
+                    <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
+                        data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
                 </div>
             </div>
         </div>
@@ -188,6 +167,7 @@
     <script type="text/javascript">
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
+            addNewOption();
         };
 
         function showIcons(iconDivId) {
@@ -218,6 +198,62 @@
                     break;
             }
         }
+        var optionCount = 1;
+
+        function addNewOption() {
+            var optionsContainer = document.getElementById('optionsContainer');
+
+            var existingOptions = optionsContainer.querySelectorAll('.col-md-11');
+
+            var newOption = document.createElement('div');
+            newOption.classList.add('col-md-11', 'mt-3');
+            newOption.innerHTML = `
+        <div class="form-check d-flex align-items-center">
+            <input class="form-check-input me-2" type="radio" id="option${optionCount}" />
+            <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
+            <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)"></i>
+            <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)"></i>
+        </div>`;
+
+            if (existingOptions.length === 0) {
+                newOption.querySelector('.delete-icon').style.display = 'none';
+            }
+
+            optionsContainer.appendChild(newOption);
+            optionCount++;
+
+            if (existingOptions.length > 0) {
+                var lastOption = existingOptions[existingOptions.length - 1];
+                var plusIcon = lastOption.querySelector('.plus-icon');
+                if (plusIcon) {
+                    plusIcon.style.display = 'none';
+                }
+
+                var previousOption = existingOptions[existingOptions.length - 1];
+                var deleteIcon = previousOption.querySelector('.delete-icon');
+                deleteIcon.style.display = 'inline-block';
+            }
+
+            var plusIcon = document.createElement('i');
+            plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
+            plusIcon.setAttribute('aria-hidden', 'true');
+            plusIcon.onclick = addNewOption;
+            newOption.querySelector('.form-check').appendChild(plusIcon);
+        }
+
+        function deleteOption(element) {
+            element.closest('.col-md-11').remove();
+        }
+
+        function containerDisplayClick(event, sidebarId) {
+            var allSidebars = document.querySelectorAll('.container.toolBox');
+            allSidebars.forEach(function (sidebar) {
+                sidebar.style.display = 'none';
+            });
+            var sidebar = document.getElementById(sidebarId);
+            sidebar.style.display = 'block';
+            event.stopPropagation();
+        }
 
         function removeStyle(inputId, ...iconIds) {
             var input = document.getElementById(inputId);
@@ -230,6 +266,11 @@
             });
         }
 
+        function toggleSidebar(sidebarId) {
+            var sidebar = document.getElementById(sidebarId);
+            sidebar.classList.toggle('show');
+        }
+
         document.body.addEventListener('click', function (event) {
             var isInputField = event.target.tagName === 'INPUT';
             var isIconContainer = event.target.classList.contains('dynamic-icon');
@@ -240,10 +281,7 @@
                 });
             }
         });
-        function optionSideBar() {
-            var sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('show');
-        }
     </script>
 </body>
+
 </html>

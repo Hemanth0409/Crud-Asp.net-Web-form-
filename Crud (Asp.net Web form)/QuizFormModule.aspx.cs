@@ -34,7 +34,10 @@ namespace Crud__Asp.net_Web_form_
                 //}
                 txtTitle.Style["font-weight"] = "bold";
                 txtDescription.Style["font-style"] = "italic";
+                
             }
         }
+       
+
     }
 }

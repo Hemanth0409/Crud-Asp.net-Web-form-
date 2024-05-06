@@ -236,9 +236,7 @@
                         </div>
                     </div>
                 </asp:Panel>
-
             </ContentTemplate>
-
         </asp:UpdatePanel>
         <div class="row">
             <div class="col-12">
