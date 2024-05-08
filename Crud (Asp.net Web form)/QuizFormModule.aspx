@@ -20,7 +20,6 @@
             border-radius: 5px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
         }
 
         .toolBox {
@@ -84,7 +83,7 @@
 </head>
 
 <body>
-    <div class="container displayContainer">
+    <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
         <div class="row mb-3">
             <div class="col">
                 <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server"
@@ -118,111 +117,61 @@
             </div>
         </div>
     </div>
-    <div class="container mt-5 d-flex" runat="server" onclick="containerDisplayClick(event,'sidebar1')">
-        <div class="displayContainer col-12" id="displayContainer1">
-            <div class="row mb-2 justify-content-evenly">
-                <div class="col-1">
-                    <span class="question-number">1.</span>
+    <div id="questionTemplate" style="display: none;">
+        <div class="container mt-5 d-flex questionContainer">
+            <div class="displayContainer col-12">
+                <div class="row mb-2 justify-content-evenly">
+                    <div class="col-5">
+                        <span class="question-number"></span>
+                        <input type="text" placeholder="Question" class="fs-6 dynamic-input" />
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-5">
+                        <select class="form-select fs-6">
+                            <option value="multiple">Multiple Choice</option>
+                            <option value="checkbox">Checkbox</option>
+                            <option value="dropDown">Drop Down</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <input id="formQuestions" type="text" placeholder="Question" class="fs-6 dynamic-input"
-                        runat="server" />
-                </div>
+                <span class="dropdown-value" id="dropdownValue"></span>
 
-                <div class="col-2 justify-content-center">
-                    <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
-                </div>
-                <div class="col-5">
-                    <select id="formQuestionType" class="form-select fs-6">
-                        <option value="multiple">Multiple Choice</option>
-                        <option value="checkbox">Checkbox</option>
-                        <option value="dropDown">Drop Down</option>
-                    </select>
+                <div class="row mb-1" id="optionsDisplay">
                 </div>
             </div>
-            <div class="row mb-1" id="optionsContainer">
-            </div>
-        </div>
-        <div class="container toolBox ms-3 col-md-2" id="sidebar1" style="display: none">
-            <div class="row d-flex flex-column justify-content-center align-items-center pt-3 pb-3">
-                <div class="col-12 mb-3">
-                    <i id="btn_AddQuestion" class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true"
-                        data-toggle="tooltip" data-placement="right" title="Add Questions"></i>
-                </div>
-                <div class="col-12 mb-3">
-                    <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
-                        data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
-                </div>
-                <div class="col-12 mb-3">
-                    <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
-                        data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
-                </div>
-                <div class="col-12">
-                    <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
-                        data-toggle="tooltip" data-placement="right" title="Add Title"></i>
-                </div>
-                <div class="col-12 mt-3">
-                    <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
-                        data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
+            <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
+                <div class="row d-flex flex-column justify-content-center align-items-center pt-3 pb-3">
+                    <div class="col-12 mb-3">
+                        <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" onclick="addQuestion()"></i>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
+                            data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
+                            data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
+                    </div>
+                    <div class="col-12">
+                        <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
+                            data-toggle="tooltip" data-placement="right" title="Add Title"></i>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
+                            data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container mt-5 d-flex" runat="server" onclick="containerDisplayClick(event,'sidebar2')">
-    <div class="displayContainer col-12" id="displayContainer2">
-        <div class="row mb-2 justify-content-evenly">
-            <div class="col-1">
-                <span class="question-number">1.</span>
-            </div>
-            <div class="col-4">
-                <input id="Text1" type="text" placeholder="Question" class="fs-6 dynamic-input"
-                    runat="server" />
-            </div>
+    <script>
+        var questionCount = 1;
 
-            <div class="col-2 justify-content-center">
-                <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
-            </div>
-            <div class="col-5">
-                <select id="formQuestionType2" class="form-select fs-6">
-                    <option value="multiple">Multiple Choice</option>
-                    <option value="checkbox">Checkbox</option>
-                    <option value="dropDown">Drop Down</option>
-                </select>
-            </div>
-        </div>
-        <div class="row mb-1" id="optionsContainer2">
-        </div>
-    </div>
-    <div class="container toolBox ms-3 col-md-2" id="sidebar2" style="display: none">
-        <div class="row d-flex flex-column justify-content-center align-items-center pt-3 pb-3">
-            <div class="col-12 mb-3">
-                <i id="btn_AddQuestion2" class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true"
-                    data-toggle="tooltip" data-placement="right" title="Add Questions"></i>
-            </div>
-            <div class="col-12 mb-3">
-                <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
-                    data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
-            </div>
-            <div class="col-12 mb-3">
-                <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
-                    data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
-            </div>
-            <div class="col-12">
-                <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
-                    data-toggle="tooltip" data-placement="right" title="Add Title"></i>
-            </div>
-            <div class="col-12 mt-3">
-                <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
-                    data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
-            </div>
-        </div>
-    </div>
-</div>
-    <div id="questionsContainer" class="container mt-5 d-flex flex-column"></div>
-    <script type="text/javascript">
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
-            addNewOption();
+            addQuestion();
         };
 
         function showIcons(iconDivId) {
@@ -232,7 +181,6 @@
             });
             document.getElementById(iconDivId).classList.add('show');
         }
-
         function updateStyle(fontStyle, inputId, iconId) {
             var input = document.getElementById(inputId);
             var icon = document.getElementById(iconId);
@@ -253,64 +201,6 @@
                     break;
             }
         }
-        var optionCount = 1;
-
-        function addNewOption() {
-            var optionsContainer = document.getElementById('optionsContainer');
-
-            var existingOptions = optionsContainer.querySelectorAll('.col-md-11');
-
-            var newOption = document.createElement('div');
-            newOption.classList.add('col-md-11', 'mt-3');
-            newOption.innerHTML = `
-    <div class="form-check d-flex align-items-center">
-        <input class="form-check-input me-2" type="radio" id="option${optionCount}" />
-        <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
-        <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
-        <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
-    </div>`;
-
-            if (existingOptions.length === 0) {
-                newOption.querySelector('.delete-icon').style.display = 'none';
-            }
-
-            optionsContainer.appendChild(newOption);
-            optionCount++;
-
-            if (existingOptions.length > 0) {
-                var lastOption = existingOptions[existingOptions.length - 1];
-                var plusIcon = lastOption.querySelector('.plus-icon');
-                if (plusIcon) {
-                    plusIcon.style.display = 'none';
-                }
-
-                var previousOption = existingOptions[existingOptions.length - 1];
-                var deleteIcon = previousOption.querySelector('.delete-icon');
-                deleteIcon.style.display = 'inline-block';
-            }
-
-            var plusIcon = document.createElement('i');
-            plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
-            plusIcon.setAttribute('aria-hidden', 'true');
-            plusIcon.setAttribute('title', 'Add options')
-            plusIcon.onclick = addNewOption;
-            newOption.querySelector('.form-check').appendChild(plusIcon);
-        }
-
-        function deleteOption(element) {
-            element.closest('.col-md-11').remove();
-        }
-
-        function containerDisplayClick(event, sidebarId) {
-            var allSidebars = document.querySelectorAll('.container.toolBox');
-            allSidebars.forEach(function (sidebar) {
-                sidebar.style.display = 'none';
-            });
-            var sidebar = document.getElementById(sidebarId);
-            sidebar.style.display = 'block';
-            event.stopPropagation();
-        }
-
         function removeStyle(inputId, ...iconIds) {
             var input = document.getElementById(inputId);
             input.style.fontWeight = 'normal';
@@ -321,61 +211,122 @@
                 icon.classList.remove('active');
             });
         }
+        function showToolBox(container) {
+            var toolBoxDisplay = container.querySelector('.toolBox');
+            if (toolBoxDisplay) {
+                var allToolBoxes = document.querySelectorAll('.toolBox');
+                allToolBoxes.forEach(function (toolbox) {
+                    toolbox.style.display = "none";
+                });
 
-        function toggleSidebar(sidebarId) {
-            var sidebar = document.getElementById(sidebarId);
-            sidebar.classList.toggle('show');
+                toolBoxDisplay.style.display = "block";
+            }
         }
 
-        document.body.addEventListener('click', function (event) {
-            var isInputField = event.target.tagName === 'INPUT';
-            var isIconContainer = event.target.classList.contains('dynamic-icon');
-            if (!isInputField && !isIconContainer) {
-                var allIconContainers = document.querySelectorAll('.dynamic-icon-container');
-                allIconContainers.forEach(function (container) {
-                    container.classList.remove('show');
+
+        function addQuestion() {
+            var newQuestionContainer = document.createElement('div');
+            newQuestionContainer.classList.add('questionContainer');
+            newQuestionContainer.innerHTML = document.getElementById('questionTemplate').innerHTML;
+            newQuestionContainer.querySelector('.question-number').textContent = "[" + questionCount + "].";
+
+            var dropdowns = newQuestionContainer.querySelectorAll('.form-select');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.id += questionCount;
+                dropdown.addEventListener('change', function () {
+                    var dropdownValue = this.value;
+                    newQuestionContainer.querySelector('.dropdown-value').textContent = dropdownValue;
                 });
+
+                var initialDropdownValue = dropdown.options[dropdown.selectedIndex].text;
+                newQuestionContainer.querySelector('.dropdown-value').textContent = initialDropdownValue;
+            });
+
+            var deleteIcon = newQuestionContainer.querySelector('.fa-trash-can');
+            deleteIcon.addEventListener('click', function () {
+                if (document.querySelectorAll('.questionContainer').length > 1) {
+                    newQuestionContainer.remove();
+                } else {
+                    alert("At least one template should remain.");
+                }
+            });
+
+            newQuestionContainer.addEventListener('click', function (event) {
+                var allToolBoxes = document.querySelectorAll('.toolBox');
+                allToolBoxes.forEach(function (toolbox) {
+                    toolbox.style.display = "none";
+                });
+
+                var toolBoxDisplay = this.querySelector('.toolBox');
+                toolBoxDisplay.style.display = "block";
+                event.stopPropagation();
+            });
+
+            // Reset optionCount for each new question template
+            var optionCount = 1;
+
+            // Add one option by default for each new question template
+            addNewOption(newQuestionContainer, optionCount);
+
+            document.body.appendChild(newQuestionContainer);
+            questionCount++;
+
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function addNewOption(questionContainer, optionCount) {
+            var optionsContainer = questionContainer.querySelector('.row#optionsDisplay');
+            var existingOptions = optionsContainer.querySelectorAll('.col-md-11');
+
+            if (optionsContainer) {
+                var newOption = document.createElement('div');
+                newOption.classList.add('col-md-11', 'mt-3');
+                newOption.innerHTML = `
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input me-2" type="radio" id="option${optionCount}" />
+                <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
+                <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
+                <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
+            </div>`;
+
+                if (existingOptions.length === 0) {
+                    newOption.querySelector('.delete-icon').style.display = 'none';
+                }
+
+                optionsContainer.appendChild(newOption);
+                optionCount++;
+
+                // Hide plus icon in the previous option
+                if (existingOptions.length > 0) {
+                    var previousOption = existingOptions[existingOptions.length - 1];
+                    var plusIcon = previousOption.querySelector('.plus-icon');
+                    if (plusIcon) {
+                        plusIcon.style.display = 'none';
+                    }
+
+                    // Display delete icon in the previous option
+                    var deleteIcon = previousOption.querySelector('.delete-icon');
+                    deleteIcon.style.display = 'inline-block';
+                }
+
+                // Add plus icon to the current option
+                var plusIcon = document.createElement('i');
+                plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
+                plusIcon.setAttribute('aria-hidden', 'true');
+                plusIcon.setAttribute('title', 'Add options');
+                plusIcon.onclick = function () {
+                    addNewOption(questionContainer, optionCount);
+                };
+                newOption.querySelector('.form-check').appendChild(plusIcon);
+            } else {
+                console.error("Options container not found!");
             }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const questionsContainer = document.getElementById("questionsContainer");
-            const addQuestionBtn = document.getElementById("btn_AddQuestion");
-            let questionCount = 1;
+        }
 
-            function createQuestionTemplate() {
-                questionCount++;
-                const questionTemplate = document.createElement("div");
-                questionTemplate.classList.add("displayContainer", "col-12");
-                questionTemplate.innerHTML = `
-    <div class="row mb-2 mt-3 justify-content-evenly" onclick="toggleSidebar('sidebar1')">
-        <div class="col-1">
-            <span class="question-number">${questionCount}.</span>
-        </div>
-        <div class="col-4">
-            <input type="text" placeholder="Question" class="fs-6 dynamic-input form-control" />
-        </div>
-        <div class="col-2 justify-content-center">
-            <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
-        </div>
-        <div class="col-5">
-            <select class="form-select fs-6">
-                <option value="multiple">Multiple Choice</option>
-                <option value="checkbox">Checkbox</option>
-                <option value="dropDown">Drop Down</option>
-            </select>
-        </div>
-    </div>
-    <div class="row mb-1" id="optionsContainer">
-    </div>`;
-
-                questionsContainer.appendChild(questionTemplate);
-            }
-
-
-            addQuestionBtn.addEventListener("click", createQuestionTemplate);
-        });
+        function deleteOption(element) {
+            element.closest('.col-md-11').remove();
+        }
     </script>
-
 </body>
 
 </html>
