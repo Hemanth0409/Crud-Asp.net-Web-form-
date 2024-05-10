@@ -15,6 +15,15 @@ namespace Crud__Asp.net_Web_form_
     {
 
         /// <summary>
+        /// quizFormModuleId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlForm quizFormModuleId;
+
+        /// <summary>
         /// txtTitle control.
         /// </summary>
         /// <remarks>
@@ -31,5 +40,23 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlInputText txtDescription;
+
+        /// <summary>
+        /// formQuestion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText formQuestion;
+
+        /// <summary>
+        /// ddlQuestionType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlSelect ddlQuestionType;
     }
 }

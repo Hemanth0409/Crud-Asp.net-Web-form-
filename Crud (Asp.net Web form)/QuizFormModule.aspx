@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿<%@ Page Language="C#" AutoEventWireup="true" EnableSessionState="True" CodeBehind="QuizFormModule.aspx.cs" Inherits="Crud__Asp.net_Web_form_.QuizFormModule" %>
+
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head runat="server">
@@ -83,96 +85,143 @@
 </head>
 
 <body>
-    <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
-        <div class="row mb-3">
-            <div class="col">
-                <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server"
-                    onclick="showIcons('titleIcons')" />
-                <div id="titleIcons" class="dynamic-icon-container">
-                    <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
-                        onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
-                    <i id="iconTitleItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
-                        onclick="updateStyle('italic', 'txtTitle', 'iconTitleItalic')"></i>
-                    <i id="iconTitleUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
-                        onclick="updateStyle('underline', 'txtTitle', 'iconTitleUnderline')"></i>
-                    <i id="iconTitleRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
-                        onclick="removeStyle('txtTitle', 'iconTitleBold', 'iconTitleItalic', 'iconTitleUnderline')"></i>
+    <form id="quizFormModuleId" runat="server">
+        <div>
+            <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
+                <div class="row mb-3">
+                    <div class="col">
+                        <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server"
+                            onclick="showIcons('titleIcons')" />
+                        <div id="titleIcons" class="dynamic-icon-container">
+                            <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
+                                onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
+                            <i id="iconTitleItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
+                                onclick="updateStyle('italic', 'txtTitle', 'iconTitleItalic')"></i>
+                            <i id="iconTitleUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
+                                onclick="updateStyle('underline', 'txtTitle', 'iconTitleUnderline')"></i>
+                            <i id="iconTitleRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
+                                onclick="removeStyle('txtTitle', 'iconTitleBold', 'iconTitleItalic', 'iconTitleUnderline')"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input id="txtDescription" type="text" placeholder="Enter description..." class="fs-6 dynamic-input"
+                            runat="server" onclick="showIcons('descriptionIcons')" />
+                        <div id="descriptionIcons" class="dynamic-icon-container">
+                            <i id="iconDescriptionBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
+                                onclick="updateStyle('bold', 'txtDescription', 'iconDescriptionBold')"></i>
+                            <i id="iconDescriptionItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
+                                onclick="updateStyle('italic', 'txtDescription', 'iconDescriptionItalic')"></i>
+                            <i id="iconDescriptionUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
+                                onclick="updateStyle('underline', 'txtDescription', 'iconDescriptionUnderline')"></i>
+                            <i id="iconDescriptionRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
+                                onclick="removeStyle('txtDescription', 'iconDescriptionBold', 'iconDescriptionItalic', 'iconDescriptionUnderline')"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div id="questionTemplate" style="display: none;">
+                <div class="container mt-5 d-flex questionContainer">
+                    <div class="displayContainer col-12">
+                        <div class="row mb-2 justify-content-evenly">
+                            <div class="col-5" runat="server">
+                                <span class="question-number"></span>
+                                <input type="text" placeholder="Question" runat="server" class="fs-6 dynamic-input" id="formQuestion" />
+                            </div>
+                            <div class="col-2 justify-content-center">
+                                <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-5">
+                                <select id="ddlQuestionType" runat="server" class="form-select fs-6">
+                                    <option value="multiple">Multiple Choice</option>
+                                    <option value="checkbox">Checkbox</option>
+                                    <option value="dropDown">Drop Down</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span class="dropdown-value" id="dropdownValue"></span>
+                        <div class="row mb-1" id="optionsDisplay"></div>
+                    </div>
+                    <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
+                        <div class="row d-flex flex-column justify-content-center align-items-center gap-3">
+                            <div class="col-12 mt-4">
+                                <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" onclick="addQuestion()"></i>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
+                                    data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
+                                    data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
+                                    data-toggle="tooltip" data-placement="right" title="Add Title"></i>
+                            </div>
+                            <div class="col-12 mt-3 mb-2">
+                                <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
+                                    data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <asp:Button runat="server" class="btn-primary" Text="Submit" OnClick="submitFormClick" OnClientClick="return submitForm();" />
+            </div>
+            <asp:HiddenField ID="jsonDataField" runat="server" />
         </div>
-        <div class="row mb-3">
-            <div class="col">
-                <input id="txtDescription" type="text" placeholder="Enter description..." class="fs-6 dynamic-input"
-                    runat="server" onclick="showIcons('descriptionIcons')" />
-                <div id="descriptionIcons" class="dynamic-icon-container">
-                    <i id="iconDescriptionBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
-                        onclick="updateStyle('bold', 'txtDescription', 'iconDescriptionBold')"></i>
-                    <i id="iconDescriptionItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
-                        onclick="updateStyle('italic', 'txtDescription', 'iconDescriptionItalic')"></i>
-                    <i id="iconDescriptionUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
-                        onclick="updateStyle('underline', 'txtDescription', 'iconDescriptionUnderline')"></i>
-                    <i id="iconDescriptionRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
-                        onclick="removeStyle('txtDescription', 'iconDescriptionBold', 'iconDescriptionItalic', 'iconDescriptionUnderline')"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="questionTemplate" style="display: none;">
-        <div class="container mt-5 d-flex questionContainer">
-            <div class="displayContainer col-12">
-                <div class="row mb-2 justify-content-evenly">
-                    <div class="col-5">
-                        <span class="question-number"></span>
-                        <input type="text" placeholder="Question" class="fs-6 dynamic-input" />
-                    </div>
-                    <div class="col-2 justify-content-center">
-                        <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
-                    </div>
-                    <div class="col-5">
-                        <select class="form-select fs-6">
-                            <option value="multiple">Multiple Choice</option>
-                            <option value="checkbox">Checkbox</option>
-                            <option value="dropDown">Drop Down</option>
-                        </select>
-                    </div>
-                </div>
-                <span class="dropdown-value" id="dropdownValue"></span>
-
-                <div class="row mb-1" id="optionsDisplay">
-                </div>
-            </div>
-            <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
-                <div class="row d-flex flex-column justify-content-center align-items-center pt-3 pb-3">
-                    <div class="col-12 mb-3">
-                        <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" onclick="addQuestion()"></i>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
-                            data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
-                            data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
-                    </div>
-                    <div class="col-12">
-                        <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
-                            data-toggle="tooltip" data-placement="right" title="Add Title"></i>
-                    </div>
-                    <div class="col-12 mt-3">
-                        <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
-                            data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
+    </form>
+    <script type="text/javascript">
         var questionCount = 1;
 
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
             addQuestion();
         };
+
+        function collectFormData() {
+            var formData = {
+                title: document.getElementById('txtTitle').value,
+                description: document.getElementById('txtDescription').value,
+                questions: []
+            };
+
+            var questionContainers = document.querySelectorAll('.questionContainer');
+            var questionTexts = [];
+            questionContainers.forEach(function (questionContainer) {
+                var questionText = questionContainer.querySelector('.dynamic-input').value;
+
+                if (questionTexts.indexOf(questionText) === -1) {
+                    var question = {
+                        questionText: questionText,
+                        questionType: questionContainer.querySelector('.form-select').value,
+                        options: []
+                    };
+                    var optionInputs = questionContainer.querySelectorAll('.form-check-input');
+                    optionInputs.forEach(function (optionInput) {
+                        question.options.push({
+                            id: optionInput.id,
+                            text: optionInput.nextElementSibling.value
+                        });
+                    });
+
+                    formData.questions.push(question);
+                    questionTexts.push(questionText);
+                }
+            });
+
+            return formData;
+        }
+
+        function submitForm() {
+            var formData = collectFormData();
+            var jsonData = JSON.stringify(formData);
+            document.getElementById('<%= jsonDataField.ClientID %>').value = jsonData;
+            console.log(jsonData);
+        }
 
         function showIcons(iconDivId) {
             var allIconContainers = document.querySelectorAll('.dynamic-icon-container');
@@ -181,6 +230,7 @@
             });
             document.getElementById(iconDivId).classList.add('show');
         }
+
         function updateStyle(fontStyle, inputId, iconId) {
             var input = document.getElementById(inputId);
             var icon = document.getElementById(iconId);
@@ -201,6 +251,7 @@
                     break;
             }
         }
+
         function removeStyle(inputId, ...iconIds) {
             var input = document.getElementById(inputId);
             input.style.fontWeight = 'normal';
@@ -218,26 +269,23 @@
                 allToolBoxes.forEach(function (toolbox) {
                     toolbox.style.display = "none";
                 });
-
                 toolBoxDisplay.style.display = "block";
             }
         }
-
 
         function addQuestion() {
             var newQuestionContainer = document.createElement('div');
             newQuestionContainer.classList.add('questionContainer');
             newQuestionContainer.innerHTML = document.getElementById('questionTemplate').innerHTML;
             newQuestionContainer.querySelector('.question-number').textContent = "[" + questionCount + "].";
-
             var dropdowns = newQuestionContainer.querySelectorAll('.form-select');
             dropdowns.forEach(function (dropdown) {
                 dropdown.id += questionCount;
+
                 dropdown.addEventListener('change', function () {
                     var dropdownValue = this.value;
                     newQuestionContainer.querySelector('.dropdown-value').textContent = dropdownValue;
                 });
-
                 var initialDropdownValue = dropdown.options[dropdown.selectedIndex].text;
                 newQuestionContainer.querySelector('.dropdown-value').textContent = initialDropdownValue;
             });
@@ -250,7 +298,6 @@
                     alert("At least one template should remain.");
                 }
             });
-
             newQuestionContainer.addEventListener('click', function (event) {
                 var allToolBoxes = document.querySelectorAll('.toolBox');
                 allToolBoxes.forEach(function (toolbox) {
@@ -262,10 +309,8 @@
                 event.stopPropagation();
             });
 
-            // Reset optionCount for each new question template
             var optionCount = 1;
 
-            // Add one option by default for each new question template
             addNewOption(newQuestionContainer, optionCount);
 
             document.body.appendChild(newQuestionContainer);
@@ -292,24 +337,18 @@
                 if (existingOptions.length === 0) {
                     newOption.querySelector('.delete-icon').style.display = 'none';
                 }
-
                 optionsContainer.appendChild(newOption);
                 optionCount++;
 
-                // Hide plus icon in the previous option
                 if (existingOptions.length > 0) {
                     var previousOption = existingOptions[existingOptions.length - 1];
                     var plusIcon = previousOption.querySelector('.plus-icon');
                     if (plusIcon) {
                         plusIcon.style.display = 'none';
                     }
-
-                    // Display delete icon in the previous option
                     var deleteIcon = previousOption.querySelector('.delete-icon');
                     deleteIcon.style.display = 'inline-block';
                 }
-
-                // Add plus icon to the current option
                 var plusIcon = document.createElement('i');
                 plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
                 plusIcon.setAttribute('aria-hidden', 'true');
@@ -318,7 +357,8 @@
                     addNewOption(questionContainer, optionCount);
                 };
                 newOption.querySelector('.form-check').appendChild(plusIcon);
-            } else {
+            }
+            else {
                 console.error("Options container not found!");
             }
         }
@@ -328,5 +368,4 @@
         }
     </script>
 </body>
-
 </html>
