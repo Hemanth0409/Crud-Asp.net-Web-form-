@@ -7,9 +7,10 @@
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -134,9 +135,9 @@
                             </div>
                             <div class="col-5">
                                 <select id="ddlQuestionType" runat="server" class="form-select fs-6">
-                                    <option value="multiple">Multiple Choice</option>
-                                    <option value="checkbox">Checkbox</option>
-                                    <option value="dropDown">Drop Down</option>
+                                    <option value="1">Multiple Choice</option>
+                                    <option value="2">Checkbox</option>
+                                    <option value="3">Drop Down</option>
                                 </select>
                             </div>
                         </div>
@@ -192,29 +193,32 @@
             var questionContainers = document.querySelectorAll('.questionContainer');
             var questionTexts = [];
             questionContainers.forEach(function (questionContainer) {
-                var questionText = questionContainer.querySelector('.dynamic-input').value;
+                var questionText = questionContainer.querySelector('.dynamic-input').value.trim();
 
-                if (questionTexts.indexOf(questionText) === -1) {
-                    var question = {
-                        questionText: questionText,
-                        questionType: questionContainer.querySelector('.form-select').value,
-                        options: []
-                    };
-                    var optionInputs = questionContainer.querySelectorAll('.form-check-input');
-                    optionInputs.forEach(function (optionInput) {
-                        question.options.push({
-                            id: optionInput.id,
-                            text: optionInput.nextElementSibling.value
+                if (questionText !== '') { 
+                    if (questionTexts.indexOf(questionText) === -1) {
+                        var question = {
+                            questionText: questionText,
+                            questionType: questionContainer.querySelector('.form-select').value,
+                            options: []
+                        };
+                        var optionInputs = questionContainer.querySelectorAll('.form-check-input');
+                        optionInputs.forEach(function (optionInput) {
+                            question.options.push({
+                                id: optionInput.id,
+                                text: optionInput.nextElementSibling.value
+                            });
                         });
-                    });
 
-                    formData.questions.push(question);
-                    questionTexts.push(questionText);
+                        formData.questions.push(question);
+                        questionTexts.push(questionText);
+                    }
                 }
             });
 
             return formData;
         }
+
 
         function submitForm() {
             var formData = collectFormData();
@@ -328,7 +332,7 @@
                 newOption.classList.add('col-md-11', 'mt-3');
                 newOption.innerHTML = `
             <div class="form-check d-flex align-items-center">
-                <input class="form-check-input me-2" type="radio" id="option${optionCount}" />
+                <input class="form-check-input me-2" type="radio" id="${optionCount}" />
                 <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
                 <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
                 <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
