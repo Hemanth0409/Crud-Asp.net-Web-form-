@@ -87,97 +87,108 @@
 
 <body>
     <form id="quizFormModuleId" runat="server">
-        <div>
-            <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
-                <div class="row mb-3">
-                    <div class="col">
-                        <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server"
-                            onclick="showIcons('titleIcons')" />
-                        <div id="titleIcons" class="dynamic-icon-container">
-                            <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
-                                onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
-                            <i id="iconTitleItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
-                                onclick="updateStyle('italic', 'txtTitle', 'iconTitleItalic')"></i>
-                            <i id="iconTitleUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
-                                onclick="updateStyle('underline', 'txtTitle', 'iconTitleUnderline')"></i>
-                            <i id="iconTitleRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
-                                onclick="removeStyle('txtTitle', 'iconTitleBold', 'iconTitleItalic', 'iconTitleUnderline')"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input id="txtDescription" type="text" placeholder="Enter description..." class="fs-6 dynamic-input"
-                            runat="server" onclick="showIcons('descriptionIcons')" />
-                        <div id="descriptionIcons" class="dynamic-icon-container">
-                            <i id="iconDescriptionBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
-                                onclick="updateStyle('bold', 'txtDescription', 'iconDescriptionBold')"></i>
-                            <i id="iconDescriptionItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
-                                onclick="updateStyle('italic', 'txtDescription', 'iconDescriptionItalic')"></i>
-                            <i id="iconDescriptionUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
-                                onclick="updateStyle('underline', 'txtDescription', 'iconDescriptionUnderline')"></i>
-                            <i id="iconDescriptionRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
-                                onclick="removeStyle('txtDescription', 'iconDescriptionBold', 'iconDescriptionItalic', 'iconDescriptionUnderline')"></i>
-                        </div>
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
+        <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
+            <div class="row mb-3">
+                <div class="col">
+                    <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server" onchange="checkTitleExists(this.value)"
+                        onclick="showIcons('titleIcons')" />
+
+                    <div id="titleIcons" class="dynamic-icon-container">
+                        <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
+                            onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
+                        <i id="iconTitleItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
+                            onclick="updateStyle('italic', 'txtTitle', 'iconTitleItalic')"></i>
+                        <i id="iconTitleUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
+                            onclick="updateStyle('underline', 'txtTitle', 'iconTitleUnderline')"></i>
+                        <i id="iconTitleRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
+                            onclick="removeStyle('txtTitle', 'iconTitleBold', 'iconTitleItalic', 'iconTitleUnderline')"></i>
                     </div>
                 </div>
             </div>
-            <div id="questionTemplate" style="display: none;">
-                <div class="container mt-5 d-flex questionContainer">
-                    <div class="displayContainer col-12">
-                        <div class="row mb-2 justify-content-evenly">
-                            <div class="col-5" runat="server">
-                                <span class="question-number"></span>
-                                <input type="text" placeholder="Question" runat="server" class="fs-6 dynamic-input" id="formQuestion" />
-                            </div>
-                            <div class="col-2 justify-content-center">
-                                <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
-                            </div>
-                            <div class="col-5">
-                                <select id="ddlQuestionType" runat="server" class="form-select fs-6">
-                                    <option value="1">Multiple Choice</option>
-                                    <option value="2">Checkbox</option>
-                                    <option value="3">Drop Down</option>
-                                </select>
-                            </div>
-                        </div>
-                        <span class="dropdown-value" id="dropdownValue"></span>
-                        <div class="row mb-1" id="optionsDisplay"></div>
-                    </div>
-                    <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
-                        <div class="row d-flex flex-column justify-content-center align-items-center gap-3">
-                            <div class="col-12 mt-4">
-                                <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" onclick="addQuestion()"></i>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
-                                    data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
-                                    data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
-                                    data-toggle="tooltip" data-placement="right" title="Add Title"></i>
-                            </div>
-                            <div class="col-12 mt-3 mb-2">
-                                <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
-                                    data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
-                            </div>
-                        </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <input id="txtDescription" type="text" placeholder="Enter description..." class="fs-6 dynamic-input"
+                        runat="server" onclick="showIcons('descriptionIcons')" />
+                    <div id="descriptionIcons" class="dynamic-icon-container">
+                        <i id="iconDescriptionBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
+                            onclick="updateStyle('bold', 'txtDescription', 'iconDescriptionBold')"></i>
+                        <i id="iconDescriptionItalic" class="fas fa-italic dynamic-icon" aria-hidden="true"
+                            onclick="updateStyle('italic', 'txtDescription', 'iconDescriptionItalic')"></i>
+                        <i id="iconDescriptionUnderline" class="fas fa-underline dynamic-icon" aria-hidden="true"
+                            onclick="updateStyle('underline', 'txtDescription', 'iconDescriptionUnderline')"></i>
+                        <i id="iconDescriptionRemoveStyle" class="fas fa-eraser dynamic-icon" aria-hidden="true"
+                            onclick="removeStyle('txtDescription', 'iconDescriptionBold', 'iconDescriptionItalic', 'iconDescriptionUnderline')"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-12 mt-3">
-                <asp:Button runat="server" class="btn-primary" Text="Submit" OnClick="submitFormClick" OnClientClick="return submitForm();" />
-            </div>
-            <asp:HiddenField ID="jsonDataField" runat="server" />
         </div>
+        <div id="questionTemplate" style="display: none;">
+            <div class="container mt-5 d-flex questionContainer">
+                <div class="displayContainer col-12">
+                    <div class="row mb-2 justify-content-evenly">
+                        <div class="col-5" runat="server">
+                            <span class="question-number"></span>
+                            <input type="text" placeholder="Question" runat="server" class="fs-6 dynamic-input" id="formQuestion" />
+                        </div>
+                        <div class="col-2 justify-content-center">
+                            <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-5">
+                            <select id="ddlQuestionType" runat="server" class="form-select fs-6">
+                                <option value="1">Multiple Choice</option>
+                                <option value="2">Checkbox</option>
+                                <option value="3">Drop Down</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="dropdown-value" id="dropdownValue"></span>
+                    <div class="row mb-1" id="optionsDisplay"></div>
+                </div>
+                <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
+                    <div class="row d-flex flex-column justify-content-center align-items-center gap-3">
+                        <div class="col-12 mt-4">
+                            <i class="fa-solid fa-folder-plus fa-lg dynamic-icon" aria-hidden="true" onclick="addQuestion()"></i>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <i class="fa-solid fa-image fa-lg dynamic-icon" aria-hidden="true"
+                                data-toggle="tooltip" data-placement="right" title="Add Image for question"></i>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <i class="fa-solid fa-video fa-lg dynamic-icon" aria-hidden="true"
+                                data-toggle="tooltip" data-placement="right" title="Add Video for question"></i>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <i class="fa-solid fa-t fa-lg dynamic-icon" aria-hidden="true"
+                                data-toggle="tooltip" data-placement="right" title="Add Title"></i>
+                        </div>
+                        <div class="col-12 mt-3 mb-2">
+                            <i class="fa-solid fa-trash-can fa-lg dynamic-icon" aria-hidden="true"
+                                data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-3">
+            <asp:Button runat="server" class="btn-primary" Text="Submit" OnClick="submitFormClick" OnClientClick="return submitForm();" />
+        </div>
+        <asp:HiddenField ID="jsonDataField" runat="server" />
+
     </form>
     <script type="text/javascript">
         var questionCount = 1;
-
+        var titleExists = false;
+        function checkTitleExists(title) {
+            PageMethods.IsTitleExists(title, function (response) {
+                if (response) {
+                    alert("The title already exists. Please choose a different title.");
+                    document.getElementById('txtTitle').focus();
+                }
+            }, function (error) {
+                console.error("Error checking title existence: " + error.get_message());
+            });
+        }
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
             addQuestion();
@@ -194,8 +205,7 @@
             var questionTexts = [];
             questionContainers.forEach(function (questionContainer) {
                 var questionText = questionContainer.querySelector('.dynamic-input').value.trim();
-
-                if (questionText !== '') { 
+                if (questionText !== '') {
                     if (questionTexts.indexOf(questionText) === -1) {
                         var question = {
                             questionText: questionText,
@@ -209,22 +219,19 @@
                                 text: optionInput.nextElementSibling.value
                             });
                         });
-
                         formData.questions.push(question);
                         questionTexts.push(questionText);
                     }
                 }
             });
-
             return formData;
         }
-
 
         function submitForm() {
             var formData = collectFormData();
             var jsonData = JSON.stringify(formData);
-            document.getElementById('<%= jsonDataField.ClientID %>').value = jsonData;
             console.log(jsonData);
+            document.getElementById('<%= jsonDataField.ClientID %>').value = jsonData;
         }
 
         function showIcons(iconDivId) {
@@ -255,7 +262,7 @@
                     break;
             }
         }
-
+        
         function removeStyle(inputId, ...iconIds) {
             var input = document.getElementById(inputId);
             input.style.fontWeight = 'normal';
@@ -266,6 +273,7 @@
                 icon.classList.remove('active');
             });
         }
+
         function showToolBox(container) {
             var toolBoxDisplay = container.querySelector('.toolBox');
             if (toolBoxDisplay) {
@@ -275,8 +283,9 @@
                 });
                 toolBoxDisplay.style.display = "block";
             }
-        }
-
+        }  
+        
+        
         function addQuestion() {
             var newQuestionContainer = document.createElement('div');
             newQuestionContainer.classList.add('questionContainer');
@@ -285,7 +294,6 @@
             var dropdowns = newQuestionContainer.querySelectorAll('.form-select');
             dropdowns.forEach(function (dropdown) {
                 dropdown.id += questionCount;
-
                 dropdown.addEventListener('change', function () {
                     var dropdownValue = this.value;
                     newQuestionContainer.querySelector('.dropdown-value').textContent = dropdownValue;
@@ -307,19 +315,17 @@
                 allToolBoxes.forEach(function (toolbox) {
                     toolbox.style.display = "none";
                 });
-
                 var toolBoxDisplay = this.querySelector('.toolBox');
                 toolBoxDisplay.style.display = "block";
                 event.stopPropagation();
             });
-
             var optionCount = 1;
 
             addNewOption(newQuestionContainer, optionCount);
 
             document.body.appendChild(newQuestionContainer);
             questionCount++;
-
+            
             window.scrollTo(0, document.body.scrollHeight);
         }
 
@@ -337,10 +343,10 @@
                 <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
                 <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
             </div>`;
-
                 if (existingOptions.length === 0) {
                     newOption.querySelector('.delete-icon').style.display = 'none';
                 }
+
                 optionsContainer.appendChild(newOption);
                 optionCount++;
 
@@ -361,11 +367,11 @@
                     addNewOption(questionContainer, optionCount);
                 };
                 newOption.querySelector('.form-check').appendChild(plusIcon);
-            }
-            else {
+            } else {
                 console.error("Options container not found!");
             }
         }
+
 
         function deleteOption(element) {
             element.closest('.col-md-11').remove();

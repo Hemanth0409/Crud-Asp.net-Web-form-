@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,30 +12,21 @@ namespace Crud__Asp.net_Web_form_
 {
     public partial class QuizFormModule : System.Web.UI.Page
     {
-        protected System.Web.UI.WebControls.HiddenField jsonDataField;
+        protected HiddenField jsonDataField;
 
-        SqlConnection con = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
-        SqlCommand com;
-        static int currentquizModuleId;
-        static string quizModuleId;
-        string quizModuleName;
-        static string quizVideoId;
+        private static string connectionString = "Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True";
+        private static string quizModuleId;
+        private static string quizVideoId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 quizModuleId = Request.QueryString["QuizModuleId"];
-                quizModuleName = Request.QueryString["QuizModuleName"];
                 quizVideoId = Request.QueryString["QuizVideoModuleId"];
+                string quizModuleName = Request.QueryString["QuizModuleName"];
                 string quizVideoName = Request.QueryString["QuizVideoName"];
-                //if (quizModuleId != null && quizModuleName != null)
-                //{
-                //    currentquizModuleId = Convert.ToInt32(quizModuleId);
-                //    txtQuizModuleName.InnerText=quizModuleName;
-                //    txtQuizModuleID.InnerText = quizModuleId;
-                //    txtVideoId.InnerText = quizVideoId;
-                //    txtVideoModuleName.InnerText = quizVideoName;
-                //}
+
                 txtTitle.Style["font-weight"] = "bold";
                 txtDescription.Style["font-style"] = "bold";
             }
@@ -55,6 +45,7 @@ namespace Crud__Asp.net_Web_form_
             public string questionType { get; set; }
             public List<QuestionOption> options { get; set; }
         }
+
         public class QuestionOption
         {
             public string id { get; set; }
@@ -69,58 +60,116 @@ namespace Crud__Asp.net_Web_form_
         }
         protected void InsertQuizDataIntoDatabase(QuizFormData formData)
         {
-            string connectionString = "Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True";
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                if (quizModuleId != null && quizVideoId != null)
+                using (SqlTransaction transaction = con.BeginTransaction())
                 {
-                    foreach (Question question in formData.questions)
+                    try
                     {
-                        SqlCommand cmdQuestion = new SqlCommand("Sp_QuizFormModule", con);
-                        cmdQuestion.CommandType = CommandType.StoredProcedure;
-                        cmdQuestion.Parameters.AddWithValue("@Quiz_FormControlId", 0);
-                        cmdQuestion.Parameters.AddWithValue("@Quiz_ModuleId", Convert.ToInt32(quizModuleId));
-                        cmdQuestion.Parameters.AddWithValue("@Quiz_ModuleVideoId", Convert.ToInt32(quizVideoId));
-                        cmdQuestion.Parameters.AddWithValue("@IsRequired", false);
-                        cmdQuestion.Parameters.AddWithValue("@Quiz_FormQuestion", question.questionText);
-                        cmdQuestion.Parameters.AddWithValue("@Quiz_FieldType", Convert.ToInt32(question.questionType));
-                        cmdQuestion.Parameters.AddWithValue("@StatementType", "INSERT");
-
-                        cmdQuestion.ExecuteNonQuery();
-                        int quizFormControlId = GetInsertedQuizFormControlId(con);
-                        foreach (QuestionOption option in question.options)
+                        if (quizModuleId != null && quizVideoId != null)
                         {
-                            SqlCommand cmdOption = new SqlCommand("Sp_QuizOptionValues", con);
-                            cmdOption.CommandType = CommandType.StoredProcedure;
-                            cmdOption.Parameters.AddWithValue("@Quiz_formFieldValueId", 0);
-                            cmdOption.Parameters.AddWithValue("@Quiz_FormControlId", quizFormControlId);
-                            cmdOption.Parameters.AddWithValue("@Quiz_formFieldValueOptions", option.text);
-                            cmdOption.Parameters.AddWithValue("@IsCorrect", 0);
-                            cmdOption.Parameters.AddWithValue("@OptionFieldId", Convert.ToInt32(option.id));
-                            cmdOption.Parameters.AddWithValue("@StatementType", "INSERT");
-                            cmdOption.ExecuteNonQuery();
+                            int quizTitleId = InsertQuizTitle(con, transaction, formData.title, formData.description);
+
+                            foreach (var question in formData.questions)
+                            {
+                                int quizFormControlId = InsertQuizQuestion(con, transaction, quizTitleId, question);
+                                foreach (var option in question.options)
+                                {
+                                    InsertQuizOption(con, transaction, quizFormControlId, option);
+                                }
+                            }
                         }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("An error occurred while inserting data into the database.", ex);
                     }
                 }
             }
         }
 
-
-
-        protected int GetInsertedQuizFormControlId(SqlConnection con)
+        private int InsertQuizTitle(SqlConnection con, SqlTransaction transaction, string title, string description)
         {
-            SqlCommand cmd = new SqlCommand("SELECT max(Quiz_FormControlId) from Quiz_FormDataControl", con);
-            object result = cmd.ExecuteScalar();
-            if (result != null && result != DBNull.Value)
+            using (SqlCommand cmd = new SqlCommand("Sp_QuizFormTitle", con, transaction))
             {
-                return Convert.ToInt32(result);
-            }
-            else
-            {
-                throw new InvalidOperationException("SCOPE_IDENTITY() returned null.");
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Quiz_titleID", 0);
+                cmd.Parameters.AddWithValue("@Quiz_ModuleId", Convert.ToInt32(quizModuleId));
+                cmd.Parameters.AddWithValue("@Quiz_ModuleVideoId", Convert.ToInt32(quizVideoId));
+                cmd.Parameters.AddWithValue("@Quiz_Title", title);
+                cmd.Parameters.AddWithValue("@Quiz_Description", description);
+                cmd.Parameters.AddWithValue("@StatementType", "INSERT");
+                
+                cmd.ExecuteNonQuery();
+                return GetLastInsertedId(con, transaction, "Quiz_FormTitle", "Quiz_TitleId");
             }
         }
 
+        private int InsertQuizQuestion(SqlConnection con, SqlTransaction transaction, int quizTitleId, Question question)
+        {
+            using (SqlCommand cmd = new SqlCommand("Sp_QuizFormModule", con, transaction))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Quiz_FormControlId", 0);
+                cmd.Parameters.AddWithValue("@Quiz_ModuleId", Convert.ToInt32(quizModuleId));
+                cmd.Parameters.AddWithValue("@Quiz_ModuleVideoId", Convert.ToInt32(quizVideoId));
+                cmd.Parameters.AddWithValue("@IsRequired", false);
+                cmd.Parameters.AddWithValue("@Quiz_FormQuestion", question.questionText);
+                cmd.Parameters.AddWithValue("@Quiz_FieldType", Convert.ToInt32(question.questionType));
+                cmd.Parameters.AddWithValue("@Quiz_TitleId", quizTitleId);
+                cmd.Parameters.AddWithValue("@StatementType", "INSERT");
+                
+                cmd.ExecuteNonQuery();
+                return GetLastInsertedId(con,transaction, "Quiz_FormDataControl", "Quiz_FormControlId");
+            }
+        }
+ 
+        private void InsertQuizOption(SqlConnection con, SqlTransaction transaction, int quizFormControlId, QuestionOption option)
+        {
+            using (SqlCommand cmd = new SqlCommand("Sp_QuizOptionValues", con, transaction))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Quiz_formFieldValueId", 0);
+                cmd.Parameters.AddWithValue("@Quiz_FormControlId", quizFormControlId);
+                cmd.Parameters.AddWithValue("@Quiz_formFieldValueOptions", option.text);
+                cmd.Parameters.AddWithValue("@IsCorrect", 0);
+                cmd.Parameters.AddWithValue("@OptionFieldId", Convert.ToInt32(option.id));
+                cmd.Parameters.AddWithValue("@StatementType", "INSERT");
+           
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public static bool IsTitleExists(string title)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Quiz_FormTitle WHERE Quiz_Title = @Quiz_Title", con))
+                {
+                    cmd.Parameters.AddWithValue("@Quiz_Title", title);
+                    int count = (int)cmd.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
+        private int GetLastInsertedId(SqlConnection con, SqlTransaction transaction, string tableName, string columnName)
+        {
+            using (SqlCommand cmd = new SqlCommand($"SELECT MAX({columnName}) FROM {tableName}", con, transaction))
+            {
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    return Convert.ToInt32(result);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unable to retrieve last inserted ID.");
+                }
+            }
+        }
     }
 }
