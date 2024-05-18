@@ -71,7 +71,7 @@
                             switchIframeSrc();
                         </script>
                         <div class="col">
-                            <iframe id="ContentIFrame" frameborder="0" name="switch-frame" style="height: 1000px; width: 98%" class="switch-target" src="BlankPage.aspx"></iframe>
+                            <iframe id="ContentIFrame" frameborder="0" name="switch-frame" style="height: 100%; width: 100%" class="switch-target" src="BlankPage.aspx"></iframe>
                         </div>
                     </div>
                 </div>

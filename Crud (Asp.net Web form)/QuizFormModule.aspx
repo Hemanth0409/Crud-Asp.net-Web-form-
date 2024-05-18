@@ -15,7 +15,9 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
         .displayContainer {
@@ -23,6 +25,7 @@
             border-radius: 5px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: hidden;
         }
 
         .toolBox {
@@ -82,6 +85,47 @@
             .sidebar.show {
                 right: 0;
             }
+
+        input[type="checkbox"] {
+            position: relative;
+            width: 40px;
+            height: 25px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: red;
+            outline: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            box-shadow: inset 0 0 5px rgb(0 0 0 / 50%);
+        }
+
+        .questionContainer.checked {
+            border-color: #00ed64;
+            box-shadow: 0 0 20px rgba(0, 237, 100, 0.5);
+            
+        }
+
+        input[type="checkbox"]::before {
+            content: "";
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #fff;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: 0.5s;
+        }
+
+        input[type="checkbox"]:checked::before {
+            transform: translateX(100%);
+            background: #fff;
+            right: 4px;
+        }
+
+        input[type="checkbox"]:checked {
+            background: #00ed64;
+        }
     </style>
 </head>
 
@@ -93,7 +137,6 @@
                 <div class="col">
                     <input id="txtTitle" type="text" value="title" class="fs-2 dynamic-input" runat="server" onchange="checkTitleExists(this.value)"
                         onclick="showIcons('titleIcons')" />
-
                     <div id="titleIcons" class="dynamic-icon-container">
                         <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
                             onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
@@ -126,15 +169,19 @@
         <div id="questionTemplate" style="display: none;">
             <div class="container mt-5 d-flex questionContainer">
                 <div class="displayContainer col-12">
-                    <div class="row mb-2 justify-content-evenly">
-                        <div class="col-5" runat="server">
-                            <span class="question-number"></span>
+                    <div class="row mb-2 justify-content-between align-items-center">
+                        <div class="col-4 d-flex align-items-center">
+                            <span class="question-number me-2"></span>
                             <input type="text" placeholder="Question" runat="server" class="fs-6 dynamic-input" id="formQuestion" />
                         </div>
-                        <div class="col-2 justify-content-center">
+                        <div class="col-2 text-center">
                             <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
                         </div>
-                        <div class="col-5">
+                        <div class="col-3 text-center">
+                            <label>Required</label>
+                            <input type="checkbox" class="required-toggle" onclick="toggleClick(this)" />
+                        </div>
+                        <div class="col-3">
                             <select id="ddlQuestionType" runat="server" class="form-select fs-6">
                                 <option value="1">Multiple Choice</option>
                                 <option value="2">Checkbox</option>
@@ -144,6 +191,11 @@
                     </div>
                     <span class="dropdown-value" id="dropdownValue"></span>
                     <div class="row mb-1" id="optionsDisplay"></div>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-primary ms-4 mt-5 add-answer" onclick="addAnswer(this.closest('.questionContainer'))">Add Answer</button>
+                        <button class="btn btn-sm btn-primary ms-auto mt-5 done" style="visibility: hidden" onclick="postCorrectAnswer(this.closest('.questionContainer'))">Done</button>
+                        <button class="btn btn-sm btn-primary ms-2 mt-5 cancel" style="visibility: hidden" onclick="cancelClick(this.closest('.questionContainer'))">Cancel</button>
+                    </div>
                 </div>
                 <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
                     <div class="row d-flex flex-column justify-content-center align-items-center gap-3">
@@ -167,6 +219,7 @@
                                 data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
                         </div>
                     </div>
+                    <p></p>
                 </div>
             </div>
         </div>
@@ -189,6 +242,7 @@
                 console.error("Error checking title existence: " + error.get_message());
             });
         }
+
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
             addQuestion();
@@ -200,7 +254,6 @@
                 description: document.getElementById('txtDescription').value,
                 questions: []
             };
-
             var questionContainers = document.querySelectorAll('.questionContainer');
             var questionTexts = [];
             questionContainers.forEach(function (questionContainer) {
@@ -210,6 +263,7 @@
                         var question = {
                             questionText: questionText,
                             questionType: questionContainer.querySelector('.form-select').value,
+                            isRequired: questionContainer.querySelector('.required-toggle').checked,
                             options: []
                         };
                         var optionInputs = questionContainer.querySelectorAll('.form-check-input');
@@ -225,6 +279,18 @@
                 }
             });
             return formData;
+        }
+
+        function toggleClick(checkbox) {
+            const isChecked = checkbox.checked;
+            const questionContainer = checkbox.closest('.questionContainer');
+            questionContainer.querySelector('input[type="text"]').required = isChecked;
+            if (isChecked) {
+                questionContainer.classList.add('checked');
+            } else {
+                questionContainer.classList.remove('checked');
+            }
+            console.log(`Checkbox is ${isChecked ? 'checked' : 'unchecked'}`);
         }
 
         function submitForm() {
@@ -262,7 +328,7 @@
                     break;
             }
         }
-        
+
         function removeStyle(inputId, ...iconIds) {
             var input = document.getElementById(inputId);
             input.style.fontWeight = 'normal';
@@ -283,9 +349,8 @@
                 });
                 toolBoxDisplay.style.display = "block";
             }
-        }  
-        
-        
+        }
+
         function addQuestion() {
             var newQuestionContainer = document.createElement('div');
             newQuestionContainer.classList.add('questionContainer');
@@ -301,7 +366,6 @@
                 var initialDropdownValue = dropdown.options[dropdown.selectedIndex].text;
                 newQuestionContainer.querySelector('.dropdown-value').textContent = initialDropdownValue;
             });
-
             var deleteIcon = newQuestionContainer.querySelector('.fa-trash-can');
             deleteIcon.addEventListener('click', function () {
                 if (document.querySelectorAll('.questionContainer').length > 1) {
@@ -310,6 +374,7 @@
                     alert("At least one template should remain.");
                 }
             });
+
             newQuestionContainer.addEventListener('click', function (event) {
                 var allToolBoxes = document.querySelectorAll('.toolBox');
                 allToolBoxes.forEach(function (toolbox) {
@@ -325,7 +390,7 @@
 
             document.body.appendChild(newQuestionContainer);
             questionCount++;
-            
+
             window.scrollTo(0, document.body.scrollHeight);
         }
 
@@ -338,7 +403,7 @@
                 newOption.classList.add('col-md-11', 'mt-3');
                 newOption.innerHTML = `
             <div class="form-check d-flex align-items-center">
-                <input class="form-check-input me-2" type="radio" id="${optionCount}" />
+                <input class="form-check-input me-2" title="fill the option if correct" type="radio" id="${optionCount}" disabled />
                 <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
                 <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
                 <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
@@ -346,7 +411,6 @@
                 if (existingOptions.length === 0) {
                     newOption.querySelector('.delete-icon').style.display = 'none';
                 }
-
                 optionsContainer.appendChild(newOption);
                 optionCount++;
 
@@ -368,14 +432,67 @@
                 };
                 newOption.querySelector('.form-check').appendChild(plusIcon);
             } else {
-                console.error("Options container not found!");
+                console.error("Options container not found!.");
             }
         }
 
+        function addAnswer(container) {
+            var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+            addAnswerBtn.style.display = 'none';
+
+            var optionIcons = container.querySelectorAll('.form-check .dynamic-icon');
+            optionIcons.forEach(function (icon) {
+                icon.style.display = 'none';
+            });
+
+            var displayDoneBtn = container.querySelector('.btn-primary.done');
+            displayDoneBtn.style.visibility = 'visible';
+            var displayDoneBtn = container.querySelector('.btn-primary.cancel');
+            displayDoneBtn.style.visibility = 'visible';
+
+            var options = container.querySelectorAll('.form-check-input');
+            options.forEach(function (option) {
+                option.disabled = false;
+            });
+
+            var inputFields = container.querySelectorAll('.form-control');
+            inputFields.forEach(function (inputField) {
+                inputField.classList.add('required');
+            });
+        }
+
+        function postCorrectAnswer(container) {
+        }
+
+        function cancelClick(container) {
+            var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+            addAnswerBtn.style.visibility = 'visible';
+
+            var optionIcons = container.querySelectorAll('.form-check .dynamic-icon');
+            optionIcons.forEach(function (icon) {
+                icon.style.visibility = 'visible';
+            });
+
+            var displayDoneBtn = container.querySelector('.btn-primary.done');
+            displayDoneBtn.style.display = 'none';
+            var displayDoneBtn = container.querySelector('.btn-primary.cancel');
+            displayDoneBtn.style.display = 'none';
+
+            var options = container.querySelectorAll('.form-check-input');
+            options.forEach(function (option) {
+                option.disabled = true;
+            });
+
+            var inputFields = container.querySelectorAll('.form-control');
+            inputFields.forEach(function (inputField) {
+                inputField.classList.add('required');
+            });
+        }
 
         function deleteOption(element) {
             element.closest('.col-md-11').remove();
         }
+
     </script>
 </body>
 </html>

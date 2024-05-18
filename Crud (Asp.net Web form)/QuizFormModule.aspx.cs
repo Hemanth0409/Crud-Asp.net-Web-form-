@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Windows.Interop;
 
 namespace Crud__Asp.net_Web_form_
 {
@@ -43,6 +45,8 @@ namespace Crud__Asp.net_Web_form_
         {
             public string questionText { get; set; }
             public string questionType { get; set; }
+            public bool isRequired { get; set; }
+
             public List<QuestionOption> options { get; set; }
         }
 
@@ -66,11 +70,10 @@ namespace Crud__Asp.net_Web_form_
                 using (SqlTransaction transaction = con.BeginTransaction())
                 {
                     try
-                    {
+                    { 
                         if (quizModuleId != null && quizVideoId != null)
                         {
                             int quizTitleId = InsertQuizTitle(con, transaction, formData.title, formData.description);
-
                             foreach (var question in formData.questions)
                             {
                                 int quizFormControlId = InsertQuizQuestion(con, transaction, quizTitleId, question);
@@ -102,7 +105,7 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@Quiz_Title", title);
                 cmd.Parameters.AddWithValue("@Quiz_Description", description);
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
-                
+
                 cmd.ExecuteNonQuery();
                 return GetLastInsertedId(con, transaction, "Quiz_FormTitle", "Quiz_TitleId");
             }
@@ -116,17 +119,17 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@Quiz_FormControlId", 0);
                 cmd.Parameters.AddWithValue("@Quiz_ModuleId", Convert.ToInt32(quizModuleId));
                 cmd.Parameters.AddWithValue("@Quiz_ModuleVideoId", Convert.ToInt32(quizVideoId));
-                cmd.Parameters.AddWithValue("@IsRequired", false);
+                cmd.Parameters.AddWithValue("@IsRequired", question.isRequired);
                 cmd.Parameters.AddWithValue("@Quiz_FormQuestion", question.questionText);
                 cmd.Parameters.AddWithValue("@Quiz_FieldType", Convert.ToInt32(question.questionType));
                 cmd.Parameters.AddWithValue("@Quiz_TitleId", quizTitleId);
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
-                
+
                 cmd.ExecuteNonQuery();
-                return GetLastInsertedId(con,transaction, "Quiz_FormDataControl", "Quiz_FormControlId");
+                return GetLastInsertedId(con, transaction, "Quiz_FormDataControl", "Quiz_FormControlId");
             }
         }
- 
+
         private void InsertQuizOption(SqlConnection con, SqlTransaction transaction, int quizFormControlId, QuestionOption option)
         {
             using (SqlCommand cmd = new SqlCommand("Sp_QuizOptionValues", con, transaction))
@@ -138,7 +141,6 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@IsCorrect", 0);
                 cmd.Parameters.AddWithValue("@OptionFieldId", Convert.ToInt32(option.id));
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
-           
                 cmd.ExecuteNonQuery();
             }
         }
