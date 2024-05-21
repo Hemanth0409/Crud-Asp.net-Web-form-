@@ -70,7 +70,7 @@ namespace Crud__Asp.net_Web_form_
                 using (SqlTransaction transaction = con.BeginTransaction())
                 {
                     try
-                    { 
+                    {
                         if (quizModuleId != null && quizVideoId != null)
                         {
                             int quizTitleId = InsertQuizTitle(con, transaction, formData.title, formData.description);

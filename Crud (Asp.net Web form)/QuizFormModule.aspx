@@ -102,7 +102,6 @@
         .questionContainer.checked {
             border-color: #00ed64;
             box-shadow: 0 0 20px rgba(0, 237, 100, 0.5);
-            
         }
 
         input[type="checkbox"]::before {
@@ -170,18 +169,18 @@
             <div class="container mt-5 d-flex questionContainer">
                 <div class="displayContainer col-12">
                     <div class="row mb-2 justify-content-between align-items-center">
-                        <div class="col-4 d-flex align-items-center">
+                        <div class="col-4 d-flex align-items-center" id="questionContainer">
                             <span class="question-number me-2"></span>
                             <input type="text" placeholder="Question" runat="server" class="fs-6 dynamic-input" id="formQuestion" />
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col-2 text-center" id="questionImageContainer">
                             <i class="fas fa-upload dynamic-icon" aria-hidden="true"></i>
                         </div>
-                        <div class="col-3 text-center">
+                        <div class="col-3 text-center" id="toggleContainer">
                             <label>Required</label>
                             <input type="checkbox" class="required-toggle" onclick="toggleClick(this)" />
                         </div>
-                        <div class="col-3">
+                        <div class="col-3" id="fieldTypeContainer">
                             <select id="ddlQuestionType" runat="server" class="form-select fs-6">
                                 <option value="1">Multiple Choice</option>
                                 <option value="2">Checkbox</option>
@@ -193,8 +192,7 @@
                     <div class="row mb-1" id="optionsDisplay"></div>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-sm btn-primary ms-4 mt-5 add-answer" onclick="addAnswer(this.closest('.questionContainer'))">Add Answer</button>
-                        <button class="btn btn-sm btn-primary ms-auto mt-5 done" style="visibility: hidden" onclick="postCorrectAnswer(this.closest('.questionContainer'))">Done</button>
-                        <button class="btn btn-sm btn-primary ms-2 mt-5 cancel" style="visibility: hidden" onclick="cancelClick(this.closest('.questionContainer'))">Cancel</button>
+                        <button class="btn btn-sm btn-primary ms-auto mt-5 done" style="visibility: hidden" onclick="confirmOptionClick(this.closest('.questionContainer'))">Done</button>
                     </div>
                 </div>
                 <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
@@ -219,7 +217,6 @@
                                 data-toggle="tooltip" data-placement="right" title="Delete Question"></i>
                         </div>
                     </div>
-                    <p></p>
                 </div>
             </div>
         </div>
@@ -230,8 +227,10 @@
 
     </form>
     <script type="text/javascript">
+
         var questionCount = 1;
         var titleExists = false;
+
         function checkTitleExists(title) {
             PageMethods.IsTitleExists(title, function (response) {
                 if (response) {
@@ -245,6 +244,7 @@
 
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
+          
             addQuestion();
         };
 
@@ -350,61 +350,24 @@
                 toolBoxDisplay.style.display = "block";
             }
         }
-
-        function addQuestion() {
-            var newQuestionContainer = document.createElement('div');
-            newQuestionContainer.classList.add('questionContainer');
-            newQuestionContainer.innerHTML = document.getElementById('questionTemplate').innerHTML;
-            newQuestionContainer.querySelector('.question-number').textContent = "[" + questionCount + "].";
-            var dropdowns = newQuestionContainer.querySelectorAll('.form-select');
-            dropdowns.forEach(function (dropdown) {
-                dropdown.id += questionCount;
-                dropdown.addEventListener('change', function () {
-                    var dropdownValue = this.value;
-                    newQuestionContainer.querySelector('.dropdown-value').textContent = dropdownValue;
-                });
-                var initialDropdownValue = dropdown.options[dropdown.selectedIndex].text;
-                newQuestionContainer.querySelector('.dropdown-value').textContent = initialDropdownValue;
-            });
-            var deleteIcon = newQuestionContainer.querySelector('.fa-trash-can');
-            deleteIcon.addEventListener('click', function () {
-                if (document.querySelectorAll('.questionContainer').length > 1) {
-                    newQuestionContainer.remove();
-                } else {
-                    alert("At least one template should remain.");
-                }
-            });
-
-            newQuestionContainer.addEventListener('click', function (event) {
-                var allToolBoxes = document.querySelectorAll('.toolBox');
-                allToolBoxes.forEach(function (toolbox) {
-                    toolbox.style.display = "none";
-                });
-                var toolBoxDisplay = this.querySelector('.toolBox');
-                toolBoxDisplay.style.display = "block";
-                event.stopPropagation();
-            });
-            var optionCount = 1;
-
-            addNewOption(newQuestionContainer, optionCount);
-
-            document.body.appendChild(newQuestionContainer);
-            questionCount++;
-
-            window.scrollTo(0, document.body.scrollHeight);
-        }
+        let questionCount = 1;
 
         function addNewOption(questionContainer, optionCount) {
-            var optionsContainer = questionContainer.querySelector('.row#optionsDisplay');
-            var existingOptions = optionsContainer.querySelectorAll('.col-md-11');
+            const optionsContainer = questionContainer.querySelector('.row#optionsDisplay');
+            const existingOptions = optionsContainer.querySelectorAll('.col-md-11');
 
             if (optionsContainer) {
-                var newOption = document.createElement('div');
+                const newOption = document.createElement('div');
                 newOption.classList.add('col-md-11', 'mt-3');
+
+                const dropdownValue = questionContainer.querySelector('.form-select').value;
+                const inputFieldType = dropdownValue === '1' ? 'radio' : 'checkbox';
+                const questionId = questionContainer.getAttribute('data-question-id');
+
                 newOption.innerHTML = `
             <div class="form-check d-flex align-items-center">
-                <input class="form-check-input me-2" title="fill the option if correct" type="radio" id="${optionCount}" disabled />
-                <input type="text" class="form-control border-bottom flex-grow-1" id="option${optionCount}Input" value="Option ${optionCount}" />
+                <input class="form-check-input me-2 option-checkbox" name="question${questionId}" title="fill the option if correct" type="${inputFieldType}" id="${optionCount}" onchange="toggleOptionBackground(this)">
+                <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionCount}Input" value="Option ${optionCount}" />
                 <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
                 <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
             </div>`;
@@ -413,17 +376,21 @@
                 }
                 optionsContainer.appendChild(newOption);
                 optionCount++;
+                const optionInputs = newOption.querySelectorAll('.form-check-input');
+                optionInputs.forEach(function (optionInput) {
+                    optionInput.disabled = true;
+                });
 
                 if (existingOptions.length > 0) {
-                    var previousOption = existingOptions[existingOptions.length - 1];
-                    var plusIcon = previousOption.querySelector('.plus-icon');
+                    const previousOption = existingOptions[existingOptions.length - 1];
+                    const plusIcon = previousOption.querySelector('.plus-icon');
                     if (plusIcon) {
                         plusIcon.style.display = 'none';
                     }
-                    var deleteIcon = previousOption.querySelector('.delete-icon');
+                    const deleteIcon = previousOption.querySelector('.delete-icon');
                     deleteIcon.style.display = 'inline-block';
                 }
-                var plusIcon = document.createElement('i');
+                const plusIcon = document.createElement('i');
                 plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
                 plusIcon.setAttribute('aria-hidden', 'true');
                 plusIcon.setAttribute('title', 'Add options');
@@ -436,62 +403,255 @@
             }
         }
 
-        function addAnswer(container) {
-            var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
-            addAnswerBtn.style.display = 'none';
+        function confirmOptionClick(container) {
+            const addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+            addAnswerBtn.style.display = 'block';
 
-            var optionIcons = container.querySelectorAll('.form-check .dynamic-icon');
-            optionIcons.forEach(function (icon) {
-                icon.style.display = 'none';
-            });
+            const requiredToggle = container.querySelector("#toggleContainer");
+            requiredToggle.style.display = 'block';
 
-            var displayDoneBtn = container.querySelector('.btn-primary.done');
-            displayDoneBtn.style.visibility = 'visible';
-            var displayDoneBtn = container.querySelector('.btn-primary.cancel');
-            displayDoneBtn.style.visibility = 'visible';
+            const questionImage = container.querySelector("#questionImageContainer");
+            questionImage.style.display = 'block';
 
-            var options = container.querySelectorAll('.form-check-input');
-            options.forEach(function (option) {
-                option.disabled = false;
-            });
+            const fieldType = container.querySelector("#fieldTypeContainer");
+            fieldType.style.display = 'block';
 
-            var inputFields = container.querySelectorAll('.form-control');
-            inputFields.forEach(function (inputField) {
-                inputField.classList.add('required');
-            });
-        }
+            const questionContainer = container.querySelector("#questionContainer");
+            questionContainer.classList = "d-flex col-4";
 
-        function postCorrectAnswer(container) {
-        }
+            const doneBtn = container.querySelector('.btn-primary.done');
+            doneBtn.style.visibility = 'hidden';
+            doneBtn.style.display = 'none';
 
-        function cancelClick(container) {
-            var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
-            addAnswerBtn.style.visibility = 'visible';
-
-            var optionIcons = container.querySelectorAll('.form-check .dynamic-icon');
-            optionIcons.forEach(function (icon) {
-                icon.style.visibility = 'visible';
-            });
-
-            var displayDoneBtn = container.querySelector('.btn-primary.done');
-            displayDoneBtn.style.display = 'none';
-            var displayDoneBtn = container.querySelector('.btn-primary.cancel');
-            displayDoneBtn.style.display = 'none';
-
-            var options = container.querySelectorAll('.form-check-input');
+            const options = container.querySelectorAll('.form-check-input');
             options.forEach(function (option) {
                 option.disabled = true;
             });
 
-            var inputFields = container.querySelectorAll('.form-control');
+            const inputFields = container.querySelectorAll('.form-control');
+            inputFields.forEach(function (inputField) {
+                inputField.classList.remove('required');
+            });
+        }
+
+        function addAnswer(container) {
+            const addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+            addAnswerBtn.style.display = 'none';
+
+            const doneBtn = container.querySelector('.btn-primary.done');
+            doneBtn.style.visibility = 'visible';
+            doneBtn.style.display = 'block';
+
+            const questionImage = container.querySelector("#questionImageContainer");
+            questionImage.style.display = 'none';
+
+            const requiredToggle = container.querySelector("#toggleContainer");
+            requiredToggle.style.display = 'none';
+
+            const questionContainer = container.querySelector("#questionContainer");
+            questionContainer.classList = "d-flex col-10";
+
+            const fieldType = container.querySelector("#fieldTypeContainer");
+            fieldType.style.display = 'none';
+
+            const options = container.querySelectorAll('.form-check-input');
+            options.forEach(function (option) {
+                option.disabled = false;
+            });
+
+            const inputFields = container.querySelectorAll('.form-control');
             inputFields.forEach(function (inputField) {
                 inputField.classList.add('required');
             });
+            const ddlQuestionType = container.querySelector('.form-select');
+            const selectedValue = ddlQuestionType.value;
+            console.log("Selected question type:", selectedValue);
+        }
+
+        function addQuestion() {
+            const newQuestionContainer = document.createElement('div');
+            newQuestionContainer.classList.add('questionContainer');
+            newQuestionContainer.setAttribute('data-question-id', questionCount);
+            newQuestionContainer.innerHTML = document.getElementById('questionTemplate').innerHTML;
+            newQuestionContainer.querySelector('.question-number').textContent = "[" + questionCount + "].";
+            const dropdowns = newQuestionContainer.querySelectorAll('.form-select');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.id += questionCount;
+                dropdown.addEventListener('change', function () {
+                    updateOptionTypes(newQuestionContainer, dropdown.value);
+                });
+                const initialDropdownValue = dropdown.options[dropdown.selectedIndex].value;
+                updateOptionTypes(newQuestionContainer, initialDropdownValue);
+            });
+            const deleteIcon = newQuestionContainer.querySelector('.fa-trash-can');
+            deleteIcon.addEventListener('click', function () {
+                if (document.querySelectorAll('.questionContainer').length > 1) {
+                    newQuestionContainer.remove();
+                } else {
+                    alert("At least one template should remain.");
+                }
+            });
+
+            newQuestionContainer.addEventListener('click', function (event) {
+                const allToolBoxes = document.querySelectorAll('.toolBox');
+                allToolBoxes.forEach(function (toolbox) {
+                    toolbox.style.display = "none";
+                });
+                const toolBoxDisplay = this.querySelector('.toolBox');
+                toolBoxDisplay.style.display = "block";
+                event.stopPropagation();
+            });
+            let optionCount = 1;
+
+            addNewOption(newQuestionContainer, optionCount);
+
+            document.body.appendChild(newQuestionContainer);
+            questionCount++;
+
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function updateOptionTypes(questionContainer, selectedValue) {
+            const inputFieldType = selectedValue === '1' ? 'radio' : 'checkbox';
+            const questionId = questionContainer.getAttribute('data-question-id');
+            const options = questionContainer.querySelectorAll('.option-checkbox');
+            options.forEach(function (option) {
+                option.type = inputFieldType;
+                option.name = "question" + questionId;  
+            });
+        }
+
+
+        function toggleOptionBackground(checkbox) {
+            var inputField = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                inputField.style.borderColor = 'lightgreen';
+                inputField.style.boxShadow = '0 0 5px lightgreen';
+            } else {
+                inputField.style.borderColor = '';
+                inputField.style.boxShadow = '';
+            }
         }
 
         function deleteOption(element) {
             element.closest('.col-md-11').remove();
         }
+
+        //function addNewOption(questionContainer, optionCount) {
+        //    var optionsContainer = questionContainer.querySelector('.row#optionsDisplay');
+        //    var existingOptions = optionsContainer.querySelectorAll('.col-md-11');
+
+        //    if (optionsContainer) {
+        //        var newOption = document.createElement('div');
+        //        newOption.classList.add('col-md-11', 'mt-3');
+
+        //        var dropdownValue = questionContainer.querySelector('.form-select').value;
+
+        //        var inputFieldType = dropdownValue === '1' ? 'radio' : 'checkbox';
+        //        console.log(inputFieldType);
+        //        newOption.innerHTML = `
+        //    <div class="form-check d-flex align-items-center">
+        //        <input class="form-check-input me-2 option-checkbox" title="fill the option if correct" type="${inputFieldType}" id="${optionCount}" onchange="toggleOptionBackground(this)">
+        //        <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionCount}Input" value="Option ${optionCount}" />
+        //        <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
+        //        <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
+        //    </div>`;
+        //        if (existingOptions.length === 0) {
+        //            newOption.querySelector('.delete-icon').style.display = 'none';
+        //        }
+        //        optionsContainer.appendChild(newOption);
+        //        optionCount++;
+        //        var optionInputs = newOption.querySelectorAll('.form-check-input');
+        //        optionInputs.forEach(function (optionInput) {
+        //            optionInput.disabled = true;
+        //        });
+
+        //        if (existingOptions.length > 0) {
+        //            var previousOption = existingOptions[existingOptions.length - 1];
+        //            var plusIcon = previousOption.querySelector('.plus-icon');
+        //            if (plusIcon) {
+        //                plusIcon.style.display = 'none';
+        //            }
+        //            var deleteIcon = previousOption.querySelector('.delete-icon');
+        //            deleteIcon.style.display = 'inline-block';
+        //        }
+        //        var plusIcon = document.createElement('i');
+        //        plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
+        //        plusIcon.setAttribute('aria-hidden', 'true');
+        //        plusIcon.setAttribute('title', 'Add options');
+        //        plusIcon.onclick = function () {
+        //            addNewOption(questionContainer, optionCount);
+        //        };
+        //        newOption.querySelector('.form-check').appendChild(plusIcon);
+        //    } else {
+        //        console.error("Options container not found!.");
+        //    }
+        //}
+
+        //function confirmOptionClick(container) {
+        //    var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+        //    addAnswerBtn.style.display = 'block';
+
+        //    var requiredToggle = container.querySelector("#toggleContainer");
+        //    requiredToggle.style.display = 'block';
+
+        //    var questionImage = container.querySelector("#questionImageContainer");
+        //    questionImage.style.display = 'block';
+
+        //    var fieldType = container.querySelector("#fieldTypeContainer");
+        //    fieldType.style.display = 'block';
+
+        //    var questionContainer = container.querySelector("#questionContainer");
+        //    questionContainer.classList = "d-flex col-4";
+
+        //    var doneBtn = container.querySelector('.btn-primary.done');
+        //    doneBtn.style.visibility = 'hidden';
+        //    doneBtn.style.display = 'none';
+
+        //    var options = container.querySelectorAll('.form-check-input');
+        //    options.forEach(function (option) {
+        //        option.disabled = true;
+        //    });
+
+        //    var inputFields = container.querySelectorAll('.form-control');
+        //    inputFields.forEach(function (inputField) {
+        //        inputField.classList.remove('required');
+        //    });
+        //}
+
+        //function addAnswer(container) {
+        //    var addAnswerBtn = container.querySelector('.btn-primary.add-answer');
+        //    addAnswerBtn.style.display = 'none';
+
+        //    var doneBtn = container.querySelector('.btn-primary.done');
+        //    doneBtn.style.visibility = 'visible';
+        //    doneBtn.style.display = 'block';
+
+        //    var questionImage = container.querySelector("#questionImageContainer");
+        //    questionImage.style.display = 'none';
+
+        //    var requiredToggle = container.querySelector("#toggleContainer");
+        //    requiredToggle.style.display = 'none';
+
+        //    var questionContainer = container.querySelector("#questionContainer");
+        //    questionContainer.classList = "d-flex col-10";
+
+        //    var fieldType = container.querySelector("#fieldTypeContainer");
+        //    fieldType.style.display = 'none';
+
+        //    var options = container.querySelectorAll('.form-check-input');
+        //    options.forEach(function (option) {
+        //        option.disabled = false;
+        //    });
+
+        //    var inputFields = container.querySelectorAll('.form-control');
+        //    inputFields.forEach(function (inputField) {
+        //        inputField.classList.add('required');
+        //    });
+        //    var ddlQuestionType = container.querySelector('.form-select');
+        //    var selectedValue = ddlQuestionType.value;
+        //    console.log("Selected question type:", selectedValue);
+        //}
 
     </script>
 </body>
