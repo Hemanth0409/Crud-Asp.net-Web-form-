@@ -452,7 +452,6 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
         }
-
         protected void AddDataButton_Click(object sender, EventArgs e)
         {
 

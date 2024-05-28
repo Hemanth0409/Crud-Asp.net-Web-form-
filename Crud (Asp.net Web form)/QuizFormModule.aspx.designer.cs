@@ -24,15 +24,6 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlForm quizFormModuleId;
 
         /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-
-        /// <summary>
         /// txtTitle control.
         /// </summary>
         /// <remarks>
@@ -51,13 +42,49 @@ namespace Crud__Asp.net_Web_form_
         protected global::System.Web.UI.HtmlControls.HtmlInputText txtDescription;
 
         /// <summary>
+        /// hiddenJsonData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hiddenJsonData;
+
+        /// <summary>
+        /// questionPlaceholder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl questionPlaceholder;
+
+        /// <summary>
+        /// questionTemplate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl questionTemplate;
+
+        /// <summary>
         /// formQuestion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText formQuestion;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea formQuestion;
+
+        /// <summary>
+        /// isRequiredId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputCheckBox isRequiredId;
 
         /// <summary>
         /// ddlQuestionType control.
@@ -67,5 +94,14 @@ namespace Crud__Asp.net_Web_form_
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlSelect ddlQuestionType;
+
+        /// <summary>
+        /// optionsDisplay control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl optionsDisplay;
     }
 }

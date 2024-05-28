@@ -15,6 +15,7 @@ namespace Crud__Asp.net_Web_form_
     public partial class Login : System.Web.UI.Page
     {
         SqlConnection conn = new SqlConnection("Data Source=DESKTOP-J6THV9C\\SQL2019EXP;Initial Catalog=Aspnet;Integrated Security=True");
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -25,44 +26,49 @@ namespace Crud__Asp.net_Web_form_
 
         protected void Login_Click(object sender, EventArgs e)
         {
-            conn.Open();
-            SqlCommand cmd = new SqlCommand("Exec LoginProcedureAccess @userName='" + UserNameCheck.Value + "',@Password='" + PassswordCheck.Value + "'", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.Read())
+            int UserId = LoginCheck(UserNameCheck.Value, PassswordCheck.Value);
+            if (UserId != 0)
             {
+                Session["CurrentUserId"] = UserId;
                 ScriptManager.RegisterStartupScript(this, this.GetType(),
-                "alert",
-                "alert('Logged in Sucessfully');window.location ='Index.aspx';",
-                true);
-
+                    "alert",
+                    "alert('Logged in Successfully');window.location ='Index.aspx';",
+                    true);
             }
             else
             {
-                Label4.Text = ("Login Failed");
-            }
-            conn.Close();
-
-            int UserId= LoginCheck(UserNameCheck.Value, PassswordCheck.Value);
-            if (UserId != 0)
-            {
-                Session["CurrentUserId"]= UserId;
+                ScriptManager.RegisterStartupScript(this, this.GetType(),
+                    "alert",
+                    "alert('Login Failed');",
+                    true);
             }
         }
 
-        public int LoginCheck(string UserName,string Password)
+        public int LoginCheck(string UserName, string Password)
         {
-            conn.Open();
-            SqlCommand com = new SqlCommand();
-            com.Connection = conn;
-            com.CommandType = CommandType.StoredProcedure;
-            com.CommandText = "Sp_LoginProcedure";
-            com.Parameters.Add("UserName", SqlDbType.VarChar,25).Value = UserName;
-            com.Parameters.Add("Password", SqlDbType.VarChar,25).Value = Password;
-            com.Parameters.Add("UserId", SqlDbType.Int).Direction = ParameterDirection.Output;
-            com.ExecuteNonQuery();           
-            conn.Close();
-            return Convert.ToInt32(com.Parameters["UserId"].Value);
+            int userId = 0;
+            try
+            {
+                conn.Open();
+                SqlCommand com = new SqlCommand();
+                com.Connection = conn;
+                com.CommandType = CommandType.StoredProcedure;
+                com.CommandText = "Sp_LoginProcedure";
+                com.Parameters.Add("UserName", SqlDbType.VarChar, 25).Value = UserName;
+                com.Parameters.Add("Password", SqlDbType.VarChar, 25).Value = Password;
+                com.Parameters.Add("UserId", SqlDbType.Int).Direction = ParameterDirection.Output;
+                com.ExecuteNonQuery();
+                userId = Convert.ToInt32(com.Parameters["UserId"].Value);
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return userId;
         }
     }
 }

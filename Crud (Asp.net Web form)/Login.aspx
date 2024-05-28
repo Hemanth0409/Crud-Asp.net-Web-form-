@@ -8,8 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-    <title></title>
-
+    <title>Login</title>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -25,11 +24,11 @@
                                         <p class="text-dark-50 mb-5">Please enter your login and password!</p>
                                         <div class="form-outline form-white mb-4">
                                             <input type="text" id="UserNameCheck" runat="server" class="form-control form-control-lg" />
-                                            <label class="form-label" for="typeEmailX">User Name</label>
+                                            <label class="form-label" for="UserNameCheck">User Name</label>
                                         </div>
                                         <div class="form-outline form-white mb-4">
                                             <input type="password" id="PassswordCheck" runat="server" class="form-control form-control-lg" />
-                                            <label class="form-label" for="typePasswordX">Password</label>
+                                            <label class="form-label" for="PassswordCheck">Password</label>
                                         </div>
 
                                         <asp:Label ID="Label4" runat="server" Font-Size="X-Large"></asp:Label>
