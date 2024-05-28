@@ -553,6 +553,7 @@
                 option.disabled = false;
             });
 
+
             const inputFields = container.querySelectorAll('.form-control');
             inputFields.forEach(function (inputField) {
                 inputField.classList.add('required');
