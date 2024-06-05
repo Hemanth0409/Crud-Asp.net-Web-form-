@@ -130,11 +130,11 @@
 
 <body>
     <form id="quizFormModuleId" runat="server">
+        <asp:ScriptManager ID="script" runat="server" EnablePageMethods="true" />
         <div class="container displayContainer" id="titleDisplayContainer" onclick="showToolBox(this)">
             <div class="row mb-3">
                 <div class="col">
-                    <input id="txtTitle" type="text" value="title" placeholder="title " class="fs-2 dynamic-input" runat="server" onchange="checkTitleExists(this.value)"
-                        onclick="showIcons('titleIcons')" />
+                    <input id="txtTitle" type="text" value="title" placeholder="title " class="fs-2 dynamic-input" runat="server" onclick="showIcons('titleIcons')" />
                     <div id="titleIcons" class="dynamic-icon-container">
                         <i id="iconTitleBold" class="fas fa-bold dynamic-icon active" aria-hidden="true"
                             onclick="updateStyle('bold', 'txtTitle', 'iconTitleBold')"></i>
@@ -168,7 +168,6 @@
             <asp:HiddenField ID="hiddenJsonData" runat="server" />
         </div>
         <div id="questionPlaceholder" runat="server"></div>
-
         <div id="questionTemplate" runat="server" style="display: none;">
             <div class="container mt-5 d-flex questionContainer">
                 <div class="displayContainer col-12">
@@ -195,8 +194,8 @@
                     <span class="dropdown-value" id="dropdownValue"></span>
                     <div class="row mb-1" runat="server" id="optionsDisplay"></div>
                     <div class="d-flex align-items-center">
-                        <button class="btn btn-sm btn-primary ms-4 mt-5 add-answer" onclick="addAnswer(this.closest('.questionContainer'))">Add Answer</button>
-                        <button class="btn btn-sm btn-primary ms-auto mt-5 done" style="visibility: hidden" onclick="confirmOptionClick(this.closest('.questionContainer'))">Done</button>
+                        <button class="btn btn-sm btn-primary ms-4 mt-5 add-answer" onclick="toggleAnswerMode(this.closest('.questionContainer'), 'addAnswer')">Answer Key </button>
+                        <button class="btn btn-sm btn-primary ms-auto mt-5 done" style="visibility: hidden" onclick="toggleAnswerMode(this.closest('.questionContainer'), 'confirmOption')">Done</button>
                     </div>
                 </div>
                 <div class="container toolBox ms-3 col-md-2" id="toolBoxDisplay">
@@ -230,26 +229,14 @@
         <asp:HiddenField ID="jsonDataField" runat="server" />
     </form>
     <script type="text/javascript">
-
+        let questionCount = 1;
         var titleExists = false;
-
-        function checkTitleExists(title) {
-            PageMethods.IsTitleExists(title, function (response) {
-                if (response) {
-                    alert("The title already exists. Please choose a different title.");
-                    document.getElementById('txtTitle').focus();
-                }
-            }, function (error) {
-                console.error("Error checking title existence: " + error.get_message());
-            });
-        }
-
         window.onload = function () {
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
-            addQuestion();
             var jsonData = document.getElementById('<%= hiddenJsonData.ClientID %>').value;
             try {
                 var responseData = JSON.parse(jsonData);
+                console.log(responseData);
                 if (responseData && responseData.questions) {
                     document.getElementById('txtTitle').value = responseData.title;
                     document.getElementById('txtDescription').value = responseData.description;
@@ -260,40 +247,59 @@
                         var newQuestionContainer = document.createElement('div');
                         newQuestionContainer.classList.add('questionContainer');
                         newQuestionContainer.setAttribute('data-question-id', index + 1);
+                        newQuestionContainer.setAttribute('data-isrequired', question.isRequired.toString());
                         newQuestionContainer.innerHTML = document.getElementById('questionTemplate').innerHTML;
                         newQuestionContainer.querySelector('.question-number').textContent = "[" + (index + 1) + "].";
-
                         newQuestionContainer.querySelector('.dynamic-input').value = question.questionText;
 
                         var requiredToggle = newQuestionContainer.querySelector('.required-toggle');
                         requiredToggle.checked = question.isRequired;
+                        setTimeout(() => {
+                            if (requiredToggle.checked) {
+                                toggleClick(requiredToggle);
+                            }
+                        }, 0);
 
                         var fieldTypeDropdown = newQuestionContainer.querySelector('.form-select');
                         fieldTypeDropdown.value = question.questionType;
-
                         const inputFieldType = fieldTypeDropdown.value === '1' ? 'radio' : 'checkbox';
                         var optionsDisplay = newQuestionContainer.querySelector('#optionsDisplay');
                         question.options.forEach(function (option, optionIndex) {
                             var newOption = document.createElement('div');
                             newOption.classList.add('col-md-11', 'mt-3');
                             newOption.innerHTML = `
-                    <div class="form-check d-flex align-items-center">
-                        <input class="form-check-input me-2 option-checkbox" name="question${index + 1}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionIndex + 1}" onchange="toggleOptionBackground(this)">
-                        <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionIndex + 1}Input" value="${option.text}" />
-                        <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
-                        <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
-                    </div>`;
+                            <div class="form-check d-flex align-items-center">
+                                <input class="form-check-input me-2 option-checkbox" name="question${index + 1}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionIndex + 1}" onchange="toggleOptionBackground(this)" disabled  ${option.isCorrect ? 'checked' : ''}>
+                                <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionIndex + 1}Input" value="${option.text}" > 
+                                <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
+                                <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
+                            </div>`;
                             optionsDisplay.appendChild(newOption);
                         });
                         questionPlaceholder.appendChild(newQuestionContainer);
                     });
+                    questionCount = responseData.questions.length + 1; 
                 } else {
                     console.error("responseData or responseData.questions is undefined");
                 }
             } catch (error) {
                 console.error("Error parsing JSON data:", error);
             }
+            addQuestion();
         };
+
+
+        function checkTitleExists(title) {
+            PageMethods.IsTitleExists(title, function (response) {
+                if (response) {
+                    alert("The title already exists.Please choose a different title.");
+                    document.getElementById('txtTitle').focus();
+                }
+            }, function (error) {
+                console.error("Error checking title existence: " + error.get_message());
+            });
+
+        }
 
         function collectFormData() {
             var formData = {
@@ -303,21 +309,25 @@
             };
             var questionContainers = document.querySelectorAll('.questionContainer');
             var questionTexts = [];
-            questionContainers.forEach(function (questionContainer) {
+            questionContainers.forEach(function (questionContainer, index) {
                 var questionText = questionContainer.querySelector('.dynamic-input').value.trim();
                 if (questionText !== '') {
                     if (questionTexts.indexOf(questionText) === -1) {
                         var question = {
                             questionText: questionText,
+                            questionIndex: index,
                             questionType: questionContainer.querySelector('.form-select').value,
                             isRequired: questionContainer.querySelector('.required-toggle').checked,
                             options: []
                         };
                         var optionInputs = questionContainer.querySelectorAll('.form-check-input');
                         optionInputs.forEach(function (optionInput) {
+                            let optionIdOld = optionInput.id;
+                            optionId = optionIdOld.replace("checkbox", "");
                             question.options.push({
-                                id: optionInput.id,
-                                text: optionInput.nextElementSibling.value
+                                id: optionId,
+                                text: optionInput.nextElementSibling.value,
+                                isCorrect: optionInput.checked
                             });
                         });
                         formData.questions.push(question);
@@ -325,14 +335,28 @@
                     }
                 }
             });
+            console.log(formData);
             return formData;
         }
 
         function toggleClick(checkbox) {
+            if (!checkbox) {
+                console.error('toggleClick called with a null checkbox');
+                return;
+            }
             const isChecked = checkbox.checked;
             const questionContainer = checkbox.closest('.questionContainer');
+            if (!questionContainer) {
+                console.error('toggleClick could not find the questionContainer');
+                return;
+            }
             const isRequired = questionContainer.dataset.isrequired === 'True';
-            questionContainer.querySelector('input[type="text"]').required = isRequired && isChecked;
+            const textInput = questionContainer.querySelector('input[type="text"]');
+            if (textInput) {
+                textInput.required = isRequired && isChecked;
+            } else {
+                console.error('toggleClick could not  find the text input in questionContainer');
+            }
             if (isChecked) {
                 questionContainer.classList.add('checked');
             } else {
@@ -341,18 +365,32 @@
         }
 
         function submitForm() {
+            var title = document.getElementById('txtTitle').value;
+            var description = document.getElementById('txtDescription').value;
+            if (title.trim() === '') {
+                alert("Please fill the title field.");
+                document.getElementById('txtTitle').focus();
+                return false;
+            }
+            if (description.trim() === '') {
+                alert("Please fill the description field.");
+                document.getElementById('txtDescription').focus();
+                return false;
+            }
+            console.log("");
             var formData = collectFormData();
             var jsonData = JSON.stringify(formData);
             console.log(jsonData);
-            document.getElementById('<%= jsonDataField.ClientID %>').value = jsonData;
+            document.getElementById('<%= jsonDataField.ClientID  %>').value = jsonData;
+            return true;
         }
 
         function showIcons(iconDivId) {
             var allIconContainers = document.querySelectorAll('.dynamic-icon-container');
             allIconContainers.forEach(function (container) {
                 container.classList.remove('show');
-                console.log(allIconContainers + 'Removed');
             });
+            console.log(allIconContainers + 'Removed');
             document.getElementById(iconDivId).classList.add('show');
         }
 
@@ -399,55 +437,6 @@
             }
         }
 
-        let questionCount = 1;
-
-        function addNewOption(questionContainer, optionCount) {
-            const optionsContainer = questionContainer.querySelector('.row#optionsDisplay');
-            const existingOptions = optionsContainer.querySelectorAll('.col-md-11');
-            if (optionsContainer) {
-                const newOption = document.createElement('div');
-                newOption.classList.add('col-md-11', 'mt-3');
-                const dropdownValue = questionContainer.querySelector('.form-select').value;
-                const inputFieldType = dropdownValue === '1' ? 'radio' : 'checkbox';
-                const questionId = questionContainer.getAttribute('data-question-id');
-                newOption.innerHTML = `
-            <div class="form-check d-flex align-items-center">
-                <input class="form-check-input me-2 option-checkbox" name="question${questionId}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionCount}" onchange="toggleOptionBackground(this)">
-                <input type="text" class="form-control border-bottom flex-grow-1 option-input"   id="option${optionCount}Input" value="Option ${optionCount}" />
-                <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
-                <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
-            </div>`;
-                if (existingOptions.length === 0) {
-                    newOption.querySelector('.delete-icon').style.display = 'none';
-                }
-                optionsContainer.appendChild(newOption);
-                optionCount++;
-                const optionInputs = newOption.querySelectorAll('.form-check-input');
-                optionInputs.forEach(function (optionInput) {
-                    optionInput.disabled = true;
-                });
-                if (existingOptions.length > 0) {
-                    const previousOption = existingOptions[existingOptions.length - 1];
-                    const plusIcon = previousOption.querySelector('.plus-icon');
-                    if (plusIcon) {
-                        plusIcon.style.display = 'none';
-                    }
-                    const deleteIcon = previousOption.querySelector('.delete-icon');
-                    deleteIcon.style.display = 'inline-block';
-                }
-                const plusIcon = document.createElement('i');
-                plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
-                plusIcon.setAttribute('aria-hidden', 'true');
-                plusIcon.setAttribute('title', 'Add options');
-                plusIcon.onclick = function () {
-                    addNewOption(questionContainer, optionCount);
-                };
-                newOption.querySelector('.form-check').appendChild(plusIcon);
-            } else {
-                console.error("Options container not found!.");
-            }
-        }
-
         function addQuestion() {
             const newQuestionContainer = document.createElement('div');
             newQuestionContainer.classList.add('questionContainer');
@@ -471,7 +460,6 @@
                     alert("At least one template should remain.");
                 }
             });
-
             newQuestionContainer.addEventListener('click', function (event) {
                 const allToolBoxes = document.querySelectorAll('.toolBox');
                 allToolBoxes.forEach(function (toolbox) {
@@ -481,13 +469,85 @@
                 toolBoxDisplay.style.display = "block";
                 event.stopPropagation();
             });
-
             let optionCount = 1;
-            addNewOption(newQuestionContainer, optionCount);
+            const optionsContainer = newQuestionContainer.querySelector('.row#optionsDisplay');
+            addNewOption(optionsContainer, optionCount, newQuestionContainer);
             document.body.appendChild(newQuestionContainer);
             questionCount++;
             window.scrollTo(0, document.body.scrollHeight);
         }
+
+        function addNewOption(optionsContainer, optionCount, questionContainer) {
+            const newOption = document.createElement('div');
+            newOption.classList.add('col-md-11', 'mt-3');
+            const dropdownValue = questionContainer.querySelector('.form-select').value;
+            const inputFieldType = dropdownValue === '1' ? 'radio' : 'checkbox';
+            const questionId = questionContainer.getAttribute('data-question-id');
+            newOption.innerHTML = `
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input me-2 option-checkbox" name="question${questionId}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionCount}" onchange="toggleOptionBackground(this)">
+                <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionCount}Input" value="Option ${optionCount}" />
+                <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
+                <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
+            </div>`;
+            if (optionsContainer.children.length === 0) {
+                newOption.querySelector('.delete-icon').style.display = 'none';
+            }
+            optionsContainer.appendChild(newOption);
+            optionCount++;
+            const optionInputs = newOption.querySelectorAll('.form-check-input');
+            optionInputs.forEach(function (optionInput) {
+                optionInput.disabled = true;
+            });
+            if (optionsContainer.children.length > 1) {
+                const previousOption = optionsContainer.children[optionsContainer.children.length - 2];
+                const plusIcon = previousOption.querySelector('.plus-icon');
+                if (plusIcon) {
+                    plusIcon.style.display = 'none';
+                }
+                const deleteIcon = previousOption.querySelector('.delete-icon');
+                deleteIcon.style.display = 'inline-block';
+            }
+
+            const plusIcon = document.createElement('i');
+            plusIcon.classList.add('fas', 'fa-plus-circle', 'ms-2', 'dynamic-icon', 'plus-icon');
+            plusIcon.setAttribute('aria-hidden', 'true');
+            plusIcon.setAttribute('title', 'Add options');
+            plusIcon.onclick = function () {
+                addNewOption(optionsContainer, optionCount, questionContainer);
+            };
+            newOption.querySelector('.form-check').appendChild(plusIcon);
+        }
+
+        function toggleOptionBackground(option) {
+            const container = option.closest('.questionContainer');
+            const inputFieldType = option.type;
+
+            if (inputFieldType === 'radio') {
+                const radios = container.querySelectorAll('input[type="radio"]');
+                radios.forEach(function (rb) {
+                    var inputField = rb.nextElementSibling;
+                    rb.checked = false;
+                    inputField.style.borderColor = '';
+                    inputField.style.boxShadow = '';
+                });
+
+                option.checked = true;
+                var inputField = option.nextElementSibling;
+                inputField.style.borderColor = 'lightgreen';
+                inputField.style.boxShadow = '0 0 10px lightgreen';
+            } else if (inputFieldType === 'checkbox') {
+                var inputField = option.nextElementSibling;
+                if (option.checked) {
+                    inputField.style.borderColor = 'lightgreen';
+                    inputField.style.boxShadow = '0 0 10px lightgreen';
+                } else {
+                    inputField.style.borderColor = '';
+                    inputField.style.boxShadow = '';
+                }
+            }
+        }
+
 
         function updateOptionTypes(questionContainer, selectedValue) {
             const inputFieldType = selectedValue === '1' ? 'radio' : 'checkbox';
@@ -499,80 +559,70 @@
             });
         }
 
-        function confirmOptionClick(container) {
+        function toggleAnswerMode(container, mode) {
             const addAnswerBtn = container.querySelector('.btn-primary.add-answer');
-            addAnswerBtn.style.display = 'block';
-
-            const requiredToggle = container.querySelector("#toggleContainer");
-            requiredToggle.style.display = 'block';
-
-            const questionImage = container.querySelector("#questionImageContainer");
-            questionImage.style.display = 'block';
-
-            const fieldType = container.querySelector("#fieldTypeContainer");
-            fieldType.style.display = 'block';
-
-            const questionContainer = container.querySelector("#questionContainer");
-            questionContainer.classList = "d-flex col-4";
-
             const doneBtn = container.querySelector('.btn-primary.done');
-            doneBtn.style.visibility = 'hidden basic';
-            doneBtn.style.display = 'none';
+            const questionImage = container.querySelector("#questionImageContainer");
+            const requiredToggle = container.querySelector("#toggleContainer");
+            const questionContainer = container.querySelector("#questionContainer");
+            const fieldType = container.querySelector("#fieldTypeContainer");
+            const addIcons = container.querySelectorAll('.plus-icon');
+            const deleteIcons = container.querySelectorAll('.delete-icon');
+            const imageIcons = container.querySelectorAll('.image-icon');
+
+            switch (mode) {
+                case 'addAnswer':
+                    addAnswerBtn.style.display = 'none';
+                    doneBtn.style.visibility = 'visible';
+                    doneBtn.style.display = 'block';
+                    questionImage.style.display = 'none';
+                    requiredToggle.style.display = 'none';
+                    questionContainer.classList = "d-flex col-10";
+                    fieldType.style.display = 'none';
+                    imageIcons.forEach(icon => icon.style.visibility = 'hidden');
+                    deleteIcons.forEach(icon => icon.style.visibility = 'hidden');
+                    addIcons.forEach(icon => icon.style.visibility = 'hidden');
+                    break;
+                case 'confirmOption':
+                    addAnswerBtn.style.display = 'block';
+                    doneBtn.style.visibility = 'hidden';
+                    doneBtn.style.display = 'none';
+                    questionImage.style.display = 'block';
+                    requiredToggle.style.display = 'block';
+                    questionContainer.classList = "d-flex col-4";
+                    fieldType.style.display = 'block';
+                    imageIcons.forEach(icon => icon.style.visibility = 'visible');
+                    deleteIcons.forEach(icon => icon.style.visibility = 'visible');
+                    addIcons.forEach(icon => icon.style.visibility = 'visible');
+
+                    const checkedInputs = container.querySelectorAll('.form-check-input:checked');
+                    checkedInputs.forEach(input => {
+                        console.log(`Checked input value: ${input.value}`);
+                    });
+                    break;
+                default:
+                    break;
+            }
 
             const options = container.querySelectorAll('.form-check-input');
             options.forEach(function (option) {
-                option.disabled = true;
+                option.disabled = mode === 'confirmOption';
             });
 
             const inputFields = container.querySelectorAll('.form-control');
             inputFields.forEach(function (inputField) {
-                inputField.classList.remove('required');
-            });
-        }
-
-        function addAnswer(container) {
-            const addAnswerBtn = container.querySelector('.btn-primary.add-answer');
-            addAnswerBtn.style.display = 'none';
-            const doneBtn = container.querySelector('.btn-primary.done');
-            doneBtn.style.visibility = 'visible';
-            doneBtn.style.display = 'block';
-            const questionImage = container.querySelector("#questionImageContainer");
-            questionImage.style.display = 'none';
-
-            const requiredToggle = container.querySelector("#toggleContainer");
-            requiredToggle.style.display = 'none';
-
-            const questionContainer = container.querySelector("#questionContainer");
-            questionContainer.classList = "d-flex col-10";
-
-            const fieldType = container.querySelector("#fieldTypeContainer");
-            fieldType.style.display = 'none';
-
-            const options = container.querySelectorAll('.form-check-input');
-            options.forEach(function (option) {
-                option.disabled = false;
+                if (mode === 'addAnswer') {
+                    inputField.classList.add('required');
+                } else {
+                    inputField.classList.remove('required');
+                }
             });
 
-
-            const inputFields = container.querySelectorAll('.form-control');
-            inputFields.forEach(function (inputField) {
-                inputField.classList.add('required');
-            });
             const ddlQuestionType = container.querySelector('.form-select');
             const selectedValue = ddlQuestionType.value;
             console.log("Selected question type:", selectedValue);
         }
 
-        function toggleOptionBackground(checkbox) {
-            var inputField = checkbox.nextElementSibling;
-            if (checkbox.checked) {
-                inputField.style.borderColor = 'lightgreen';
-                inputField.style.boxShadow = '0 0 5px lightgreen';
-            } else {
-                inputField.style.borderColor = '';
-                inputField.style.boxShadow = '';
-            }
-        }
 
         function deleteOption(element) {
             element.closest('.col-md-11').remove();

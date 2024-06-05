@@ -28,6 +28,7 @@ namespace Crud__Asp.net_Web_form_
 
         public class Question
         {
+            public int questionIndex { get; set; }
             public string questionText { get; set; }
             public string questionType { get; set; }
             public bool isRequired { get; set; }
@@ -38,6 +39,7 @@ namespace Crud__Asp.net_Web_form_
         {
             public string id { get; set; }
             public string text { get; set; }
+            public bool isCorrect { get; set; }
         }
 
         protected HiddenField jsonDataField;
@@ -108,8 +110,9 @@ namespace Crud__Asp.net_Web_form_
                             question.options.Add(new QuestionOption
                             {
                                 id = reader["optionFieldId"].ToString(),
-                                text = reader["Quiz_formFieldValueOptions"].ToString()
-                            });
+                                text = reader["Quiz_formFieldValueOptions"].ToString(),
+                                isCorrect = Convert.ToBoolean(reader["isCorrect"])
+                            }) ;
                         }
                     }
                 }
@@ -167,12 +170,10 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@Quiz_Title", title);
                 cmd.Parameters.AddWithValue("@Quiz_Description", description);
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
-
                 cmd.ExecuteNonQuery();
                 return GetLastInsertedId(con, transaction, "Quiz_FormTitle", "Quiz_TitleId");
             }
         }
-
         private int InsertQuizQuestion(SqlConnection con, SqlTransaction transaction, int quizTitleId, Question question)
         {
             using (SqlCommand cmd = new SqlCommand("Sp_QuizFormModule", con, transaction))
@@ -185,13 +186,12 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@Quiz_FormQuestion", question.questionText);
                 cmd.Parameters.AddWithValue("@Quiz_FieldType", Convert.ToInt32(question.questionType));
                 cmd.Parameters.AddWithValue("@Quiz_TitleId", quizTitleId);
+                cmd.Parameters.AddWithValue("@Quiz_QuestionIndex", question.questionIndex);
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
-
                 cmd.ExecuteNonQuery();
                 return GetLastInsertedId(con, transaction, "Quiz_FormDataControl", "Quiz_FormControlId");
             }
         }
-
         private void InsertQuizOption(SqlConnection con, SqlTransaction transaction, int quizFormControlId, QuestionOption option)
         {
             using (SqlCommand cmd = new SqlCommand("Sp_QuizOptionValues", con, transaction))
@@ -200,7 +200,7 @@ namespace Crud__Asp.net_Web_form_
                 cmd.Parameters.AddWithValue("@Quiz_formFieldValueId", 0);
                 cmd.Parameters.AddWithValue("@Quiz_FormControlId", quizFormControlId);
                 cmd.Parameters.AddWithValue("@Quiz_formFieldValueOptions", option.text);
-                cmd.Parameters.AddWithValue("@IsCorrect", 0);
+                cmd.Parameters.AddWithValue("@IsCorrect", option.isCorrect);
                 cmd.Parameters.AddWithValue("@OptionFieldId", Convert.ToInt32(option.id));
                 cmd.Parameters.AddWithValue("@StatementType", "INSERT");
                 cmd.ExecuteNonQuery();
