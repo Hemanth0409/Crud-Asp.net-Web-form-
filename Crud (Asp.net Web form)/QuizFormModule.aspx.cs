@@ -219,7 +219,6 @@ namespace Crud__Asp.net_Web_form_
                 }
             }
         }
-
         private int GetLastInsertedId(SqlConnection con, SqlTransaction transaction, string tableName, string columnName)
         {
             using (SqlCommand cmd = new SqlCommand($"SELECT MAX({columnName}) FROM {tableName}", con, transaction))

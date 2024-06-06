@@ -235,6 +235,7 @@
             updateStyle('bold', 'txtTitle', 'iconTitleBold');
             var jsonData = document.getElementById('<%= hiddenJsonData.ClientID %>').value;
             try {
+                
                 var responseData = JSON.parse(jsonData);
                 console.log(responseData);
                 if (responseData && responseData.questions) {
@@ -267,18 +268,24 @@
                         question.options.forEach(function (option, optionIndex) {
                             var newOption = document.createElement('div');
                             newOption.classList.add('col-md-11', 'mt-3');
+                            console.log(option.isCorrect);
                             newOption.innerHTML = `
-                            <div class="form-check d-flex align-items-center">
-                                <input class="form-check-input me-2 option-checkbox" name="question${index + 1}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionIndex + 1}" onchange="toggleOptionBackground(this)" disabled  ${option.isCorrect ? 'checked' : ''}>
-                                <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionIndex + 1}Input" value="${option.text}" > 
-                                <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
-                                <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
-                            </div>`;
+                    <div class="form-check d-flex align-items-center">
+                        <input class="form-check-input me-2 option-checkbox" name="question${index + 1}" title="fill the option if correct" type="${inputFieldType}" id="checkbox${optionIndex + 1}" onchange="toggleOptionBackground(this)"  ${option.isCorrect ? 'checked' : ''}>
+                        <input type="text" class="form-control border-bottom flex-grow-1 option-input" id="option${optionIndex + 1}Input" value="${option.text}" > 
+                        <i class="fas fa-image fa-lg dynamic-icon image-icon ms-1" aria-hidden="true" onclick="addImage(this)" title="Add image for options "></i>
+                        <i class="fas fa-trash fa-lg dynamic-icon delete-icon ms-1" aria-hidden="true" style="display: none;" onclick="deleteOption(this)" title="Delete the option"></i>
+                    </div>`;
                             optionsDisplay.appendChild(newOption);
+
+                            const inputElement = newOption.querySelector('.form-check-input');
+                            toggleOptionBackground(inputElement);
+
+                            inputElement.disabled = true;
                         });
                         questionPlaceholder.appendChild(newQuestionContainer);
                     });
-                    questionCount = responseData.questions.length + 1; 
+                    questionCount = responseData.questions.length + 1;
                 } else {
                     console.error("responseData or responseData.questions is undefined");
                 }
@@ -287,6 +294,35 @@
             }
             addQuestion();
         };
+
+        function toggleOptionBackground(option) {
+            const container = option.closest('.questionContainer');
+            const inputFieldType = option.type;
+
+            if (inputFieldType === 'radio') {
+                const radios = container.querySelectorAll('input[type="radio"]');
+                radios.forEach(function (rb) {
+                    var inputField = rb.nextElementSibling;
+                    rb.checked = false;
+                    inputField.style.borderColor = '';
+                    inputField.style.boxShadow = '';
+                });
+
+                option.checked = true;
+                var inputField = option.nextElementSibling;
+                inputField.style.borderColor = 'lightgreen';
+                inputField.style.boxShadow = '0 0 10px lightgreen';
+            } else if (inputFieldType === 'checkbox') {
+                var inputField = option.nextElementSibling;
+                if (option.checked) {
+                    inputField.style.borderColor = 'lightgreen';
+                    inputField.style.boxShadow = '0 0 10px lightgreen';
+                } else {
+                    inputField.style.borderColor = '';
+                    inputField.style.boxShadow = '';
+                }
+            }
+        }
 
 
         function checkTitleExists(title) {
@@ -376,8 +412,7 @@
                 alert("Please fill the description field.");
                 document.getElementById('txtDescription').focus();
                 return false;
-            }
-            console.log("");
+            } 
             var formData = collectFormData();
             var jsonData = JSON.stringify(formData);
             console.log(jsonData);
@@ -519,36 +554,6 @@
             newOption.querySelector('.form-check').appendChild(plusIcon);
         }
 
-        function toggleOptionBackground(option) {
-            const container = option.closest('.questionContainer');
-            const inputFieldType = option.type;
-
-            if (inputFieldType === 'radio') {
-                const radios = container.querySelectorAll('input[type="radio"]');
-                radios.forEach(function (rb) {
-                    var inputField = rb.nextElementSibling;
-                    rb.checked = false;
-                    inputField.style.borderColor = '';
-                    inputField.style.boxShadow = '';
-                });
-
-                option.checked = true;
-                var inputField = option.nextElementSibling;
-                inputField.style.borderColor = 'lightgreen';
-                inputField.style.boxShadow = '0 0 10px lightgreen';
-            } else if (inputFieldType === 'checkbox') {
-                var inputField = option.nextElementSibling;
-                if (option.checked) {
-                    inputField.style.borderColor = 'lightgreen';
-                    inputField.style.boxShadow = '0 0 10px lightgreen';
-                } else {
-                    inputField.style.borderColor = '';
-                    inputField.style.boxShadow = '';
-                }
-            }
-        }
-
-
         function updateOptionTypes(questionContainer, selectedValue) {
             const inputFieldType = selectedValue === '1' ? 'radio' : 'checkbox';
             const questionId = questionContainer.getAttribute('data-question-id');
@@ -594,7 +599,6 @@
                     imageIcons.forEach(icon => icon.style.visibility = 'visible');
                     deleteIcons.forEach(icon => icon.style.visibility = 'visible');
                     addIcons.forEach(icon => icon.style.visibility = 'visible');
-
                     const checkedInputs = container.querySelectorAll('.form-check-input:checked');
                     checkedInputs.forEach(input => {
                         console.log(`Checked input value: ${input.value}`);
@@ -623,10 +627,10 @@
             console.log("Selected question type:", selectedValue);
         }
 
-
         function deleteOption(element) {
             element.closest('.col-md-11').remove();
         }
+
     </script>
 </body>
 </html>
